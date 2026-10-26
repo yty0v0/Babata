@@ -1,0 +1,4 @@
+schema: spec-driven
+created: 2026-10-25
+goal: Make pentest traffic pass through a configurable code-level safety
+  guardrail before execution without permanently weakening test capability

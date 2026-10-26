@@ -1,0 +1,4 @@
+schema: spec-driven
+created: 2026-10-24
+goal: Make Taric a verifiable evidence layer rather than a hashed work log,
+  without touching solver probing logic.

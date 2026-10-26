@@ -1,0 +1,3457 @@
+[
+  {
+    "id": "T1189_drive-by-compromise",
+    "title": "T1189 drive-by-compromise",
+    "path": "TA0001_initial-access/T1189_drive-by-compromise/SKILL.md"
+  },
+  {
+    "id": "T1190_exploit-public-facing-application",
+    "title": "T1190 exploit-public-facing-application",
+    "path": "TA0001_initial-access/T1190_exploit-public-facing-application/SKILL.md"
+  },
+  {
+    "id": "T1195_supply-chain-compromise",
+    "title": "T1195 supply-chain-compromise",
+    "path": "TA0001_initial-access/T1195_supply-chain-compromise/SKILL.md"
+  },
+  {
+    "id": "T1199_trusted-relationship",
+    "title": "T1199 trusted-relationship",
+    "path": "TA0001_initial-access/T1199_trusted-relationship/SKILL.md"
+  },
+  {
+    "id": "T1200_hardware-additions",
+    "title": "T1200 hardware-additions",
+    "path": "TA0001_initial-access/T1200_hardware-additions/SKILL.md"
+  },
+  {
+    "id": "T1566.001_spearphishing-attachment",
+    "title": "T1566.001 spearphishing-attachment",
+    "path": "TA0001_initial-access/T1566.001_spearphishing-attachment/SKILL.md"
+  },
+  {
+    "id": "T1566.002_spearphishing-link",
+    "title": "T1566.002 spearphishing-link",
+    "path": "TA0001_initial-access/T1566.002_spearphishing-link/SKILL.md"
+  },
+  {
+    "id": "T1566.003_spearphishing-via-service",
+    "title": "T1566.003 spearphishing-via-service",
+    "path": "TA0001_initial-access/T1566.003_spearphishing-via-service/SKILL.md"
+  },
+  {
+    "id": "T1566.004_spearphishing-voice",
+    "title": "T1566.004 spearphishing-voice",
+    "path": "TA0001_initial-access/T1566.004_spearphishing-voice/SKILL.md"
+  },
+  {
+    "id": "T1566_phishing",
+    "title": "T1566 phishing",
+    "path": "TA0001_initial-access/T1566_phishing/SKILL.md"
+  },
+  {
+    "id": "T1659_content-injection",
+    "title": "T1659 content-injection",
+    "path": "TA0001_initial-access/T1659_content-injection/SKILL.md"
+  },
+  {
+    "id": "T1669_wi-fi-networks",
+    "title": "T1669 wi-fi-networks",
+    "path": "TA0001_initial-access/T1669_wi-fi-networks/SKILL.md"
+  },
+  {
+    "id": "t1195-001-compromise-software",
+    "title": "t1195-001-compromise-software",
+    "path": "TA0001_initial-access/t1195-001-compromise-software/SKILL.md"
+  },
+  {
+    "id": "t1195-002-compromise-software-supply",
+    "title": "t1195-002-compromise-software-supply",
+    "path": "TA0001_initial-access/t1195-002-compromise-software-supply/SKILL.md"
+  },
+  {
+    "id": "t1195-003-compromise-hardware-supply",
+    "title": "t1195-003-compromise-hardware-supply",
+    "path": "TA0001_initial-access/t1195-003-compromise-hardware-supply/SKILL.md"
+  },
+  {
+    "id": "T1047_windows-management-instrumentation",
+    "title": "T1047 windows-management-instrumentation",
+    "path": "TA0002_execution/T1047_windows-management-instrumentation/SKILL.md"
+  },
+  {
+    "id": "T1053.002_at",
+    "title": "T1053.002 at",
+    "path": "TA0002_execution/T1053.002_at/SKILL.md"
+  },
+  {
+    "id": "T1053.003_cron",
+    "title": "T1053.003 cron",
+    "path": "TA0002_execution/T1053.003_cron/SKILL.md"
+  },
+  {
+    "id": "T1053.005_scheduled-task",
+    "title": "T1053.005 scheduled-task",
+    "path": "TA0002_execution/T1053.005_scheduled-task/SKILL.md"
+  },
+  {
+    "id": "T1053.006_systemd-timers",
+    "title": "T1053.006 systemd-timers",
+    "path": "TA0002_execution/T1053.006_systemd-timers/SKILL.md"
+  },
+  {
+    "id": "T1053.007_container-orchestration-job",
+    "title": "T1053.007 container-orchestration-job",
+    "path": "TA0002_execution/T1053.007_container-orchestration-job/SKILL.md"
+  },
+  {
+    "id": "T1053_scheduled-taskjob",
+    "title": "T1053 scheduled-taskjob",
+    "path": "TA0002_execution/T1053_scheduled-taskjob/SKILL.md"
+  },
+  {
+    "id": "T1059.001_powershell",
+    "title": "T1059.001 powershell",
+    "path": "TA0002_execution/T1059.001_powershell/SKILL.md"
+  },
+  {
+    "id": "T1059.002_applescript",
+    "title": "T1059.002 applescript",
+    "path": "TA0002_execution/T1059.002_applescript/SKILL.md"
+  },
+  {
+    "id": "T1059.003_windows-command-shell",
+    "title": "T1059.003 windows-command-shell",
+    "path": "TA0002_execution/T1059.003_windows-command-shell/SKILL.md"
+  },
+  {
+    "id": "T1059.004_unix-shell",
+    "title": "T1059.004 unix-shell",
+    "path": "TA0002_execution/T1059.004_unix-shell/SKILL.md"
+  },
+  {
+    "id": "T1059.005_visual-basic",
+    "title": "T1059.005 visual-basic",
+    "path": "TA0002_execution/T1059.005_visual-basic/SKILL.md"
+  },
+  {
+    "id": "T1059.006_python",
+    "title": "T1059.006 python",
+    "path": "TA0002_execution/T1059.006_python/SKILL.md"
+  },
+  {
+    "id": "T1059.007_javascript",
+    "title": "T1059.007 javascript",
+    "path": "TA0002_execution/T1059.007_javascript/SKILL.md"
+  },
+  {
+    "id": "T1059.008_network-device-cli",
+    "title": "T1059.008 network-device-cli",
+    "path": "TA0002_execution/T1059.008_network-device-cli/SKILL.md"
+  },
+  {
+    "id": "T1059.009_cloud-api",
+    "title": "T1059.009 cloud-api",
+    "path": "TA0002_execution/T1059.009_cloud-api/SKILL.md"
+  },
+  {
+    "id": "T1059.010_autohotkey-autoit",
+    "title": "T1059.010 autohotkey-autoit",
+    "path": "TA0002_execution/T1059.010_autohotkey-autoit/SKILL.md"
+  },
+  {
+    "id": "T1059.011_lua",
+    "title": "T1059.011 lua",
+    "path": "TA0002_execution/T1059.011_lua/SKILL.md"
+  },
+  {
+    "id": "T1059.012_hypervisor-cli",
+    "title": "T1059.012 hypervisor-cli",
+    "path": "TA0002_execution/T1059.012_hypervisor-cli/SKILL.md"
+  },
+  {
+    "id": "T1059.013_container-cliapi",
+    "title": "T1059.013 container-cliapi",
+    "path": "TA0002_execution/T1059.013_container-cliapi/SKILL.md"
+  },
+  {
+    "id": "T1059_command-and-scripting-interpreter",
+    "title": "T1059 command-and-scripting-interpreter",
+    "path": "TA0002_execution/T1059_command-and-scripting-interpreter/SKILL.md"
+  },
+  {
+    "id": "T1072_software-deployment-tools",
+    "title": "T1072 software-deployment-tools",
+    "path": "TA0002_execution/T1072_software-deployment-tools/SKILL.md"
+  },
+  {
+    "id": "T1106_native-api",
+    "title": "T1106 native-api",
+    "path": "TA0002_execution/T1106_native-api/SKILL.md"
+  },
+  {
+    "id": "T1129_shared-modules",
+    "title": "T1129 shared-modules",
+    "path": "TA0002_execution/T1129_shared-modules/SKILL.md"
+  },
+  {
+    "id": "T1203_exploitation-for-client-execution",
+    "title": "T1203 exploitation-for-client-execution",
+    "path": "TA0002_execution/T1203_exploitation-for-client-execution/SKILL.md"
+  },
+  {
+    "id": "T1204.001_malicious-link",
+    "title": "T1204.001 malicious-link",
+    "path": "TA0002_execution/T1204.001_malicious-link/SKILL.md"
+  },
+  {
+    "id": "T1204.002_malicious-file",
+    "title": "T1204.002 malicious-file",
+    "path": "TA0002_execution/T1204.002_malicious-file/SKILL.md"
+  },
+  {
+    "id": "T1204.003_malicious-image",
+    "title": "T1204.003 malicious-image",
+    "path": "TA0002_execution/T1204.003_malicious-image/SKILL.md"
+  },
+  {
+    "id": "T1204.004_malicious-copy-and-paste",
+    "title": "T1204.004 malicious-copy-and-paste",
+    "path": "TA0002_execution/T1204.004_malicious-copy-and-paste/SKILL.md"
+  },
+  {
+    "id": "T1204.005_malicious-library",
+    "title": "T1204.005 malicious-library",
+    "path": "TA0002_execution/T1204.005_malicious-library/SKILL.md"
+  },
+  {
+    "id": "T1204_user-execution",
+    "title": "T1204 user-execution",
+    "path": "TA0002_execution/T1204_user-execution/SKILL.md"
+  },
+  {
+    "id": "T1559.001_component-object-model",
+    "title": "T1559.001 component-object-model",
+    "path": "TA0002_execution/T1559.001_component-object-model/SKILL.md"
+  },
+  {
+    "id": "T1559.002_dynamic-data-exchange",
+    "title": "T1559.002 dynamic-data-exchange",
+    "path": "TA0002_execution/T1559.002_dynamic-data-exchange/SKILL.md"
+  },
+  {
+    "id": "T1559.003_xpc-services",
+    "title": "T1559.003 xpc-services",
+    "path": "TA0002_execution/T1559.003_xpc-services/SKILL.md"
+  },
+  {
+    "id": "T1559_inter-process-communication",
+    "title": "T1559 inter-process-communication",
+    "path": "TA0002_execution/T1559_inter-process-communication/SKILL.md"
+  },
+  {
+    "id": "T1569.001_launchctl",
+    "title": "T1569.001 launchctl",
+    "path": "TA0002_execution/T1569.001_launchctl/SKILL.md"
+  },
+  {
+    "id": "T1569.002_service-execution",
+    "title": "T1569.002 service-execution",
+    "path": "TA0002_execution/T1569.002_service-execution/SKILL.md"
+  },
+  {
+    "id": "T1569.003_systemctl",
+    "title": "T1569.003 systemctl",
+    "path": "TA0002_execution/T1569.003_systemctl/SKILL.md"
+  },
+  {
+    "id": "T1569_system-services",
+    "title": "T1569 system-services",
+    "path": "TA0002_execution/T1569_system-services/SKILL.md"
+  },
+  {
+    "id": "T1609_container-administration-command",
+    "title": "T1609 container-administration-command",
+    "path": "TA0002_execution/T1609_container-administration-command/SKILL.md"
+  },
+  {
+    "id": "T1648_serverless-execution",
+    "title": "T1648 serverless-execution",
+    "path": "TA0002_execution/T1648_serverless-execution/SKILL.md"
+  },
+  {
+    "id": "T1651_cloud-administration-command",
+    "title": "T1651 cloud-administration-command",
+    "path": "TA0002_execution/T1651_cloud-administration-command/SKILL.md"
+  },
+  {
+    "id": "T1674_input-injection",
+    "title": "T1674 input-injection",
+    "path": "TA0002_execution/T1674_input-injection/SKILL.md"
+  },
+  {
+    "id": "T1675_esxi-administration-command",
+    "title": "T1675 esxi-administration-command",
+    "path": "TA0002_execution/T1675_esxi-administration-command/SKILL.md"
+  },
+  {
+    "id": "T1677_poisoned-pipeline-execution",
+    "title": "T1677 poisoned-pipeline-execution",
+    "path": "TA0002_execution/T1677_poisoned-pipeline-execution/SKILL.md"
+  },
+  {
+    "id": "T1037.001_logon-script-windows",
+    "title": "T1037.001 logon-script-windows",
+    "path": "TA0003_persistence/T1037.001_logon-script-windows/SKILL.md"
+  },
+  {
+    "id": "T1037.002_login-hook",
+    "title": "T1037.002 login-hook",
+    "path": "TA0003_persistence/T1037.002_login-hook/SKILL.md"
+  },
+  {
+    "id": "T1037.003_network-logon-script",
+    "title": "T1037.003 network-logon-script",
+    "path": "TA0003_persistence/T1037.003_network-logon-script/SKILL.md"
+  },
+  {
+    "id": "T1037.004_rc-scripts",
+    "title": "T1037.004 rc-scripts",
+    "path": "TA0003_persistence/T1037.004_rc-scripts/SKILL.md"
+  },
+  {
+    "id": "T1037.005_startup-items",
+    "title": "T1037.005 startup-items",
+    "path": "TA0003_persistence/T1037.005_startup-items/SKILL.md"
+  },
+  {
+    "id": "T1098.001_additional-cloud-credentials",
+    "title": "T1098.001 additional-cloud-credentials",
+    "path": "TA0003_persistence/T1098.001_additional-cloud-credentials/SKILL.md"
+  },
+  {
+    "id": "T1098.003_additional-cloud-roles",
+    "title": "T1098.003 additional-cloud-roles",
+    "path": "TA0003_persistence/T1098.003_additional-cloud-roles/SKILL.md"
+  },
+  {
+    "id": "T1098.004_ssh-authorized-keys",
+    "title": "T1098.004 ssh-authorized-keys",
+    "path": "TA0003_persistence/T1098.004_ssh-authorized-keys/SKILL.md"
+  },
+  {
+    "id": "T1098.005_device-registration",
+    "title": "T1098.005 device-registration",
+    "path": "TA0003_persistence/T1098.005_device-registration/SKILL.md"
+  },
+  {
+    "id": "T1098_account-manipulation",
+    "title": "T1098 account-manipulation",
+    "path": "TA0003_persistence/T1098_account-manipulation/SKILL.md"
+  },
+  {
+    "id": "T1133_external-remote-services",
+    "title": "T1133 external-remote-services",
+    "path": "TA0003_persistence/T1133_external-remote-services/SKILL.md"
+  },
+  {
+    "id": "T1136.001_local-account",
+    "title": "T1136.001 local-account",
+    "path": "TA0003_persistence/T1136.001_local-account/SKILL.md"
+  },
+  {
+    "id": "T1136.002_domain-account",
+    "title": "T1136.002 domain-account",
+    "path": "TA0003_persistence/T1136.002_domain-account/SKILL.md"
+  },
+  {
+    "id": "T1136.003_cloud-account",
+    "title": "T1136.003 cloud-account",
+    "path": "TA0003_persistence/T1136.003_cloud-account/SKILL.md"
+  },
+  {
+    "id": "T1136_create-account",
+    "title": "T1136 create-account",
+    "path": "TA0003_persistence/T1136_create-account/SKILL.md"
+  },
+  {
+    "id": "T1137.001_office-template-macros",
+    "title": "T1137.001 office-template-macros",
+    "path": "TA0003_persistence/T1137.001_office-template-macros/SKILL.md"
+  },
+  {
+    "id": "T1137.002_office-test",
+    "title": "T1137.002 office-test",
+    "path": "TA0003_persistence/T1137.002_office-test/SKILL.md"
+  },
+  {
+    "id": "T1137.003_outlook-forms",
+    "title": "T1137.003 outlook-forms",
+    "path": "TA0003_persistence/T1137.003_outlook-forms/SKILL.md"
+  },
+  {
+    "id": "T1137.004_outlook-home-page",
+    "title": "T1137.004 outlook-home-page",
+    "path": "TA0003_persistence/T1137.004_outlook-home-page/SKILL.md"
+  },
+  {
+    "id": "T1137.005_outlook-rules",
+    "title": "T1137.005 outlook-rules",
+    "path": "TA0003_persistence/T1137.005_outlook-rules/SKILL.md"
+  },
+  {
+    "id": "T1137.006_add-ins",
+    "title": "T1137.006 add-ins",
+    "path": "TA0003_persistence/T1137.006_add-ins/SKILL.md"
+  },
+  {
+    "id": "T1137_office-application-startup",
+    "title": "T1137 office-application-startup",
+    "path": "TA0003_persistence/T1137_office-application-startup/SKILL.md"
+  },
+  {
+    "id": "T1176.001_browser-extensions",
+    "title": "T1176.001 browser-extensions",
+    "path": "TA0003_persistence/T1176.001_browser-extensions/SKILL.md"
+  },
+  {
+    "id": "T1176.002_ide-extensions",
+    "title": "T1176.002 ide-extensions",
+    "path": "TA0003_persistence/T1176.002_ide-extensions/SKILL.md"
+  },
+  {
+    "id": "T1176_software-extensions",
+    "title": "T1176 software-extensions",
+    "path": "TA0003_persistence/T1176_software-extensions/SKILL.md"
+  },
+  {
+    "id": "T1505.001_sql-stored-procedures",
+    "title": "T1505.001 sql-stored-procedures",
+    "path": "TA0003_persistence/T1505.001_sql-stored-procedures/SKILL.md"
+  },
+  {
+    "id": "T1505.002_transport-agent",
+    "title": "T1505.002 transport-agent",
+    "path": "TA0003_persistence/T1505.002_transport-agent/SKILL.md"
+  },
+  {
+    "id": "T1505.003_web-shell",
+    "title": "T1505.003 web-shell",
+    "path": "TA0003_persistence/T1505.003_web-shell/SKILL.md"
+  },
+  {
+    "id": "T1505.004_iis-components",
+    "title": "T1505.004 iis-components",
+    "path": "TA0003_persistence/T1505.004_iis-components/SKILL.md"
+  },
+  {
+    "id": "T1505.005_terminal-services-dll",
+    "title": "T1505.005 terminal-services-dll",
+    "path": "TA0003_persistence/T1505.005_terminal-services-dll/SKILL.md"
+  },
+  {
+    "id": "T1505.006_vsphere-installation-bundles",
+    "title": "T1505.006 vsphere-installation-bundles",
+    "path": "TA0003_persistence/T1505.006_vsphere-installation-bundles/SKILL.md"
+  },
+  {
+    "id": "T1505_server-software-component",
+    "title": "T1505 server-software-component",
+    "path": "TA0003_persistence/T1505_server-software-component/SKILL.md"
+  },
+  {
+    "id": "T1525_implant-internal-image",
+    "title": "T1525 implant-internal-image",
+    "path": "TA0003_persistence/T1525_implant-internal-image/SKILL.md"
+  },
+  {
+    "id": "T1542.001_system-firmware",
+    "title": "T1542.001 system-firmware",
+    "path": "TA0003_persistence/T1542.001_system-firmware/SKILL.md"
+  },
+  {
+    "id": "T1542.002_component-firmware",
+    "title": "T1542.002 component-firmware",
+    "path": "TA0003_persistence/T1542.002_component-firmware/SKILL.md"
+  },
+  {
+    "id": "T1542.003_bootkit",
+    "title": "T1542.003 bootkit",
+    "path": "TA0003_persistence/T1542.003_bootkit/SKILL.md"
+  },
+  {
+    "id": "T1543.001_launch-agent",
+    "title": "T1543.001 launch-agent",
+    "path": "TA0003_persistence/T1543.001_launch-agent/SKILL.md"
+  },
+  {
+    "id": "T1543.002_systemd-service",
+    "title": "T1543.002 systemd-service",
+    "path": "TA0003_persistence/T1543.002_systemd-service/SKILL.md"
+  },
+  {
+    "id": "T1543.003_windows-service",
+    "title": "T1543.003 windows-service",
+    "path": "TA0003_persistence/T1543.003_windows-service/SKILL.md"
+  },
+  {
+    "id": "T1543.004_launch-daemon",
+    "title": "T1543.004 launch-daemon",
+    "path": "TA0003_persistence/T1543.004_launch-daemon/SKILL.md"
+  },
+  {
+    "id": "T1543.005_container-service",
+    "title": "T1543.005 container-service",
+    "path": "TA0003_persistence/T1543.005_container-service/SKILL.md"
+  },
+  {
+    "id": "T1543_create-or-modify-system-process",
+    "title": "T1543 create-or-modify-system-process",
+    "path": "TA0003_persistence/T1543_create-or-modify-system-process/SKILL.md"
+  },
+  {
+    "id": "T1546.017_udev-rules",
+    "title": "T1546.017 udev-rules",
+    "path": "TA0003_persistence/T1546.017_udev-rules/SKILL.md"
+  },
+  {
+    "id": "T1546.018_python-startup-hooks",
+    "title": "T1546.018 python-startup-hooks",
+    "path": "TA0003_persistence/T1546.018_python-startup-hooks/SKILL.md"
+  },
+  {
+    "id": "T1547.002_authentication-package",
+    "title": "T1547.002 authentication-package",
+    "path": "TA0003_persistence/T1547.002_authentication-package/SKILL.md"
+  },
+  {
+    "id": "T1547.003_time-providers",
+    "title": "T1547.003 time-providers",
+    "path": "TA0003_persistence/T1547.003_time-providers/SKILL.md"
+  },
+  {
+    "id": "T1547.004_winlogon-helper-dll",
+    "title": "T1547.004 winlogon-helper-dll",
+    "path": "TA0003_persistence/T1547.004_winlogon-helper-dll/SKILL.md"
+  },
+  {
+    "id": "T1547.005_security-support-provider",
+    "title": "T1547.005 security-support-provider",
+    "path": "TA0003_persistence/T1547.005_security-support-provider/SKILL.md"
+  },
+  {
+    "id": "T1547.006_kernel-modules-and-extensions",
+    "title": "T1547.006 kernel-modules-and-extensions",
+    "path": "TA0003_persistence/T1547.006_kernel-modules-and-extensions/SKILL.md"
+  },
+  {
+    "id": "T1547.007_re-opened-applications",
+    "title": "T1547.007 re-opened-applications",
+    "path": "TA0003_persistence/T1547.007_re-opened-applications/SKILL.md"
+  },
+  {
+    "id": "T1547.008_lsass-driver",
+    "title": "T1547.008 lsass-driver",
+    "path": "TA0003_persistence/T1547.008_lsass-driver/SKILL.md"
+  },
+  {
+    "id": "T1547.009_shortcut-modification",
+    "title": "T1547.009 shortcut-modification",
+    "path": "TA0003_persistence/T1547.009_shortcut-modification/SKILL.md"
+  },
+  {
+    "id": "T1547.010_port-monitors",
+    "title": "T1547.010 port-monitors",
+    "path": "TA0003_persistence/T1547.010_port-monitors/SKILL.md"
+  },
+  {
+    "id": "T1547.012_print-processors",
+    "title": "T1547.012 print-processors",
+    "path": "TA0003_persistence/T1547.012_print-processors/SKILL.md"
+  },
+  {
+    "id": "T1547.013_xdg-autostart-entries",
+    "title": "T1547.013 xdg-autostart-entries",
+    "path": "TA0003_persistence/T1547.013_xdg-autostart-entries/SKILL.md"
+  },
+  {
+    "id": "T1547.014_active-setup",
+    "title": "T1547.014 active-setup",
+    "path": "TA0003_persistence/T1547.014_active-setup/SKILL.md"
+  },
+  {
+    "id": "T1547.015_login-items",
+    "title": "T1547.015 login-items",
+    "path": "TA0003_persistence/T1547.015_login-items/SKILL.md"
+  },
+  {
+    "id": "T1547_boot-or-logon-autostart-execution",
+    "title": "T1547 boot-or-logon-autostart-execution",
+    "path": "TA0003_persistence/T1547_boot-or-logon-autostart-execution/SKILL.md"
+  },
+  {
+    "id": "T1554_compromise-host-software-binary",
+    "title": "T1554 compromise-host-software-binary",
+    "path": "TA0003_persistence/T1554_compromise-host-software-binary/SKILL.md"
+  },
+  {
+    "id": "T1574.001_dll",
+    "title": "T1574.001 dll",
+    "path": "TA0003_persistence/T1574.001_dll/SKILL.md"
+  },
+  {
+    "id": "T1574.004_dylib-hijacking",
+    "title": "T1574.004 dylib-hijacking",
+    "path": "TA0003_persistence/T1574.004_dylib-hijacking/SKILL.md"
+  },
+  {
+    "id": "T1574.006_dynamic-linker-hijacking",
+    "title": "T1574.006 dynamic-linker-hijacking",
+    "path": "TA0003_persistence/T1574.006_dynamic-linker-hijacking/SKILL.md"
+  },
+  {
+    "id": "T1574.012_corprofiler",
+    "title": "T1574.012 corprofiler",
+    "path": "TA0003_persistence/T1574.012_corprofiler/SKILL.md"
+  },
+  {
+    "id": "T1574.013_kernelcallbacktable",
+    "title": "T1574.013 kernelcallbacktable",
+    "path": "TA0003_persistence/T1574.013_kernelcallbacktable/SKILL.md"
+  },
+  {
+    "id": "T1574.014_appdomainmanager",
+    "title": "T1574.014 appdomainmanager",
+    "path": "TA0003_persistence/T1574.014_appdomainmanager/SKILL.md"
+  },
+  {
+    "id": "T1574_hijack-execution-flow",
+    "title": "T1574 hijack-execution-flow",
+    "path": "TA0003_persistence/T1574_hijack-execution-flow/SKILL.md"
+  },
+  {
+    "id": "T1653_power-settings",
+    "title": "T1653 power-settings",
+    "path": "TA0003_persistence/T1653_power-settings/SKILL.md"
+  },
+  {
+    "id": "T1668_exclusive-control",
+    "title": "T1668 exclusive-control",
+    "path": "TA0003_persistence/T1668_exclusive-control/SKILL.md"
+  },
+  {
+    "id": "T1671_cloud-application-integration",
+    "title": "T1671 cloud-application-integration",
+    "path": "TA0003_persistence/T1671_cloud-application-integration/SKILL.md"
+  },
+  {
+    "id": "t1037-boot-or-logon-initialization",
+    "title": "t1037-boot-or-logon-initialization",
+    "path": "TA0003_persistence/t1037-boot-or-logon-initialization/SKILL.md"
+  },
+  {
+    "id": "t1098-002-additional-email-delegate",
+    "title": "t1098-002-additional-email-delegate",
+    "path": "TA0003_persistence/t1098-002-additional-email-delegate/SKILL.md"
+  },
+  {
+    "id": "t1098-006-additional-container-cluster",
+    "title": "t1098-006-additional-container-cluster",
+    "path": "TA0003_persistence/t1098-006-additional-container-cluster/SKILL.md"
+  },
+  {
+    "id": "t1098-007-additional-local-or-domain",
+    "title": "t1098-007-additional-local-or-domain",
+    "path": "TA0003_persistence/t1098-007-additional-local-or-domain/SKILL.md"
+  },
+  {
+    "id": "t1547-001-registry-run-keys-startup",
+    "title": "t1547-001-registry-run-keys-startup",
+    "path": "TA0003_persistence/t1547-001-registry-run-keys-startup/SKILL.md"
+  },
+  {
+    "id": "t1574-005-executable-installer-file",
+    "title": "t1574-005-executable-installer-file",
+    "path": "TA0003_persistence/t1574-005-executable-installer-file/SKILL.md"
+  },
+  {
+    "id": "t1574-007-path-interception-by-path",
+    "title": "t1574-007-path-interception-by-path",
+    "path": "TA0003_persistence/t1574-007-path-interception-by-path/SKILL.md"
+  },
+  {
+    "id": "t1574-008-path-interception-by-search",
+    "title": "t1574-008-path-interception-by-search",
+    "path": "TA0003_persistence/t1574-008-path-interception-by-search/SKILL.md"
+  },
+  {
+    "id": "t1574-009-path-interception-by-unquoted",
+    "title": "t1574-009-path-interception-by-unquoted",
+    "path": "TA0003_persistence/t1574-009-path-interception-by-unquoted/SKILL.md"
+  },
+  {
+    "id": "t1574-010-services-file-permissions",
+    "title": "t1574-010-services-file-permissions",
+    "path": "TA0003_persistence/t1574-010-services-file-permissions/SKILL.md"
+  },
+  {
+    "id": "t1574-011-services-registry-permissions",
+    "title": "t1574-011-services-registry-permissions",
+    "path": "TA0003_persistence/t1574-011-services-registry-permissions/SKILL.md"
+  },
+  {
+    "id": "T1546.002_screensaver",
+    "title": "T1546.002 screensaver",
+    "path": "TA0004_privilege-escalation/T1546.002_screensaver/SKILL.md"
+  },
+  {
+    "id": "T1546.005_trap",
+    "title": "T1546.005 trap",
+    "path": "TA0004_privilege-escalation/T1546.005_trap/SKILL.md"
+  },
+  {
+    "id": "T1546.006_lcloaddylib-addition",
+    "title": "T1546.006 lcloaddylib-addition",
+    "path": "TA0004_privilege-escalation/T1546.006_lcloaddylib-addition/SKILL.md"
+  },
+  {
+    "id": "T1546.007_netsh-helper-dll",
+    "title": "T1546.007 netsh-helper-dll",
+    "path": "TA0004_privilege-escalation/T1546.007_netsh-helper-dll/SKILL.md"
+  },
+  {
+    "id": "T1546.008_accessibility-features",
+    "title": "T1546.008 accessibility-features",
+    "path": "TA0004_privilege-escalation/T1546.008_accessibility-features/SKILL.md"
+  },
+  {
+    "id": "T1546.009_appcert-dlls",
+    "title": "T1546.009 appcert-dlls",
+    "path": "TA0004_privilege-escalation/T1546.009_appcert-dlls/SKILL.md"
+  },
+  {
+    "id": "T1546.010_appinit-dlls",
+    "title": "T1546.010 appinit-dlls",
+    "path": "TA0004_privilege-escalation/T1546.010_appinit-dlls/SKILL.md"
+  },
+  {
+    "id": "T1546.011_application-shimming",
+    "title": "T1546.011 application-shimming",
+    "path": "TA0004_privilege-escalation/T1546.011_application-shimming/SKILL.md"
+  },
+  {
+    "id": "T1546.013_powershell-profile",
+    "title": "T1546.013 powershell-profile",
+    "path": "TA0004_privilege-escalation/T1546.013_powershell-profile/SKILL.md"
+  },
+  {
+    "id": "T1546.014_emond",
+    "title": "T1546.014 emond",
+    "path": "TA0004_privilege-escalation/T1546.014_emond/SKILL.md"
+  },
+  {
+    "id": "T1546.016_installer-packages",
+    "title": "T1546.016 installer-packages",
+    "path": "TA0004_privilege-escalation/T1546.016_installer-packages/SKILL.md"
+  },
+  {
+    "id": "T1546_event-triggered-execution",
+    "title": "T1546 event-triggered-execution",
+    "path": "TA0004_privilege-escalation/T1546_event-triggered-execution/SKILL.md"
+  },
+  {
+    "id": "T1548.001_setuid-and-setgid",
+    "title": "T1548.001 setuid-and-setgid",
+    "path": "TA0004_privilege-escalation/T1548.001_setuid-and-setgid/SKILL.md"
+  },
+  {
+    "id": "T1548.002_bypass-user-account-control",
+    "title": "T1548.002 bypass-user-account-control",
+    "path": "TA0004_privilege-escalation/T1548.002_bypass-user-account-control/SKILL.md"
+  },
+  {
+    "id": "T1548.003_sudo-and-sudo-caching",
+    "title": "T1548.003 sudo-and-sudo-caching",
+    "path": "TA0004_privilege-escalation/T1548.003_sudo-and-sudo-caching/SKILL.md"
+  },
+  {
+    "id": "T1548.004_elevated-execution-with-prompt",
+    "title": "T1548.004 elevated-execution-with-prompt",
+    "path": "TA0004_privilege-escalation/T1548.004_elevated-execution-with-prompt/SKILL.md"
+  },
+  {
+    "id": "T1548_abuse-elevation-control-mechanism",
+    "title": "T1548 abuse-elevation-control-mechanism",
+    "path": "TA0004_privilege-escalation/T1548_abuse-elevation-control-mechanism/SKILL.md"
+  },
+  {
+    "id": "T1611_escape-to-host",
+    "title": "T1611 escape-to-host",
+    "path": "TA0004_privilege-escalation/T1611_escape-to-host/SKILL.md"
+  },
+  {
+    "id": "t1068-exploitation-for-privilege",
+    "title": "t1068-exploitation-for-privilege",
+    "path": "TA0004_privilege-escalation/t1068-exploitation-for-privilege/SKILL.md"
+  },
+  {
+    "id": "t1546-001-change-default-file",
+    "title": "t1546-001-change-default-file",
+    "path": "TA0004_privilege-escalation/t1546-001-change-default-file/SKILL.md"
+  },
+  {
+    "id": "t1546-003-windows-management",
+    "title": "t1546-003-windows-management",
+    "path": "TA0004_privilege-escalation/t1546-003-windows-management/SKILL.md"
+  },
+  {
+    "id": "t1546-004-unix-shell-configuration",
+    "title": "t1546-004-unix-shell-configuration",
+    "path": "TA0004_privilege-escalation/t1546-004-unix-shell-configuration/SKILL.md"
+  },
+  {
+    "id": "t1546-012-image-file-execution-options",
+    "title": "t1546-012-image-file-execution-options",
+    "path": "TA0004_privilege-escalation/t1546-012-image-file-execution-options/SKILL.md"
+  },
+  {
+    "id": "t1546-015-component-object-model",
+    "title": "t1546-015-component-object-model",
+    "path": "TA0004_privilege-escalation/t1546-015-component-object-model/SKILL.md"
+  },
+  {
+    "id": "t1548-005-temporary-elevated-cloud",
+    "title": "t1548-005-temporary-elevated-cloud",
+    "path": "TA0004_privilege-escalation/t1548-005-temporary-elevated-cloud/SKILL.md"
+  },
+  {
+    "id": "T1006_direct-volume-access",
+    "title": "T1006 direct-volume-access",
+    "path": "TA0005_defense-evasion/T1006_direct-volume-access/SKILL.md"
+  },
+  {
+    "id": "T1014_rootkit",
+    "title": "T1014 rootkit",
+    "path": "TA0005_defense-evasion/T1014_rootkit/SKILL.md"
+  },
+  {
+    "id": "T1027.001_binary-padding",
+    "title": "T1027.001 binary-padding",
+    "path": "TA0005_defense-evasion/T1027.001_binary-padding/SKILL.md"
+  },
+  {
+    "id": "T1027.002_software-packing",
+    "title": "T1027.002 software-packing",
+    "path": "TA0005_defense-evasion/T1027.002_software-packing/SKILL.md"
+  },
+  {
+    "id": "T1027.003_steganography",
+    "title": "T1027.003 steganography",
+    "path": "TA0005_defense-evasion/T1027.003_steganography/SKILL.md"
+  },
+  {
+    "id": "T1027.004_compile-after-delivery",
+    "title": "T1027.004 compile-after-delivery",
+    "path": "TA0005_defense-evasion/T1027.004_compile-after-delivery/SKILL.md"
+  },
+  {
+    "id": "T1027.005_indicator-removal-from-tools",
+    "title": "T1027.005 indicator-removal-from-tools",
+    "path": "TA0005_defense-evasion/T1027.005_indicator-removal-from-tools/SKILL.md"
+  },
+  {
+    "id": "T1027.006_html-smuggling",
+    "title": "T1027.006 html-smuggling",
+    "path": "TA0005_defense-evasion/T1027.006_html-smuggling/SKILL.md"
+  },
+  {
+    "id": "T1027.007_dynamic-api-resolution",
+    "title": "T1027.007 dynamic-api-resolution",
+    "path": "TA0005_defense-evasion/T1027.007_dynamic-api-resolution/SKILL.md"
+  },
+  {
+    "id": "T1027.008_stripped-payloads",
+    "title": "T1027.008 stripped-payloads",
+    "path": "TA0005_defense-evasion/T1027.008_stripped-payloads/SKILL.md"
+  },
+  {
+    "id": "T1027.009_embedded-payloads",
+    "title": "T1027.009 embedded-payloads",
+    "path": "TA0005_defense-evasion/T1027.009_embedded-payloads/SKILL.md"
+  },
+  {
+    "id": "T1027.010_command-obfuscation",
+    "title": "T1027.010 command-obfuscation",
+    "path": "TA0005_defense-evasion/T1027.010_command-obfuscation/SKILL.md"
+  },
+  {
+    "id": "T1027.011_fileless-storage",
+    "title": "T1027.011 fileless-storage",
+    "path": "TA0005_defense-evasion/T1027.011_fileless-storage/SKILL.md"
+  },
+  {
+    "id": "T1027.012_lnk-icon-smuggling",
+    "title": "T1027.012 lnk-icon-smuggling",
+    "path": "TA0005_defense-evasion/T1027.012_lnk-icon-smuggling/SKILL.md"
+  },
+  {
+    "id": "T1027.013_encryptedencoded-file",
+    "title": "T1027.013 encryptedencoded-file",
+    "path": "TA0005_defense-evasion/T1027.013_encryptedencoded-file/SKILL.md"
+  },
+  {
+    "id": "T1027.014_polymorphic-code",
+    "title": "T1027.014 polymorphic-code",
+    "path": "TA0005_defense-evasion/T1027.014_polymorphic-code/SKILL.md"
+  },
+  {
+    "id": "T1027.015_compression",
+    "title": "T1027.015 compression",
+    "path": "TA0005_defense-evasion/T1027.015_compression/SKILL.md"
+  },
+  {
+    "id": "T1027.016_junk-code-insertion",
+    "title": "T1027.016 junk-code-insertion",
+    "path": "TA0005_defense-evasion/T1027.016_junk-code-insertion/SKILL.md"
+  },
+  {
+    "id": "T1027.017_svg-smuggling",
+    "title": "T1027.017 svg-smuggling",
+    "path": "TA0005_defense-evasion/T1027.017_svg-smuggling/SKILL.md"
+  },
+  {
+    "id": "T1027_obfuscated-files-or-information",
+    "title": "T1027 obfuscated-files-or-information",
+    "path": "TA0005_defense-evasion/T1027_obfuscated-files-or-information/SKILL.md"
+  },
+  {
+    "id": "T1036.001_invalid-code-signature",
+    "title": "T1036.001 invalid-code-signature",
+    "path": "TA0005_defense-evasion/T1036.001_invalid-code-signature/SKILL.md"
+  },
+  {
+    "id": "T1036.002_right-to-left-override",
+    "title": "T1036.002 right-to-left-override",
+    "path": "TA0005_defense-evasion/T1036.002_right-to-left-override/SKILL.md"
+  },
+  {
+    "id": "T1036.003_rename-legitimate-utilities",
+    "title": "T1036.003 rename-legitimate-utilities",
+    "path": "TA0005_defense-evasion/T1036.003_rename-legitimate-utilities/SKILL.md"
+  },
+  {
+    "id": "T1036.004_masquerade-task-or-service",
+    "title": "T1036.004 masquerade-task-or-service",
+    "path": "TA0005_defense-evasion/T1036.004_masquerade-task-or-service/SKILL.md"
+  },
+  {
+    "id": "T1036.006_space-after-filename",
+    "title": "T1036.006 space-after-filename",
+    "path": "TA0005_defense-evasion/T1036.006_space-after-filename/SKILL.md"
+  },
+  {
+    "id": "T1036.007_double-file-extension",
+    "title": "T1036.007 double-file-extension",
+    "path": "TA0005_defense-evasion/T1036.007_double-file-extension/SKILL.md"
+  },
+  {
+    "id": "T1036.008_masquerade-file-type",
+    "title": "T1036.008 masquerade-file-type",
+    "path": "TA0005_defense-evasion/T1036.008_masquerade-file-type/SKILL.md"
+  },
+  {
+    "id": "T1036.009_break-process-trees",
+    "title": "T1036.009 break-process-trees",
+    "path": "TA0005_defense-evasion/T1036.009_break-process-trees/SKILL.md"
+  },
+  {
+    "id": "T1036.010_masquerade-account-name",
+    "title": "T1036.010 masquerade-account-name",
+    "path": "TA0005_defense-evasion/T1036.010_masquerade-account-name/SKILL.md"
+  },
+  {
+    "id": "T1036.011_overwrite-process-arguments",
+    "title": "T1036.011 overwrite-process-arguments",
+    "path": "TA0005_defense-evasion/T1036.011_overwrite-process-arguments/SKILL.md"
+  },
+  {
+    "id": "T1036.012_browser-fingerprint",
+    "title": "T1036.012 browser-fingerprint",
+    "path": "TA0005_defense-evasion/T1036.012_browser-fingerprint/SKILL.md"
+  },
+  {
+    "id": "T1036_masquerading",
+    "title": "T1036 masquerading",
+    "path": "TA0005_defense-evasion/T1036_masquerading/SKILL.md"
+  },
+  {
+    "id": "T1055.001_dynamic-link-library-injection",
+    "title": "T1055.001 dynamic-link-library-injection",
+    "path": "TA0005_defense-evasion/T1055.001_dynamic-link-library-injection/SKILL.md"
+  },
+  {
+    "id": "T1055.002_portable-executable-injection",
+    "title": "T1055.002 portable-executable-injection",
+    "path": "TA0005_defense-evasion/T1055.002_portable-executable-injection/SKILL.md"
+  },
+  {
+    "id": "T1055.003_thread-execution-hijacking",
+    "title": "T1055.003 thread-execution-hijacking",
+    "path": "TA0005_defense-evasion/T1055.003_thread-execution-hijacking/SKILL.md"
+  },
+  {
+    "id": "T1055.004_asynchronous-procedure-call",
+    "title": "T1055.004 asynchronous-procedure-call",
+    "path": "TA0005_defense-evasion/T1055.004_asynchronous-procedure-call/SKILL.md"
+  },
+  {
+    "id": "T1055.005_thread-local-storage",
+    "title": "T1055.005 thread-local-storage",
+    "path": "TA0005_defense-evasion/T1055.005_thread-local-storage/SKILL.md"
+  },
+  {
+    "id": "T1055.008_ptrace-system-calls",
+    "title": "T1055.008 ptrace-system-calls",
+    "path": "TA0005_defense-evasion/T1055.008_ptrace-system-calls/SKILL.md"
+  },
+  {
+    "id": "T1055.009_proc-memory",
+    "title": "T1055.009 proc-memory",
+    "path": "TA0005_defense-evasion/T1055.009_proc-memory/SKILL.md"
+  },
+  {
+    "id": "T1055.011_extra-window-memory-injection",
+    "title": "T1055.011 extra-window-memory-injection",
+    "path": "TA0005_defense-evasion/T1055.011_extra-window-memory-injection/SKILL.md"
+  },
+  {
+    "id": "T1055.012_process-hollowing",
+    "title": "T1055.012 process-hollowing",
+    "path": "TA0005_defense-evasion/T1055.012_process-hollowing/SKILL.md"
+  },
+  {
+    "id": "T1055.013_process-doppelgnging",
+    "title": "T1055.013 process-doppelgnging",
+    "path": "TA0005_defense-evasion/T1055.013_process-doppelgnging/SKILL.md"
+  },
+  {
+    "id": "T1055.014_vdso-hijacking",
+    "title": "T1055.014 vdso-hijacking",
+    "path": "TA0005_defense-evasion/T1055.014_vdso-hijacking/SKILL.md"
+  },
+  {
+    "id": "T1055.015_listplanting",
+    "title": "T1055.015 listplanting",
+    "path": "TA0005_defense-evasion/T1055.015_listplanting/SKILL.md"
+  },
+  {
+    "id": "T1055_process-injection",
+    "title": "T1055 process-injection",
+    "path": "TA0005_defense-evasion/T1055_process-injection/SKILL.md"
+  },
+  {
+    "id": "T1070.001_clear-windows-event-logs",
+    "title": "T1070.001 clear-windows-event-logs",
+    "path": "TA0005_defense-evasion/T1070.001_clear-windows-event-logs/SKILL.md"
+  },
+  {
+    "id": "T1070.002_clear-linux-or-mac-system-logs",
+    "title": "T1070.002 clear-linux-or-mac-system-logs",
+    "path": "TA0005_defense-evasion/T1070.002_clear-linux-or-mac-system-logs/SKILL.md"
+  },
+  {
+    "id": "T1070.003_clear-command-history",
+    "title": "T1070.003 clear-command-history",
+    "path": "TA0005_defense-evasion/T1070.003_clear-command-history/SKILL.md"
+  },
+  {
+    "id": "T1070.004_file-deletion",
+    "title": "T1070.004 file-deletion",
+    "path": "TA0005_defense-evasion/T1070.004_file-deletion/SKILL.md"
+  },
+  {
+    "id": "T1070.006_timestomp",
+    "title": "T1070.006 timestomp",
+    "path": "TA0005_defense-evasion/T1070.006_timestomp/SKILL.md"
+  },
+  {
+    "id": "T1070.008_clear-mailbox-data",
+    "title": "T1070.008 clear-mailbox-data",
+    "path": "TA0005_defense-evasion/T1070.008_clear-mailbox-data/SKILL.md"
+  },
+  {
+    "id": "T1070.009_clear-persistence",
+    "title": "T1070.009 clear-persistence",
+    "path": "TA0005_defense-evasion/T1070.009_clear-persistence/SKILL.md"
+  },
+  {
+    "id": "T1070.010_relocate-malware",
+    "title": "T1070.010 relocate-malware",
+    "path": "TA0005_defense-evasion/T1070.010_relocate-malware/SKILL.md"
+  },
+  {
+    "id": "T1070_indicator-removal",
+    "title": "T1070 indicator-removal",
+    "path": "TA0005_defense-evasion/T1070_indicator-removal/SKILL.md"
+  },
+  {
+    "id": "T1078.001_default-accounts",
+    "title": "T1078.001 default-accounts",
+    "path": "TA0005_defense-evasion/T1078.001_default-accounts/SKILL.md"
+  },
+  {
+    "id": "T1078.002_domain-accounts",
+    "title": "T1078.002 domain-accounts",
+    "path": "TA0005_defense-evasion/T1078.002_domain-accounts/SKILL.md"
+  },
+  {
+    "id": "T1078.003_local-accounts",
+    "title": "T1078.003 local-accounts",
+    "path": "TA0005_defense-evasion/T1078.003_local-accounts/SKILL.md"
+  },
+  {
+    "id": "T1078.004_cloud-accounts",
+    "title": "T1078.004 cloud-accounts",
+    "path": "TA0005_defense-evasion/T1078.004_cloud-accounts/SKILL.md"
+  },
+  {
+    "id": "T1078_valid-accounts",
+    "title": "T1078 valid-accounts",
+    "path": "TA0005_defense-evasion/T1078_valid-accounts/SKILL.md"
+  },
+  {
+    "id": "T1112_modify-registry",
+    "title": "T1112 modify-registry",
+    "path": "TA0005_defense-evasion/T1112_modify-registry/SKILL.md"
+  },
+  {
+    "id": "T1127.001_msbuild",
+    "title": "T1127.001 msbuild",
+    "path": "TA0005_defense-evasion/T1127.001_msbuild/SKILL.md"
+  },
+  {
+    "id": "T1127.002_clickonce",
+    "title": "T1127.002 clickonce",
+    "path": "TA0005_defense-evasion/T1127.002_clickonce/SKILL.md"
+  },
+  {
+    "id": "T1127.003_jamplus",
+    "title": "T1127.003 jamplus",
+    "path": "TA0005_defense-evasion/T1127.003_jamplus/SKILL.md"
+  },
+  {
+    "id": "T1134.001_token-impersonationtheft",
+    "title": "T1134.001 token-impersonationtheft",
+    "path": "TA0005_defense-evasion/T1134.001_token-impersonationtheft/SKILL.md"
+  },
+  {
+    "id": "T1134.002_create-process-with-token",
+    "title": "T1134.002 create-process-with-token",
+    "path": "TA0005_defense-evasion/T1134.002_create-process-with-token/SKILL.md"
+  },
+  {
+    "id": "T1134.003_make-and-impersonate-token",
+    "title": "T1134.003 make-and-impersonate-token",
+    "path": "TA0005_defense-evasion/T1134.003_make-and-impersonate-token/SKILL.md"
+  },
+  {
+    "id": "T1134.004_parent-pid-spoofing",
+    "title": "T1134.004 parent-pid-spoofing",
+    "path": "TA0005_defense-evasion/T1134.004_parent-pid-spoofing/SKILL.md"
+  },
+  {
+    "id": "T1134.005_sid-history-injection",
+    "title": "T1134.005 sid-history-injection",
+    "path": "TA0005_defense-evasion/T1134.005_sid-history-injection/SKILL.md"
+  },
+  {
+    "id": "T1134_access-token-manipulation",
+    "title": "T1134 access-token-manipulation",
+    "path": "TA0005_defense-evasion/T1134_access-token-manipulation/SKILL.md"
+  },
+  {
+    "id": "T1197_bits-jobs",
+    "title": "T1197 bits-jobs",
+    "path": "TA0005_defense-evasion/T1197_bits-jobs/SKILL.md"
+  },
+  {
+    "id": "T1202_indirect-command-execution",
+    "title": "T1202 indirect-command-execution",
+    "path": "TA0005_defense-evasion/T1202_indirect-command-execution/SKILL.md"
+  },
+  {
+    "id": "T1205.001_port-knocking",
+    "title": "T1205.001 port-knocking",
+    "path": "TA0005_defense-evasion/T1205.001_port-knocking/SKILL.md"
+  },
+  {
+    "id": "T1205.002_socket-filters",
+    "title": "T1205.002 socket-filters",
+    "path": "TA0005_defense-evasion/T1205.002_socket-filters/SKILL.md"
+  },
+  {
+    "id": "T1205_traffic-signaling",
+    "title": "T1205 traffic-signaling",
+    "path": "TA0005_defense-evasion/T1205_traffic-signaling/SKILL.md"
+  },
+  {
+    "id": "T1207_rogue-domain-controller",
+    "title": "T1207 rogue-domain-controller",
+    "path": "TA0005_defense-evasion/T1207_rogue-domain-controller/SKILL.md"
+  },
+  {
+    "id": "T1211_exploitation-for-defense-evasion",
+    "title": "T1211 exploitation-for-defense-evasion",
+    "path": "TA0005_defense-evasion/T1211_exploitation-for-defense-evasion/SKILL.md"
+  },
+  {
+    "id": "T1216.001_pubprn",
+    "title": "T1216.001 pubprn",
+    "path": "TA0005_defense-evasion/T1216.001_pubprn/SKILL.md"
+  },
+  {
+    "id": "T1216.002_syncappvpublishingserver",
+    "title": "T1216.002 syncappvpublishingserver",
+    "path": "TA0005_defense-evasion/T1216.002_syncappvpublishingserver/SKILL.md"
+  },
+  {
+    "id": "T1216_system-script-proxy-execution",
+    "title": "T1216 system-script-proxy-execution",
+    "path": "TA0005_defense-evasion/T1216_system-script-proxy-execution/SKILL.md"
+  },
+  {
+    "id": "T1218.001_compiled-html-file",
+    "title": "T1218.001 compiled-html-file",
+    "path": "TA0005_defense-evasion/T1218.001_compiled-html-file/SKILL.md"
+  },
+  {
+    "id": "T1218.002_control-panel",
+    "title": "T1218.002 control-panel",
+    "path": "TA0005_defense-evasion/T1218.002_control-panel/SKILL.md"
+  },
+  {
+    "id": "T1218.003_cmstp",
+    "title": "T1218.003 cmstp",
+    "path": "TA0005_defense-evasion/T1218.003_cmstp/SKILL.md"
+  },
+  {
+    "id": "T1218.004_installutil",
+    "title": "T1218.004 installutil",
+    "path": "TA0005_defense-evasion/T1218.004_installutil/SKILL.md"
+  },
+  {
+    "id": "T1218.005_mshta",
+    "title": "T1218.005 mshta",
+    "path": "TA0005_defense-evasion/T1218.005_mshta/SKILL.md"
+  },
+  {
+    "id": "T1218.007_msiexec",
+    "title": "T1218.007 msiexec",
+    "path": "TA0005_defense-evasion/T1218.007_msiexec/SKILL.md"
+  },
+  {
+    "id": "T1218.008_odbcconf",
+    "title": "T1218.008 odbcconf",
+    "path": "TA0005_defense-evasion/T1218.008_odbcconf/SKILL.md"
+  },
+  {
+    "id": "T1218.009_regsvcsregasm",
+    "title": "T1218.009 regsvcsregasm",
+    "path": "TA0005_defense-evasion/T1218.009_regsvcsregasm/SKILL.md"
+  },
+  {
+    "id": "T1218.010_regsvr32",
+    "title": "T1218.010 regsvr32",
+    "path": "TA0005_defense-evasion/T1218.010_regsvr32/SKILL.md"
+  },
+  {
+    "id": "T1218.011_rundll32",
+    "title": "T1218.011 rundll32",
+    "path": "TA0005_defense-evasion/T1218.011_rundll32/SKILL.md"
+  },
+  {
+    "id": "T1218.012_verclsid",
+    "title": "T1218.012 verclsid",
+    "path": "TA0005_defense-evasion/T1218.012_verclsid/SKILL.md"
+  },
+  {
+    "id": "T1218.013_mavinject",
+    "title": "T1218.013 mavinject",
+    "path": "TA0005_defense-evasion/T1218.013_mavinject/SKILL.md"
+  },
+  {
+    "id": "T1218.014_mmc",
+    "title": "T1218.014 mmc",
+    "path": "TA0005_defense-evasion/T1218.014_mmc/SKILL.md"
+  },
+  {
+    "id": "T1218.015_electron-applications",
+    "title": "T1218.015 electron-applications",
+    "path": "TA0005_defense-evasion/T1218.015_electron-applications/SKILL.md"
+  },
+  {
+    "id": "T1218_system-binary-proxy-execution",
+    "title": "T1218 system-binary-proxy-execution",
+    "path": "TA0005_defense-evasion/T1218_system-binary-proxy-execution/SKILL.md"
+  },
+  {
+    "id": "T1220_xsl-script-processing",
+    "title": "T1220 xsl-script-processing",
+    "path": "TA0005_defense-evasion/T1220_xsl-script-processing/SKILL.md"
+  },
+  {
+    "id": "T1221_template-injection",
+    "title": "T1221 template-injection",
+    "path": "TA0005_defense-evasion/T1221_template-injection/SKILL.md"
+  },
+  {
+    "id": "T1480.001_environmental-keying",
+    "title": "T1480.001 environmental-keying",
+    "path": "TA0005_defense-evasion/T1480.001_environmental-keying/SKILL.md"
+  },
+  {
+    "id": "T1480.002_mutual-exclusion",
+    "title": "T1480.002 mutual-exclusion",
+    "path": "TA0005_defense-evasion/T1480.002_mutual-exclusion/SKILL.md"
+  },
+  {
+    "id": "T1480_execution-guardrails",
+    "title": "T1480 execution-guardrails",
+    "path": "TA0005_defense-evasion/T1480_execution-guardrails/SKILL.md"
+  },
+  {
+    "id": "T1484.001_group-policy-modification",
+    "title": "T1484.001 group-policy-modification",
+    "path": "TA0005_defense-evasion/T1484.001_group-policy-modification/SKILL.md"
+  },
+  {
+    "id": "T1484.002_trust-modification",
+    "title": "T1484.002 trust-modification",
+    "path": "TA0005_defense-evasion/T1484.002_trust-modification/SKILL.md"
+  },
+  {
+    "id": "T1497.001_system-checks",
+    "title": "T1497.001 system-checks",
+    "path": "TA0005_defense-evasion/T1497.001_system-checks/SKILL.md"
+  },
+  {
+    "id": "T1497.002_user-activity-based-checks",
+    "title": "T1497.002 user-activity-based-checks",
+    "path": "TA0005_defense-evasion/T1497.002_user-activity-based-checks/SKILL.md"
+  },
+  {
+    "id": "T1497.003_time-based-checks",
+    "title": "T1497.003 time-based-checks",
+    "path": "TA0005_defense-evasion/T1497.003_time-based-checks/SKILL.md"
+  },
+  {
+    "id": "T1497_virtualizationsandbox-evasion",
+    "title": "T1497 virtualizationsandbox-evasion",
+    "path": "TA0005_defense-evasion/T1497_virtualizationsandbox-evasion/SKILL.md"
+  },
+  {
+    "id": "T1535_unusedunsupported-cloud-regions",
+    "title": "T1535 unusedunsupported-cloud-regions",
+    "path": "TA0005_defense-evasion/T1535_unusedunsupported-cloud-regions/SKILL.md"
+  },
+  {
+    "id": "T1542.004_rommonkit",
+    "title": "T1542.004 rommonkit",
+    "path": "TA0005_defense-evasion/T1542.004_rommonkit/SKILL.md"
+  },
+  {
+    "id": "T1542.005_tftp-boot",
+    "title": "T1542.005 tftp-boot",
+    "path": "TA0005_defense-evasion/T1542.005_tftp-boot/SKILL.md"
+  },
+  {
+    "id": "T1542_pre-os-boot",
+    "title": "T1542 pre-os-boot",
+    "path": "TA0005_defense-evasion/T1542_pre-os-boot/SKILL.md"
+  },
+  {
+    "id": "T1548.006_tcc-manipulation",
+    "title": "T1548.006 tcc-manipulation",
+    "path": "TA0005_defense-evasion/T1548.006_tcc-manipulation/SKILL.md"
+  },
+  {
+    "id": "T1550.001_application-access-token",
+    "title": "T1550.001 application-access-token",
+    "path": "TA0005_defense-evasion/T1550.001_application-access-token/SKILL.md"
+  },
+  {
+    "id": "T1550.002_pass-the-hash",
+    "title": "T1550.002 pass-the-hash",
+    "path": "TA0005_defense-evasion/T1550.002_pass-the-hash/SKILL.md"
+  },
+  {
+    "id": "T1550.003_pass-the-ticket",
+    "title": "T1550.003 pass-the-ticket",
+    "path": "TA0005_defense-evasion/T1550.003_pass-the-ticket/SKILL.md"
+  },
+  {
+    "id": "T1550.004_web-session-cookie",
+    "title": "T1550.004 web-session-cookie",
+    "path": "TA0005_defense-evasion/T1550.004_web-session-cookie/SKILL.md"
+  },
+  {
+    "id": "T1553.001_gatekeeper-bypass",
+    "title": "T1553.001 gatekeeper-bypass",
+    "path": "TA0005_defense-evasion/T1553.001_gatekeeper-bypass/SKILL.md"
+  },
+  {
+    "id": "T1553.002_code-signing",
+    "title": "T1553.002 code-signing",
+    "path": "TA0005_defense-evasion/T1553.002_code-signing/SKILL.md"
+  },
+  {
+    "id": "T1553.004_install-root-certificate",
+    "title": "T1553.004 install-root-certificate",
+    "path": "TA0005_defense-evasion/T1553.004_install-root-certificate/SKILL.md"
+  },
+  {
+    "id": "T1553.005_mark-of-the-web-bypass",
+    "title": "T1553.005 mark-of-the-web-bypass",
+    "path": "TA0005_defense-evasion/T1553.005_mark-of-the-web-bypass/SKILL.md"
+  },
+  {
+    "id": "T1553_subvert-trust-controls",
+    "title": "T1553 subvert-trust-controls",
+    "path": "TA0005_defense-evasion/T1553_subvert-trust-controls/SKILL.md"
+  },
+  {
+    "id": "T1562.001_disable-or-modify-tools",
+    "title": "T1562.001 disable-or-modify-tools",
+    "path": "TA0005_defense-evasion/T1562.001_disable-or-modify-tools/SKILL.md"
+  },
+  {
+    "id": "T1562.002_disable-windows-event-logging",
+    "title": "T1562.002 disable-windows-event-logging",
+    "path": "TA0005_defense-evasion/T1562.002_disable-windows-event-logging/SKILL.md"
+  },
+  {
+    "id": "T1562.003_impair-command-history-logging",
+    "title": "T1562.003 impair-command-history-logging",
+    "path": "TA0005_defense-evasion/T1562.003_impair-command-history-logging/SKILL.md"
+  },
+  {
+    "id": "T1562.006_indicator-blocking",
+    "title": "T1562.006 indicator-blocking",
+    "path": "TA0005_defense-evasion/T1562.006_indicator-blocking/SKILL.md"
+  },
+  {
+    "id": "T1562.008_disable-or-modify-cloud-logs",
+    "title": "T1562.008 disable-or-modify-cloud-logs",
+    "path": "TA0005_defense-evasion/T1562.008_disable-or-modify-cloud-logs/SKILL.md"
+  },
+  {
+    "id": "T1562.009_safe-mode-boot",
+    "title": "T1562.009 safe-mode-boot",
+    "path": "TA0005_defense-evasion/T1562.009_safe-mode-boot/SKILL.md"
+  },
+  {
+    "id": "T1562.010_downgrade-attack",
+    "title": "T1562.010 downgrade-attack",
+    "path": "TA0005_defense-evasion/T1562.010_downgrade-attack/SKILL.md"
+  },
+  {
+    "id": "T1562.011_spoof-security-alerting",
+    "title": "T1562.011 spoof-security-alerting",
+    "path": "TA0005_defense-evasion/T1562.011_spoof-security-alerting/SKILL.md"
+  },
+  {
+    "id": "T1562_impair-defenses",
+    "title": "T1562 impair-defenses",
+    "path": "TA0005_defense-evasion/T1562_impair-defenses/SKILL.md"
+  },
+  {
+    "id": "T1564.001_hidden-files-and-directories",
+    "title": "T1564.001 hidden-files-and-directories",
+    "path": "TA0005_defense-evasion/T1564.001_hidden-files-and-directories/SKILL.md"
+  },
+  {
+    "id": "T1564.002_hidden-users",
+    "title": "T1564.002 hidden-users",
+    "path": "TA0005_defense-evasion/T1564.002_hidden-users/SKILL.md"
+  },
+  {
+    "id": "T1564.003_hidden-window",
+    "title": "T1564.003 hidden-window",
+    "path": "TA0005_defense-evasion/T1564.003_hidden-window/SKILL.md"
+  },
+  {
+    "id": "T1564.004_ntfs-file-attributes",
+    "title": "T1564.004 ntfs-file-attributes",
+    "path": "TA0005_defense-evasion/T1564.004_ntfs-file-attributes/SKILL.md"
+  },
+  {
+    "id": "T1564.005_hidden-file-system",
+    "title": "T1564.005 hidden-file-system",
+    "path": "TA0005_defense-evasion/T1564.005_hidden-file-system/SKILL.md"
+  },
+  {
+    "id": "T1564.006_run-virtual-instance",
+    "title": "T1564.006 run-virtual-instance",
+    "path": "TA0005_defense-evasion/T1564.006_run-virtual-instance/SKILL.md"
+  },
+  {
+    "id": "T1564.007_vba-stomping",
+    "title": "T1564.007 vba-stomping",
+    "path": "TA0005_defense-evasion/T1564.007_vba-stomping/SKILL.md"
+  },
+  {
+    "id": "T1564.008_email-hiding-rules",
+    "title": "T1564.008 email-hiding-rules",
+    "path": "TA0005_defense-evasion/T1564.008_email-hiding-rules/SKILL.md"
+  },
+  {
+    "id": "T1564.009_resource-forking",
+    "title": "T1564.009 resource-forking",
+    "path": "TA0005_defense-evasion/T1564.009_resource-forking/SKILL.md"
+  },
+  {
+    "id": "T1564.010_process-argument-spoofing",
+    "title": "T1564.010 process-argument-spoofing",
+    "path": "TA0005_defense-evasion/T1564.010_process-argument-spoofing/SKILL.md"
+  },
+  {
+    "id": "T1564.011_ignore-process-interrupts",
+    "title": "T1564.011 ignore-process-interrupts",
+    "path": "TA0005_defense-evasion/T1564.011_ignore-process-interrupts/SKILL.md"
+  },
+  {
+    "id": "T1564.012_filepath-exclusions",
+    "title": "T1564.012 filepath-exclusions",
+    "path": "TA0005_defense-evasion/T1564.012_filepath-exclusions/SKILL.md"
+  },
+  {
+    "id": "T1564.013_bind-mounts",
+    "title": "T1564.013 bind-mounts",
+    "path": "TA0005_defense-evasion/T1564.013_bind-mounts/SKILL.md"
+  },
+  {
+    "id": "T1564.014_extended-attributes",
+    "title": "T1564.014 extended-attributes",
+    "path": "TA0005_defense-evasion/T1564.014_extended-attributes/SKILL.md"
+  },
+  {
+    "id": "T1564_hide-artifacts",
+    "title": "T1564 hide-artifacts",
+    "path": "TA0005_defense-evasion/T1564_hide-artifacts/SKILL.md"
+  },
+  {
+    "id": "T1578.001_create-snapshot",
+    "title": "T1578.001 create-snapshot",
+    "path": "TA0005_defense-evasion/T1578.001_create-snapshot/SKILL.md"
+  },
+  {
+    "id": "T1578.002_create-cloud-instance",
+    "title": "T1578.002 create-cloud-instance",
+    "path": "TA0005_defense-evasion/T1578.002_create-cloud-instance/SKILL.md"
+  },
+  {
+    "id": "T1578.003_delete-cloud-instance",
+    "title": "T1578.003 delete-cloud-instance",
+    "path": "TA0005_defense-evasion/T1578.003_delete-cloud-instance/SKILL.md"
+  },
+  {
+    "id": "T1578.004_revert-cloud-instance",
+    "title": "T1578.004 revert-cloud-instance",
+    "path": "TA0005_defense-evasion/T1578.004_revert-cloud-instance/SKILL.md"
+  },
+  {
+    "id": "T1599_network-boundary-bridging",
+    "title": "T1599 network-boundary-bridging",
+    "path": "TA0005_defense-evasion/T1599_network-boundary-bridging/SKILL.md"
+  },
+  {
+    "id": "T1600.001_reduce-key-space",
+    "title": "T1600.001 reduce-key-space",
+    "path": "TA0005_defense-evasion/T1600.001_reduce-key-space/SKILL.md"
+  },
+  {
+    "id": "T1600.002_disable-crypto-hardware",
+    "title": "T1600.002 disable-crypto-hardware",
+    "path": "TA0005_defense-evasion/T1600.002_disable-crypto-hardware/SKILL.md"
+  },
+  {
+    "id": "T1600_weaken-encryption",
+    "title": "T1600 weaken-encryption",
+    "path": "TA0005_defense-evasion/T1600_weaken-encryption/SKILL.md"
+  },
+  {
+    "id": "T1601.001_patch-system-image",
+    "title": "T1601.001 patch-system-image",
+    "path": "TA0005_defense-evasion/T1601.001_patch-system-image/SKILL.md"
+  },
+  {
+    "id": "T1601.002_downgrade-system-image",
+    "title": "T1601.002 downgrade-system-image",
+    "path": "TA0005_defense-evasion/T1601.002_downgrade-system-image/SKILL.md"
+  },
+  {
+    "id": "T1601_modify-system-image",
+    "title": "T1601 modify-system-image",
+    "path": "TA0005_defense-evasion/T1601_modify-system-image/SKILL.md"
+  },
+  {
+    "id": "T1610_deploy-container",
+    "title": "T1610 deploy-container",
+    "path": "TA0005_defense-evasion/T1610_deploy-container/SKILL.md"
+  },
+  {
+    "id": "T1612_build-image-on-host",
+    "title": "T1612 build-image-on-host",
+    "path": "TA0005_defense-evasion/T1612_build-image-on-host/SKILL.md"
+  },
+  {
+    "id": "T1620_reflective-code-loading",
+    "title": "T1620 reflective-code-loading",
+    "path": "TA0005_defense-evasion/T1620_reflective-code-loading/SKILL.md"
+  },
+  {
+    "id": "T1622_debugger-evasion",
+    "title": "T1622 debugger-evasion",
+    "path": "TA0005_defense-evasion/T1622_debugger-evasion/SKILL.md"
+  },
+  {
+    "id": "T1647_plist-file-modification",
+    "title": "T1647 plist-file-modification",
+    "path": "TA0005_defense-evasion/T1647_plist-file-modification/SKILL.md"
+  },
+  {
+    "id": "T1656_impersonation",
+    "title": "T1656 impersonation",
+    "path": "TA0005_defense-evasion/T1656_impersonation/SKILL.md"
+  },
+  {
+    "id": "T1666_modify-cloud-resource-hierarchy",
+    "title": "T1666 modify-cloud-resource-hierarchy",
+    "path": "TA0005_defense-evasion/T1666_modify-cloud-resource-hierarchy/SKILL.md"
+  },
+  {
+    "id": "T1672_email-spoofing",
+    "title": "T1672 email-spoofing",
+    "path": "TA0005_defense-evasion/T1672_email-spoofing/SKILL.md"
+  },
+  {
+    "id": "T1678_delay-execution",
+    "title": "T1678 delay-execution",
+    "path": "TA0005_defense-evasion/T1678_delay-execution/SKILL.md"
+  },
+  {
+    "id": "T1679_selective-exclusion",
+    "title": "T1679 selective-exclusion",
+    "path": "TA0005_defense-evasion/T1679_selective-exclusion/SKILL.md"
+  },
+  {
+    "id": "t1036-005-match-legitimate-resource",
+    "title": "t1036-005-match-legitimate-resource",
+    "path": "TA0005_defense-evasion/t1036-005-match-legitimate-resource/SKILL.md"
+  },
+  {
+    "id": "t1070-005-network-share-connection",
+    "title": "t1070-005-network-share-connection",
+    "path": "TA0005_defense-evasion/t1070-005-network-share-connection/SKILL.md"
+  },
+  {
+    "id": "t1070-007-clear-network-connection",
+    "title": "t1070-007-clear-network-connection",
+    "path": "TA0005_defense-evasion/t1070-007-clear-network-connection/SKILL.md"
+  },
+  {
+    "id": "t1127-trusted-developer-utilities-proxy",
+    "title": "t1127-trusted-developer-utilities-proxy",
+    "path": "TA0005_defense-evasion/t1127-trusted-developer-utilities-proxy/SKILL.md"
+  },
+  {
+    "id": "t1140-deobfuscatedecode-files-or",
+    "title": "t1140-deobfuscatedecode-files-or",
+    "path": "TA0005_defense-evasion/t1140-deobfuscatedecode-files-or/SKILL.md"
+  },
+  {
+    "id": "t1222-001-windows-file-and-directory",
+    "title": "t1222-001-windows-file-and-directory",
+    "path": "TA0005_defense-evasion/t1222-001-windows-file-and-directory/SKILL.md"
+  },
+  {
+    "id": "t1222-002-linux-and-mac-file-and",
+    "title": "t1222-002-linux-and-mac-file-and",
+    "path": "TA0005_defense-evasion/t1222-002-linux-and-mac-file-and/SKILL.md"
+  },
+  {
+    "id": "t1222-file-and-directory-permissions",
+    "title": "t1222-file-and-directory-permissions",
+    "path": "TA0005_defense-evasion/t1222-file-and-directory-permissions/SKILL.md"
+  },
+  {
+    "id": "t1484-domain-or-tenant-policy",
+    "title": "t1484-domain-or-tenant-policy",
+    "path": "TA0005_defense-evasion/t1484-domain-or-tenant-policy/SKILL.md"
+  },
+  {
+    "id": "t1550-use-alternate-authentication",
+    "title": "t1550-use-alternate-authentication",
+    "path": "TA0005_defense-evasion/t1550-use-alternate-authentication/SKILL.md"
+  },
+  {
+    "id": "t1553-003-sip-and-trust-provider",
+    "title": "t1553-003-sip-and-trust-provider",
+    "path": "TA0005_defense-evasion/t1553-003-sip-and-trust-provider/SKILL.md"
+  },
+  {
+    "id": "t1553-006-code-signing-policy",
+    "title": "t1553-006-code-signing-policy",
+    "path": "TA0005_defense-evasion/t1553-006-code-signing-policy/SKILL.md"
+  },
+  {
+    "id": "t1562-004-disable-or-modify-system",
+    "title": "t1562-004-disable-or-modify-system",
+    "path": "TA0005_defense-evasion/t1562-004-disable-or-modify-system/SKILL.md"
+  },
+  {
+    "id": "t1562-007-disable-or-modify-cloud",
+    "title": "t1562-007-disable-or-modify-cloud",
+    "path": "TA0005_defense-evasion/t1562-007-disable-or-modify-cloud/SKILL.md"
+  },
+  {
+    "id": "t1562-012-disable-or-modify-linux-audit",
+    "title": "t1562-012-disable-or-modify-linux-audit",
+    "path": "TA0005_defense-evasion/t1562-012-disable-or-modify-linux-audit/SKILL.md"
+  },
+  {
+    "id": "t1562-013-disable-or-modify-network",
+    "title": "t1562-013-disable-or-modify-network",
+    "path": "TA0005_defense-evasion/t1562-013-disable-or-modify-network/SKILL.md"
+  },
+  {
+    "id": "t1578-005-modify-cloud-compute",
+    "title": "t1578-005-modify-cloud-compute",
+    "path": "TA0005_defense-evasion/t1578-005-modify-cloud-compute/SKILL.md"
+  },
+  {
+    "id": "t1578-modify-cloud-compute",
+    "title": "t1578-modify-cloud-compute",
+    "path": "TA0005_defense-evasion/t1578-modify-cloud-compute/SKILL.md"
+  },
+  {
+    "id": "t1599-001-network-address-translation",
+    "title": "t1599-001-network-address-translation",
+    "path": "TA0005_defense-evasion/t1599-001-network-address-translation/SKILL.md"
+  },
+  {
+    "id": "T1003.001_lsass-memory",
+    "title": "T1003.001 lsass-memory",
+    "path": "TA0006_credential-access/T1003.001_lsass-memory/SKILL.md"
+  },
+  {
+    "id": "T1003.002_security-account-manager",
+    "title": "T1003.002 security-account-manager",
+    "path": "TA0006_credential-access/T1003.002_security-account-manager/SKILL.md"
+  },
+  {
+    "id": "T1003.003_ntds",
+    "title": "T1003.003 ntds",
+    "path": "TA0006_credential-access/T1003.003_ntds/SKILL.md"
+  },
+  {
+    "id": "T1003.004_lsa-secrets",
+    "title": "T1003.004 lsa-secrets",
+    "path": "TA0006_credential-access/T1003.004_lsa-secrets/SKILL.md"
+  },
+  {
+    "id": "T1003.005_cached-domain-credentials",
+    "title": "T1003.005 cached-domain-credentials",
+    "path": "TA0006_credential-access/T1003.005_cached-domain-credentials/SKILL.md"
+  },
+  {
+    "id": "T1003.006_dcsync",
+    "title": "T1003.006 dcsync",
+    "path": "TA0006_credential-access/T1003.006_dcsync/SKILL.md"
+  },
+  {
+    "id": "T1003.007_proc-filesystem",
+    "title": "T1003.007 proc-filesystem",
+    "path": "TA0006_credential-access/T1003.007_proc-filesystem/SKILL.md"
+  },
+  {
+    "id": "T1003.008_etcpasswd-and-etcshadow",
+    "title": "T1003.008 etcpasswd-and-etcshadow",
+    "path": "TA0006_credential-access/T1003.008_etcpasswd-and-etcshadow/SKILL.md"
+  },
+  {
+    "id": "T1003_os-credential-dumping",
+    "title": "T1003 os-credential-dumping",
+    "path": "TA0006_credential-access/T1003_os-credential-dumping/SKILL.md"
+  },
+  {
+    "id": "T1040_network-sniffing",
+    "title": "T1040 network-sniffing",
+    "path": "TA0006_credential-access/T1040_network-sniffing/SKILL.md"
+  },
+  {
+    "id": "T1110.001_password-guessing",
+    "title": "T1110.001 password-guessing",
+    "path": "TA0006_credential-access/T1110.001_password-guessing/SKILL.md"
+  },
+  {
+    "id": "T1110.002_password-cracking",
+    "title": "T1110.002 password-cracking",
+    "path": "TA0006_credential-access/T1110.002_password-cracking/SKILL.md"
+  },
+  {
+    "id": "T1110.003_password-spraying",
+    "title": "T1110.003 password-spraying",
+    "path": "TA0006_credential-access/T1110.003_password-spraying/SKILL.md"
+  },
+  {
+    "id": "T1110.004_credential-stuffing",
+    "title": "T1110.004 credential-stuffing",
+    "path": "TA0006_credential-access/T1110.004_credential-stuffing/SKILL.md"
+  },
+  {
+    "id": "T1110_brute-force",
+    "title": "T1110 brute-force",
+    "path": "TA0006_credential-access/T1110_brute-force/SKILL.md"
+  },
+  {
+    "id": "T1187_forced-authentication",
+    "title": "T1187 forced-authentication",
+    "path": "TA0006_credential-access/T1187_forced-authentication/SKILL.md"
+  },
+  {
+    "id": "T1212_exploitation-for-credential-access",
+    "title": "T1212 exploitation-for-credential-access",
+    "path": "TA0006_credential-access/T1212_exploitation-for-credential-access/SKILL.md"
+  },
+  {
+    "id": "T1528_steal-application-access-token",
+    "title": "T1528 steal-application-access-token",
+    "path": "TA0006_credential-access/T1528_steal-application-access-token/SKILL.md"
+  },
+  {
+    "id": "T1539_steal-web-session-cookie",
+    "title": "T1539 steal-web-session-cookie",
+    "path": "TA0006_credential-access/T1539_steal-web-session-cookie/SKILL.md"
+  },
+  {
+    "id": "T1552.001_credentials-in-files",
+    "title": "T1552.001 credentials-in-files",
+    "path": "TA0006_credential-access/T1552.001_credentials-in-files/SKILL.md"
+  },
+  {
+    "id": "T1552.002_credentials-in-registry",
+    "title": "T1552.002 credentials-in-registry",
+    "path": "TA0006_credential-access/T1552.002_credentials-in-registry/SKILL.md"
+  },
+  {
+    "id": "T1552.003_shell-history",
+    "title": "T1552.003 shell-history",
+    "path": "TA0006_credential-access/T1552.003_shell-history/SKILL.md"
+  },
+  {
+    "id": "T1552.004_private-keys",
+    "title": "T1552.004 private-keys",
+    "path": "TA0006_credential-access/T1552.004_private-keys/SKILL.md"
+  },
+  {
+    "id": "T1552.005_cloud-instance-metadata-api",
+    "title": "T1552.005 cloud-instance-metadata-api",
+    "path": "TA0006_credential-access/T1552.005_cloud-instance-metadata-api/SKILL.md"
+  },
+  {
+    "id": "T1552.006_group-policy-preferences",
+    "title": "T1552.006 group-policy-preferences",
+    "path": "TA0006_credential-access/T1552.006_group-policy-preferences/SKILL.md"
+  },
+  {
+    "id": "T1552.007_container-api",
+    "title": "T1552.007 container-api",
+    "path": "TA0006_credential-access/T1552.007_container-api/SKILL.md"
+  },
+  {
+    "id": "T1552.008_chat-messages",
+    "title": "T1552.008 chat-messages",
+    "path": "TA0006_credential-access/T1552.008_chat-messages/SKILL.md"
+  },
+  {
+    "id": "T1552_unsecured-credentials",
+    "title": "T1552 unsecured-credentials",
+    "path": "TA0006_credential-access/T1552_unsecured-credentials/SKILL.md"
+  },
+  {
+    "id": "T1555.001_keychain",
+    "title": "T1555.001 keychain",
+    "path": "TA0006_credential-access/T1555.001_keychain/SKILL.md"
+  },
+  {
+    "id": "T1555.002_securityd-memory",
+    "title": "T1555.002 securityd-memory",
+    "path": "TA0006_credential-access/T1555.002_securityd-memory/SKILL.md"
+  },
+  {
+    "id": "T1555.003_credentials-from-web-browsers",
+    "title": "T1555.003 credentials-from-web-browsers",
+    "path": "TA0006_credential-access/T1555.003_credentials-from-web-browsers/SKILL.md"
+  },
+  {
+    "id": "T1555.004_windows-credential-manager",
+    "title": "T1555.004 windows-credential-manager",
+    "path": "TA0006_credential-access/T1555.004_windows-credential-manager/SKILL.md"
+  },
+  {
+    "id": "T1555.005_password-managers",
+    "title": "T1555.005 password-managers",
+    "path": "TA0006_credential-access/T1555.005_password-managers/SKILL.md"
+  },
+  {
+    "id": "T1555_credentials-from-password-stores",
+    "title": "T1555 credentials-from-password-stores",
+    "path": "TA0006_credential-access/T1555_credentials-from-password-stores/SKILL.md"
+  },
+  {
+    "id": "T1556.002_password-filter-dll",
+    "title": "T1556.002 password-filter-dll",
+    "path": "TA0006_credential-access/T1556.002_password-filter-dll/SKILL.md"
+  },
+  {
+    "id": "T1556.004_network-device-authentication",
+    "title": "T1556.004 network-device-authentication",
+    "path": "TA0006_credential-access/T1556.004_network-device-authentication/SKILL.md"
+  },
+  {
+    "id": "T1556.005_reversible-encryption",
+    "title": "T1556.005 reversible-encryption",
+    "path": "TA0006_credential-access/T1556.005_reversible-encryption/SKILL.md"
+  },
+  {
+    "id": "T1556.006_multi-factor-authentication",
+    "title": "T1556.006 multi-factor-authentication",
+    "path": "TA0006_credential-access/T1556.006_multi-factor-authentication/SKILL.md"
+  },
+  {
+    "id": "T1556.007_hybrid-identity",
+    "title": "T1556.007 hybrid-identity",
+    "path": "TA0006_credential-access/T1556.007_hybrid-identity/SKILL.md"
+  },
+  {
+    "id": "T1556.008_network-provider-dll",
+    "title": "T1556.008 network-provider-dll",
+    "path": "TA0006_credential-access/T1556.008_network-provider-dll/SKILL.md"
+  },
+  {
+    "id": "T1556.009_conditional-access-policies",
+    "title": "T1556.009 conditional-access-policies",
+    "path": "TA0006_credential-access/T1556.009_conditional-access-policies/SKILL.md"
+  },
+  {
+    "id": "T1556_modify-authentication-process",
+    "title": "T1556 modify-authentication-process",
+    "path": "TA0006_credential-access/T1556_modify-authentication-process/SKILL.md"
+  },
+  {
+    "id": "T1557.002_arp-cache-poisoning",
+    "title": "T1557.002 arp-cache-poisoning",
+    "path": "TA0006_credential-access/T1557.002_arp-cache-poisoning/SKILL.md"
+  },
+  {
+    "id": "T1557.003_dhcp-spoofing",
+    "title": "T1557.003 dhcp-spoofing",
+    "path": "TA0006_credential-access/T1557.003_dhcp-spoofing/SKILL.md"
+  },
+  {
+    "id": "T1557.004_evil-twin",
+    "title": "T1557.004 evil-twin",
+    "path": "TA0006_credential-access/T1557.004_evil-twin/SKILL.md"
+  },
+  {
+    "id": "T1557_adversary-in-the-middle",
+    "title": "T1557 adversary-in-the-middle",
+    "path": "TA0006_credential-access/T1557_adversary-in-the-middle/SKILL.md"
+  },
+  {
+    "id": "T1558.001_golden-ticket",
+    "title": "T1558.001 golden-ticket",
+    "path": "TA0006_credential-access/T1558.001_golden-ticket/SKILL.md"
+  },
+  {
+    "id": "T1558.002_silver-ticket",
+    "title": "T1558.002 silver-ticket",
+    "path": "TA0006_credential-access/T1558.002_silver-ticket/SKILL.md"
+  },
+  {
+    "id": "T1558.003_kerberoasting",
+    "title": "T1558.003 kerberoasting",
+    "path": "TA0006_credential-access/T1558.003_kerberoasting/SKILL.md"
+  },
+  {
+    "id": "T1558.004_as-rep-roasting",
+    "title": "T1558.004 as-rep-roasting",
+    "path": "TA0006_credential-access/T1558.004_as-rep-roasting/SKILL.md"
+  },
+  {
+    "id": "T1558.005_ccache-files",
+    "title": "T1558.005 ccache-files",
+    "path": "TA0006_credential-access/T1558.005_ccache-files/SKILL.md"
+  },
+  {
+    "id": "T1558_steal-or-forge-kerberos-tickets",
+    "title": "T1558 steal-or-forge-kerberos-tickets",
+    "path": "TA0006_credential-access/T1558_steal-or-forge-kerberos-tickets/SKILL.md"
+  },
+  {
+    "id": "T1606.001_web-cookies",
+    "title": "T1606.001 web-cookies",
+    "path": "TA0006_credential-access/T1606.001_web-cookies/SKILL.md"
+  },
+  {
+    "id": "T1606.002_saml-tokens",
+    "title": "T1606.002 saml-tokens",
+    "path": "TA0006_credential-access/T1606.002_saml-tokens/SKILL.md"
+  },
+  {
+    "id": "T1606_forge-web-credentials",
+    "title": "T1606 forge-web-credentials",
+    "path": "TA0006_credential-access/T1606_forge-web-credentials/SKILL.md"
+  },
+  {
+    "id": "t1111-multi-factor-authentication",
+    "title": "t1111-multi-factor-authentication",
+    "path": "TA0006_credential-access/t1111-multi-factor-authentication/SKILL.md"
+  },
+  {
+    "id": "t1555-006-cloud-secrets-management",
+    "title": "t1555-006-cloud-secrets-management",
+    "path": "TA0006_credential-access/t1555-006-cloud-secrets-management/SKILL.md"
+  },
+  {
+    "id": "t1556-001-domain-controller",
+    "title": "t1556-001-domain-controller",
+    "path": "TA0006_credential-access/t1556-001-domain-controller/SKILL.md"
+  },
+  {
+    "id": "t1556-003-pluggable-authentication",
+    "title": "t1556-003-pluggable-authentication",
+    "path": "TA0006_credential-access/t1556-003-pluggable-authentication/SKILL.md"
+  },
+  {
+    "id": "t1557-001-llmnrnbt-ns-poisoning-and-smb",
+    "title": "t1557-001-llmnrnbt-ns-poisoning-and-smb",
+    "path": "TA0006_credential-access/t1557-001-llmnrnbt-ns-poisoning-and-smb/SKILL.md"
+  },
+  {
+    "id": "t1621-multi-factor-authentication",
+    "title": "t1621-multi-factor-authentication",
+    "path": "TA0006_credential-access/t1621-multi-factor-authentication/SKILL.md"
+  },
+  {
+    "id": "t1649-steal-or-forge-authentication",
+    "title": "t1649-steal-or-forge-authentication",
+    "path": "TA0006_credential-access/t1649-steal-or-forge-authentication/SKILL.md"
+  },
+  {
+    "id": "T1007_system-service-discovery",
+    "title": "T1007 system-service-discovery",
+    "path": "TA0007_discovery/T1007_system-service-discovery/SKILL.md"
+  },
+  {
+    "id": "T1010_application-window-discovery",
+    "title": "T1010 application-window-discovery",
+    "path": "TA0007_discovery/T1010_application-window-discovery/SKILL.md"
+  },
+  {
+    "id": "T1012_query-registry",
+    "title": "T1012 query-registry",
+    "path": "TA0007_discovery/T1012_query-registry/SKILL.md"
+  },
+  {
+    "id": "T1016.001_internet-connection-discovery",
+    "title": "T1016.001 internet-connection-discovery",
+    "path": "TA0007_discovery/T1016.001_internet-connection-discovery/SKILL.md"
+  },
+  {
+    "id": "T1016.002_wi-fi-discovery",
+    "title": "T1016.002 wi-fi-discovery",
+    "path": "TA0007_discovery/T1016.002_wi-fi-discovery/SKILL.md"
+  },
+  {
+    "id": "T1018_remote-system-discovery",
+    "title": "T1018 remote-system-discovery",
+    "path": "TA0007_discovery/T1018_remote-system-discovery/SKILL.md"
+  },
+  {
+    "id": "T1033_system-owneruser-discovery",
+    "title": "T1033 system-owneruser-discovery",
+    "path": "TA0007_discovery/T1033_system-owneruser-discovery/SKILL.md"
+  },
+  {
+    "id": "T1046_network-service-discovery",
+    "title": "T1046 network-service-discovery",
+    "path": "TA0007_discovery/T1046_network-service-discovery/SKILL.md"
+  },
+  {
+    "id": "T1057_process-discovery",
+    "title": "T1057 process-discovery",
+    "path": "TA0007_discovery/T1057_process-discovery/SKILL.md"
+  },
+  {
+    "id": "T1069.001_local-groups",
+    "title": "T1069.001 local-groups",
+    "path": "TA0007_discovery/T1069.001_local-groups/SKILL.md"
+  },
+  {
+    "id": "T1069.002_domain-groups",
+    "title": "T1069.002 domain-groups",
+    "path": "TA0007_discovery/T1069.002_domain-groups/SKILL.md"
+  },
+  {
+    "id": "T1069.003_cloud-groups",
+    "title": "T1069.003 cloud-groups",
+    "path": "TA0007_discovery/T1069.003_cloud-groups/SKILL.md"
+  },
+  {
+    "id": "T1069_permission-groups-discovery",
+    "title": "T1069 permission-groups-discovery",
+    "path": "TA0007_discovery/T1069_permission-groups-discovery/SKILL.md"
+  },
+  {
+    "id": "T1082_system-information-discovery",
+    "title": "T1082 system-information-discovery",
+    "path": "TA0007_discovery/T1082_system-information-discovery/SKILL.md"
+  },
+  {
+    "id": "T1083_file-and-directory-discovery",
+    "title": "T1083 file-and-directory-discovery",
+    "path": "TA0007_discovery/T1083_file-and-directory-discovery/SKILL.md"
+  },
+  {
+    "id": "T1087.001_local-account",
+    "title": "T1087.001 local-account",
+    "path": "TA0007_discovery/T1087.001_local-account/SKILL.md"
+  },
+  {
+    "id": "T1087.002_domain-account",
+    "title": "T1087.002 domain-account",
+    "path": "TA0007_discovery/T1087.002_domain-account/SKILL.md"
+  },
+  {
+    "id": "T1087.003_email-account",
+    "title": "T1087.003 email-account",
+    "path": "TA0007_discovery/T1087.003_email-account/SKILL.md"
+  },
+  {
+    "id": "T1087.004_cloud-account",
+    "title": "T1087.004 cloud-account",
+    "path": "TA0007_discovery/T1087.004_cloud-account/SKILL.md"
+  },
+  {
+    "id": "T1087_account-discovery",
+    "title": "T1087 account-discovery",
+    "path": "TA0007_discovery/T1087_account-discovery/SKILL.md"
+  },
+  {
+    "id": "T1120_peripheral-device-discovery",
+    "title": "T1120 peripheral-device-discovery",
+    "path": "TA0007_discovery/T1120_peripheral-device-discovery/SKILL.md"
+  },
+  {
+    "id": "T1124_system-time-discovery",
+    "title": "T1124 system-time-discovery",
+    "path": "TA0007_discovery/T1124_system-time-discovery/SKILL.md"
+  },
+  {
+    "id": "T1135_network-share-discovery",
+    "title": "T1135 network-share-discovery",
+    "path": "TA0007_discovery/T1135_network-share-discovery/SKILL.md"
+  },
+  {
+    "id": "T1201_password-policy-discovery",
+    "title": "T1201 password-policy-discovery",
+    "path": "TA0007_discovery/T1201_password-policy-discovery/SKILL.md"
+  },
+  {
+    "id": "T1217_browser-information-discovery",
+    "title": "T1217 browser-information-discovery",
+    "path": "TA0007_discovery/T1217_browser-information-discovery/SKILL.md"
+  },
+  {
+    "id": "T1482_domain-trust-discovery",
+    "title": "T1482 domain-trust-discovery",
+    "path": "TA0007_discovery/T1482_domain-trust-discovery/SKILL.md"
+  },
+  {
+    "id": "T1518.001_security-software-discovery",
+    "title": "T1518.001 security-software-discovery",
+    "path": "TA0007_discovery/T1518.001_security-software-discovery/SKILL.md"
+  },
+  {
+    "id": "T1518.002_backup-software-discovery",
+    "title": "T1518.002 backup-software-discovery",
+    "path": "TA0007_discovery/T1518.002_backup-software-discovery/SKILL.md"
+  },
+  {
+    "id": "T1518_software-discovery",
+    "title": "T1518 software-discovery",
+    "path": "TA0007_discovery/T1518_software-discovery/SKILL.md"
+  },
+  {
+    "id": "T1526_cloud-service-discovery",
+    "title": "T1526 cloud-service-discovery",
+    "path": "TA0007_discovery/T1526_cloud-service-discovery/SKILL.md"
+  },
+  {
+    "id": "T1538_cloud-service-dashboard",
+    "title": "T1538 cloud-service-dashboard",
+    "path": "TA0007_discovery/T1538_cloud-service-dashboard/SKILL.md"
+  },
+  {
+    "id": "T1580_cloud-infrastructure-discovery",
+    "title": "T1580 cloud-infrastructure-discovery",
+    "path": "TA0007_discovery/T1580_cloud-infrastructure-discovery/SKILL.md"
+  },
+  {
+    "id": "T1613_container-and-resource-discovery",
+    "title": "T1613 container-and-resource-discovery",
+    "path": "TA0007_discovery/T1613_container-and-resource-discovery/SKILL.md"
+  },
+  {
+    "id": "T1614.001_system-language-discovery",
+    "title": "T1614.001 system-language-discovery",
+    "path": "TA0007_discovery/T1614.001_system-language-discovery/SKILL.md"
+  },
+  {
+    "id": "T1614_system-location-discovery",
+    "title": "T1614 system-location-discovery",
+    "path": "TA0007_discovery/T1614_system-location-discovery/SKILL.md"
+  },
+  {
+    "id": "T1615_group-policy-discovery",
+    "title": "T1615 group-policy-discovery",
+    "path": "TA0007_discovery/T1615_group-policy-discovery/SKILL.md"
+  },
+  {
+    "id": "T1619_cloud-storage-object-discovery",
+    "title": "T1619 cloud-storage-object-discovery",
+    "path": "TA0007_discovery/T1619_cloud-storage-object-discovery/SKILL.md"
+  },
+  {
+    "id": "T1652_device-driver-discovery",
+    "title": "T1652 device-driver-discovery",
+    "path": "TA0007_discovery/T1652_device-driver-discovery/SKILL.md"
+  },
+  {
+    "id": "T1654_log-enumeration",
+    "title": "T1654 log-enumeration",
+    "path": "TA0007_discovery/T1654_log-enumeration/SKILL.md"
+  },
+  {
+    "id": "T1673_virtual-machine-discovery",
+    "title": "T1673 virtual-machine-discovery",
+    "path": "TA0007_discovery/T1673_virtual-machine-discovery/SKILL.md"
+  },
+  {
+    "id": "T1680_local-storage-discovery",
+    "title": "T1680 local-storage-discovery",
+    "path": "TA0007_discovery/T1680_local-storage-discovery/SKILL.md"
+  },
+  {
+    "id": "t1016-system-network-configuration",
+    "title": "t1016-system-network-configuration",
+    "path": "TA0007_discovery/t1016-system-network-configuration/SKILL.md"
+  },
+  {
+    "id": "t1049-system-network-connections",
+    "title": "t1049-system-network-connections",
+    "path": "TA0007_discovery/t1049-system-network-connections/SKILL.md"
+  },
+  {
+    "id": "T1021.001_remote-desktop-protocol",
+    "title": "T1021.001 remote-desktop-protocol",
+    "path": "TA0008_lateral-movement/T1021.001_remote-desktop-protocol/SKILL.md"
+  },
+  {
+    "id": "T1021.002_smbwindows-admin-shares",
+    "title": "T1021.002 smbwindows-admin-shares",
+    "path": "TA0008_lateral-movement/T1021.002_smbwindows-admin-shares/SKILL.md"
+  },
+  {
+    "id": "T1021.004_ssh",
+    "title": "T1021.004 ssh",
+    "path": "TA0008_lateral-movement/T1021.004_ssh/SKILL.md"
+  },
+  {
+    "id": "T1021.005_vnc",
+    "title": "T1021.005 vnc",
+    "path": "TA0008_lateral-movement/T1021.005_vnc/SKILL.md"
+  },
+  {
+    "id": "T1021.006_windows-remote-management",
+    "title": "T1021.006 windows-remote-management",
+    "path": "TA0008_lateral-movement/T1021.006_windows-remote-management/SKILL.md"
+  },
+  {
+    "id": "T1021.007_cloud-services",
+    "title": "T1021.007 cloud-services",
+    "path": "TA0008_lateral-movement/T1021.007_cloud-services/SKILL.md"
+  },
+  {
+    "id": "T1021.008_direct-cloud-vm-connections",
+    "title": "T1021.008 direct-cloud-vm-connections",
+    "path": "TA0008_lateral-movement/T1021.008_direct-cloud-vm-connections/SKILL.md"
+  },
+  {
+    "id": "T1021_remote-services",
+    "title": "T1021 remote-services",
+    "path": "TA0008_lateral-movement/T1021_remote-services/SKILL.md"
+  },
+  {
+    "id": "T1080_taint-shared-content",
+    "title": "T1080 taint-shared-content",
+    "path": "TA0008_lateral-movement/T1080_taint-shared-content/SKILL.md"
+  },
+  {
+    "id": "T1210_exploitation-of-remote-services",
+    "title": "T1210 exploitation-of-remote-services",
+    "path": "TA0008_lateral-movement/T1210_exploitation-of-remote-services/SKILL.md"
+  },
+  {
+    "id": "T1534_internal-spearphishing",
+    "title": "T1534 internal-spearphishing",
+    "path": "TA0008_lateral-movement/T1534_internal-spearphishing/SKILL.md"
+  },
+  {
+    "id": "T1563.001_ssh-hijacking",
+    "title": "T1563.001 ssh-hijacking",
+    "path": "TA0008_lateral-movement/T1563.001_ssh-hijacking/SKILL.md"
+  },
+  {
+    "id": "T1563.002_rdp-hijacking",
+    "title": "T1563.002 rdp-hijacking",
+    "path": "TA0008_lateral-movement/T1563.002_rdp-hijacking/SKILL.md"
+  },
+  {
+    "id": "T1563_remote-service-session-hijacking",
+    "title": "T1563 remote-service-session-hijacking",
+    "path": "TA0008_lateral-movement/T1563_remote-service-session-hijacking/SKILL.md"
+  },
+  {
+    "id": "T1570_lateral-tool-transfer",
+    "title": "T1570 lateral-tool-transfer",
+    "path": "TA0008_lateral-movement/T1570_lateral-tool-transfer/SKILL.md"
+  },
+  {
+    "id": "t1021-003-distributed-component-object",
+    "title": "t1021-003-distributed-component-object",
+    "path": "TA0008_lateral-movement/t1021-003-distributed-component-object/SKILL.md"
+  },
+  {
+    "id": "t1091-replication-through-removable",
+    "title": "t1091-replication-through-removable",
+    "path": "TA0008_lateral-movement/t1091-replication-through-removable/SKILL.md"
+  },
+  {
+    "id": "T1005_data-from-local-system",
+    "title": "T1005 data-from-local-system",
+    "path": "TA0009_collection/T1005_data-from-local-system/SKILL.md"
+  },
+  {
+    "id": "T1025_data-from-removable-media",
+    "title": "T1025 data-from-removable-media",
+    "path": "TA0009_collection/T1025_data-from-removable-media/SKILL.md"
+  },
+  {
+    "id": "T1039_data-from-network-shared-drive",
+    "title": "T1039 data-from-network-shared-drive",
+    "path": "TA0009_collection/T1039_data-from-network-shared-drive/SKILL.md"
+  },
+  {
+    "id": "T1056.001_keylogging",
+    "title": "T1056.001 keylogging",
+    "path": "TA0009_collection/T1056.001_keylogging/SKILL.md"
+  },
+  {
+    "id": "T1056.002_gui-input-capture",
+    "title": "T1056.002 gui-input-capture",
+    "path": "TA0009_collection/T1056.002_gui-input-capture/SKILL.md"
+  },
+  {
+    "id": "T1056.003_web-portal-capture",
+    "title": "T1056.003 web-portal-capture",
+    "path": "TA0009_collection/T1056.003_web-portal-capture/SKILL.md"
+  },
+  {
+    "id": "T1056.004_credential-api-hooking",
+    "title": "T1056.004 credential-api-hooking",
+    "path": "TA0009_collection/T1056.004_credential-api-hooking/SKILL.md"
+  },
+  {
+    "id": "T1056_input-capture",
+    "title": "T1056 input-capture",
+    "path": "TA0009_collection/T1056_input-capture/SKILL.md"
+  },
+  {
+    "id": "T1074.001_local-data-staging",
+    "title": "T1074.001 local-data-staging",
+    "path": "TA0009_collection/T1074.001_local-data-staging/SKILL.md"
+  },
+  {
+    "id": "T1074.002_remote-data-staging",
+    "title": "T1074.002 remote-data-staging",
+    "path": "TA0009_collection/T1074.002_remote-data-staging/SKILL.md"
+  },
+  {
+    "id": "T1074_data-staged",
+    "title": "T1074 data-staged",
+    "path": "TA0009_collection/T1074_data-staged/SKILL.md"
+  },
+  {
+    "id": "T1113_screen-capture",
+    "title": "T1113 screen-capture",
+    "path": "TA0009_collection/T1113_screen-capture/SKILL.md"
+  },
+  {
+    "id": "T1114.001_local-email-collection",
+    "title": "T1114.001 local-email-collection",
+    "path": "TA0009_collection/T1114.001_local-email-collection/SKILL.md"
+  },
+  {
+    "id": "T1114.002_remote-email-collection",
+    "title": "T1114.002 remote-email-collection",
+    "path": "TA0009_collection/T1114.002_remote-email-collection/SKILL.md"
+  },
+  {
+    "id": "T1114.003_email-forwarding-rule",
+    "title": "T1114.003 email-forwarding-rule",
+    "path": "TA0009_collection/T1114.003_email-forwarding-rule/SKILL.md"
+  },
+  {
+    "id": "T1114_email-collection",
+    "title": "T1114 email-collection",
+    "path": "TA0009_collection/T1114_email-collection/SKILL.md"
+  },
+  {
+    "id": "T1115_clipboard-data",
+    "title": "T1115 clipboard-data",
+    "path": "TA0009_collection/T1115_clipboard-data/SKILL.md"
+  },
+  {
+    "id": "T1119_automated-collection",
+    "title": "T1119 automated-collection",
+    "path": "TA0009_collection/T1119_automated-collection/SKILL.md"
+  },
+  {
+    "id": "T1123_audio-capture",
+    "title": "T1123 audio-capture",
+    "path": "TA0009_collection/T1123_audio-capture/SKILL.md"
+  },
+  {
+    "id": "T1125_video-capture",
+    "title": "T1125 video-capture",
+    "path": "TA0009_collection/T1125_video-capture/SKILL.md"
+  },
+  {
+    "id": "T1185_browser-session-hijacking",
+    "title": "T1185 browser-session-hijacking",
+    "path": "TA0009_collection/T1185_browser-session-hijacking/SKILL.md"
+  },
+  {
+    "id": "T1213.001_confluence",
+    "title": "T1213.001 confluence",
+    "path": "TA0009_collection/T1213.001_confluence/SKILL.md"
+  },
+  {
+    "id": "T1213.002_sharepoint",
+    "title": "T1213.002 sharepoint",
+    "path": "TA0009_collection/T1213.002_sharepoint/SKILL.md"
+  },
+  {
+    "id": "T1213.003_code-repositories",
+    "title": "T1213.003 code-repositories",
+    "path": "TA0009_collection/T1213.003_code-repositories/SKILL.md"
+  },
+  {
+    "id": "T1213.005_messaging-applications",
+    "title": "T1213.005 messaging-applications",
+    "path": "TA0009_collection/T1213.005_messaging-applications/SKILL.md"
+  },
+  {
+    "id": "T1213.006_databases",
+    "title": "T1213.006 databases",
+    "path": "TA0009_collection/T1213.006_databases/SKILL.md"
+  },
+  {
+    "id": "T1213_data-from-information-repositories",
+    "title": "T1213 data-from-information-repositories",
+    "path": "TA0009_collection/T1213_data-from-information-repositories/SKILL.md"
+  },
+  {
+    "id": "T1530_data-from-cloud-storage",
+    "title": "T1530 data-from-cloud-storage",
+    "path": "TA0009_collection/T1530_data-from-cloud-storage/SKILL.md"
+  },
+  {
+    "id": "T1560.001_archive-via-utility",
+    "title": "T1560.001 archive-via-utility",
+    "path": "TA0009_collection/T1560.001_archive-via-utility/SKILL.md"
+  },
+  {
+    "id": "T1560.002_archive-via-library",
+    "title": "T1560.002 archive-via-library",
+    "path": "TA0009_collection/T1560.002_archive-via-library/SKILL.md"
+  },
+  {
+    "id": "T1560.003_archive-via-custom-method",
+    "title": "T1560.003 archive-via-custom-method",
+    "path": "TA0009_collection/T1560.003_archive-via-custom-method/SKILL.md"
+  },
+  {
+    "id": "T1560_archive-collected-data",
+    "title": "T1560 archive-collected-data",
+    "path": "TA0009_collection/T1560_archive-collected-data/SKILL.md"
+  },
+  {
+    "id": "T1602.001_snmp-mib-dump",
+    "title": "T1602.001 snmp-mib-dump",
+    "path": "TA0009_collection/T1602.001_snmp-mib-dump/SKILL.md"
+  },
+  {
+    "id": "T1602_data-from-configuration-repository",
+    "title": "T1602 data-from-configuration-repository",
+    "path": "TA0009_collection/T1602_data-from-configuration-repository/SKILL.md"
+  },
+  {
+    "id": "t1213-004-customer-relationship",
+    "title": "t1213-004-customer-relationship",
+    "path": "TA0009_collection/t1213-004-customer-relationship/SKILL.md"
+  },
+  {
+    "id": "t1602-002-network-device-configuration",
+    "title": "t1602-002-network-device-configuration",
+    "path": "TA0009_collection/t1602-002-network-device-configuration/SKILL.md"
+  },
+  {
+    "id": "T1011.001_exfiltration-over-bluetooth",
+    "title": "T1011.001 exfiltration-over-bluetooth",
+    "path": "TA0010_exfiltration/T1011.001_exfiltration-over-bluetooth/SKILL.md"
+  },
+  {
+    "id": "T1020.001_traffic-duplication",
+    "title": "T1020.001 traffic-duplication",
+    "path": "TA0010_exfiltration/T1020.001_traffic-duplication/SKILL.md"
+  },
+  {
+    "id": "T1020_automated-exfiltration",
+    "title": "T1020 automated-exfiltration",
+    "path": "TA0010_exfiltration/T1020_automated-exfiltration/SKILL.md"
+  },
+  {
+    "id": "T1029_scheduled-transfer",
+    "title": "T1029 scheduled-transfer",
+    "path": "TA0010_exfiltration/T1029_scheduled-transfer/SKILL.md"
+  },
+  {
+    "id": "T1030_data-transfer-size-limits",
+    "title": "T1030 data-transfer-size-limits",
+    "path": "TA0010_exfiltration/T1030_data-transfer-size-limits/SKILL.md"
+  },
+  {
+    "id": "T1041_exfiltration-over-c2-channel",
+    "title": "T1041 exfiltration-over-c2-channel",
+    "path": "TA0010_exfiltration/T1041_exfiltration-over-c2-channel/SKILL.md"
+  },
+  {
+    "id": "T1052.001_exfiltration-over-usb",
+    "title": "T1052.001 exfiltration-over-usb",
+    "path": "TA0010_exfiltration/T1052.001_exfiltration-over-usb/SKILL.md"
+  },
+  {
+    "id": "T1052_exfiltration-over-physical-medium",
+    "title": "T1052 exfiltration-over-physical-medium",
+    "path": "TA0010_exfiltration/T1052_exfiltration-over-physical-medium/SKILL.md"
+  },
+  {
+    "id": "T1537_transfer-data-to-cloud-account",
+    "title": "T1537 transfer-data-to-cloud-account",
+    "path": "TA0010_exfiltration/T1537_transfer-data-to-cloud-account/SKILL.md"
+  },
+  {
+    "id": "T1567.002_exfiltration-to-cloud-storage",
+    "title": "T1567.002 exfiltration-to-cloud-storage",
+    "path": "TA0010_exfiltration/T1567.002_exfiltration-to-cloud-storage/SKILL.md"
+  },
+  {
+    "id": "T1567.004_exfiltration-over-webhook",
+    "title": "T1567.004 exfiltration-over-webhook",
+    "path": "TA0010_exfiltration/T1567.004_exfiltration-over-webhook/SKILL.md"
+  },
+  {
+    "id": "T1567_exfiltration-over-web-service",
+    "title": "T1567 exfiltration-over-web-service",
+    "path": "TA0010_exfiltration/T1567_exfiltration-over-web-service/SKILL.md"
+  },
+  {
+    "id": "t1011-exfiltration-over-other-network",
+    "title": "t1011-exfiltration-over-other-network",
+    "path": "TA0010_exfiltration/t1011-exfiltration-over-other-network/SKILL.md"
+  },
+  {
+    "id": "t1048-001-exfiltration-over-symmetric",
+    "title": "t1048-001-exfiltration-over-symmetric",
+    "path": "TA0010_exfiltration/t1048-001-exfiltration-over-symmetric/SKILL.md"
+  },
+  {
+    "id": "t1048-002-exfiltration-over-asymmetric",
+    "title": "t1048-002-exfiltration-over-asymmetric",
+    "path": "TA0010_exfiltration/t1048-002-exfiltration-over-asymmetric/SKILL.md"
+  },
+  {
+    "id": "t1048-003-exfiltration-over-unencrypted",
+    "title": "t1048-003-exfiltration-over-unencrypted",
+    "path": "TA0010_exfiltration/t1048-003-exfiltration-over-unencrypted/SKILL.md"
+  },
+  {
+    "id": "t1048-exfiltration-over-alternative",
+    "title": "t1048-exfiltration-over-alternative",
+    "path": "TA0010_exfiltration/t1048-exfiltration-over-alternative/SKILL.md"
+  },
+  {
+    "id": "t1567-001-exfiltration-to-code",
+    "title": "t1567-001-exfiltration-to-code",
+    "path": "TA0010_exfiltration/t1567-001-exfiltration-to-code/SKILL.md"
+  },
+  {
+    "id": "t1567-003-exfiltration-to-text-storage",
+    "title": "t1567-003-exfiltration-to-text-storage",
+    "path": "TA0010_exfiltration/t1567-003-exfiltration-to-text-storage/SKILL.md"
+  },
+  {
+    "id": "T1001.001_junk-data",
+    "title": "T1001.001 junk-data",
+    "path": "TA0011_command-and-control/T1001.001_junk-data/SKILL.md"
+  },
+  {
+    "id": "T1001.002_steganography",
+    "title": "T1001.002 steganography",
+    "path": "TA0011_command-and-control/T1001.002_steganography/SKILL.md"
+  },
+  {
+    "id": "T1001_data-obfuscation",
+    "title": "T1001 data-obfuscation",
+    "path": "TA0011_command-and-control/T1001_data-obfuscation/SKILL.md"
+  },
+  {
+    "id": "T1008_fallback-channels",
+    "title": "T1008 fallback-channels",
+    "path": "TA0011_command-and-control/T1008_fallback-channels/SKILL.md"
+  },
+  {
+    "id": "T1071.001_web-protocols",
+    "title": "T1071.001 web-protocols",
+    "path": "TA0011_command-and-control/T1071.001_web-protocols/SKILL.md"
+  },
+  {
+    "id": "T1071.002_file-transfer-protocols",
+    "title": "T1071.002 file-transfer-protocols",
+    "path": "TA0011_command-and-control/T1071.002_file-transfer-protocols/SKILL.md"
+  },
+  {
+    "id": "T1071.003_mail-protocols",
+    "title": "T1071.003 mail-protocols",
+    "path": "TA0011_command-and-control/T1071.003_mail-protocols/SKILL.md"
+  },
+  {
+    "id": "T1071.004_dns",
+    "title": "T1071.004 dns",
+    "path": "TA0011_command-and-control/T1071.004_dns/SKILL.md"
+  },
+  {
+    "id": "T1071.005_publishsubscribe-protocols",
+    "title": "T1071.005 publishsubscribe-protocols",
+    "path": "TA0011_command-and-control/T1071.005_publishsubscribe-protocols/SKILL.md"
+  },
+  {
+    "id": "T1071_application-layer-protocol",
+    "title": "T1071 application-layer-protocol",
+    "path": "TA0011_command-and-control/T1071_application-layer-protocol/SKILL.md"
+  },
+  {
+    "id": "T1090.001_internal-proxy",
+    "title": "T1090.001 internal-proxy",
+    "path": "TA0011_command-and-control/T1090.001_internal-proxy/SKILL.md"
+  },
+  {
+    "id": "T1090.002_external-proxy",
+    "title": "T1090.002 external-proxy",
+    "path": "TA0011_command-and-control/T1090.002_external-proxy/SKILL.md"
+  },
+  {
+    "id": "T1090.003_multi-hop-proxy",
+    "title": "T1090.003 multi-hop-proxy",
+    "path": "TA0011_command-and-control/T1090.003_multi-hop-proxy/SKILL.md"
+  },
+  {
+    "id": "T1090.004_domain-fronting",
+    "title": "T1090.004 domain-fronting",
+    "path": "TA0011_command-and-control/T1090.004_domain-fronting/SKILL.md"
+  },
+  {
+    "id": "T1090_proxy",
+    "title": "T1090 proxy",
+    "path": "TA0011_command-and-control/T1090_proxy/SKILL.md"
+  },
+  {
+    "id": "T1095_non-application-layer-protocol",
+    "title": "T1095 non-application-layer-protocol",
+    "path": "TA0011_command-and-control/T1095_non-application-layer-protocol/SKILL.md"
+  },
+  {
+    "id": "T1102.001_dead-drop-resolver",
+    "title": "T1102.001 dead-drop-resolver",
+    "path": "TA0011_command-and-control/T1102.001_dead-drop-resolver/SKILL.md"
+  },
+  {
+    "id": "T1102.002_bidirectional-communication",
+    "title": "T1102.002 bidirectional-communication",
+    "path": "TA0011_command-and-control/T1102.002_bidirectional-communication/SKILL.md"
+  },
+  {
+    "id": "T1102.003_one-way-communication",
+    "title": "T1102.003 one-way-communication",
+    "path": "TA0011_command-and-control/T1102.003_one-way-communication/SKILL.md"
+  },
+  {
+    "id": "T1102_web-service",
+    "title": "T1102 web-service",
+    "path": "TA0011_command-and-control/T1102_web-service/SKILL.md"
+  },
+  {
+    "id": "T1104_multi-stage-channels",
+    "title": "T1104 multi-stage-channels",
+    "path": "TA0011_command-and-control/T1104_multi-stage-channels/SKILL.md"
+  },
+  {
+    "id": "T1105_ingress-tool-transfer",
+    "title": "T1105 ingress-tool-transfer",
+    "path": "TA0011_command-and-control/T1105_ingress-tool-transfer/SKILL.md"
+  },
+  {
+    "id": "T1132.001_standard-encoding",
+    "title": "T1132.001 standard-encoding",
+    "path": "TA0011_command-and-control/T1132.001_standard-encoding/SKILL.md"
+  },
+  {
+    "id": "T1132.002_non-standard-encoding",
+    "title": "T1132.002 non-standard-encoding",
+    "path": "TA0011_command-and-control/T1132.002_non-standard-encoding/SKILL.md"
+  },
+  {
+    "id": "T1132_data-encoding",
+    "title": "T1132 data-encoding",
+    "path": "TA0011_command-and-control/T1132_data-encoding/SKILL.md"
+  },
+  {
+    "id": "T1219.001_ide-tunneling",
+    "title": "T1219.001 ide-tunneling",
+    "path": "TA0011_command-and-control/T1219.001_ide-tunneling/SKILL.md"
+  },
+  {
+    "id": "T1219.002_remote-desktop-software",
+    "title": "T1219.002 remote-desktop-software",
+    "path": "TA0011_command-and-control/T1219.002_remote-desktop-software/SKILL.md"
+  },
+  {
+    "id": "T1219.003_remote-access-hardware",
+    "title": "T1219.003 remote-access-hardware",
+    "path": "TA0011_command-and-control/T1219.003_remote-access-hardware/SKILL.md"
+  },
+  {
+    "id": "T1219_remote-access-tools",
+    "title": "T1219 remote-access-tools",
+    "path": "TA0011_command-and-control/T1219_remote-access-tools/SKILL.md"
+  },
+  {
+    "id": "T1568.001_fast-flux-dns",
+    "title": "T1568.001 fast-flux-dns",
+    "path": "TA0011_command-and-control/T1568.001_fast-flux-dns/SKILL.md"
+  },
+  {
+    "id": "T1568.002_domain-generation-algorithms",
+    "title": "T1568.002 domain-generation-algorithms",
+    "path": "TA0011_command-and-control/T1568.002_domain-generation-algorithms/SKILL.md"
+  },
+  {
+    "id": "T1568.003_dns-calculation",
+    "title": "T1568.003 dns-calculation",
+    "path": "TA0011_command-and-control/T1568.003_dns-calculation/SKILL.md"
+  },
+  {
+    "id": "T1568_dynamic-resolution",
+    "title": "T1568 dynamic-resolution",
+    "path": "TA0011_command-and-control/T1568_dynamic-resolution/SKILL.md"
+  },
+  {
+    "id": "T1571_non-standard-port",
+    "title": "T1571 non-standard-port",
+    "path": "TA0011_command-and-control/T1571_non-standard-port/SKILL.md"
+  },
+  {
+    "id": "T1572_protocol-tunneling",
+    "title": "T1572 protocol-tunneling",
+    "path": "TA0011_command-and-control/T1572_protocol-tunneling/SKILL.md"
+  },
+  {
+    "id": "T1573.001_symmetric-cryptography",
+    "title": "T1573.001 symmetric-cryptography",
+    "path": "TA0011_command-and-control/T1573.001_symmetric-cryptography/SKILL.md"
+  },
+  {
+    "id": "T1573.002_asymmetric-cryptography",
+    "title": "T1573.002 asymmetric-cryptography",
+    "path": "TA0011_command-and-control/T1573.002_asymmetric-cryptography/SKILL.md"
+  },
+  {
+    "id": "T1573_encrypted-channel",
+    "title": "T1573 encrypted-channel",
+    "path": "TA0011_command-and-control/T1573_encrypted-channel/SKILL.md"
+  },
+  {
+    "id": "T1665_hide-infrastructure",
+    "title": "T1665 hide-infrastructure",
+    "path": "TA0011_command-and-control/T1665_hide-infrastructure/SKILL.md"
+  },
+  {
+    "id": "t1001-003-protocol-or-service",
+    "title": "t1001-003-protocol-or-service",
+    "path": "TA0011_command-and-control/t1001-003-protocol-or-service/SKILL.md"
+  },
+  {
+    "id": "t1092-communication-through-removable",
+    "title": "t1092-communication-through-removable",
+    "path": "TA0011_command-and-control/t1092-communication-through-removable/SKILL.md"
+  },
+  {
+    "id": "T1485.001_lifecycle-triggered-deletion",
+    "title": "T1485.001 lifecycle-triggered-deletion",
+    "path": "TA0040_impact/T1485.001_lifecycle-triggered-deletion/SKILL.md"
+  },
+  {
+    "id": "T1485_data-destruction",
+    "title": "T1485 data-destruction",
+    "path": "TA0040_impact/T1485_data-destruction/SKILL.md"
+  },
+  {
+    "id": "T1486_data-encrypted-for-impact",
+    "title": "T1486 data-encrypted-for-impact",
+    "path": "TA0040_impact/T1486_data-encrypted-for-impact/SKILL.md"
+  },
+  {
+    "id": "T1489_service-stop",
+    "title": "T1489 service-stop",
+    "path": "TA0040_impact/T1489_service-stop/SKILL.md"
+  },
+  {
+    "id": "T1490_inhibit-system-recovery",
+    "title": "T1490 inhibit-system-recovery",
+    "path": "TA0040_impact/T1490_inhibit-system-recovery/SKILL.md"
+  },
+  {
+    "id": "T1491.001_internal-defacement",
+    "title": "T1491.001 internal-defacement",
+    "path": "TA0040_impact/T1491.001_internal-defacement/SKILL.md"
+  },
+  {
+    "id": "T1491.002_external-defacement",
+    "title": "T1491.002 external-defacement",
+    "path": "TA0040_impact/T1491.002_external-defacement/SKILL.md"
+  },
+  {
+    "id": "T1491_defacement",
+    "title": "T1491 defacement",
+    "path": "TA0040_impact/T1491_defacement/SKILL.md"
+  },
+  {
+    "id": "T1495_firmware-corruption",
+    "title": "T1495 firmware-corruption",
+    "path": "TA0040_impact/T1495_firmware-corruption/SKILL.md"
+  },
+  {
+    "id": "T1496.001_compute-hijacking",
+    "title": "T1496.001 compute-hijacking",
+    "path": "TA0040_impact/T1496.001_compute-hijacking/SKILL.md"
+  },
+  {
+    "id": "T1496.002_bandwidth-hijacking",
+    "title": "T1496.002 bandwidth-hijacking",
+    "path": "TA0040_impact/T1496.002_bandwidth-hijacking/SKILL.md"
+  },
+  {
+    "id": "T1496.003_sms-pumping",
+    "title": "T1496.003 sms-pumping",
+    "path": "TA0040_impact/T1496.003_sms-pumping/SKILL.md"
+  },
+  {
+    "id": "T1496.004_cloud-service-hijacking",
+    "title": "T1496.004 cloud-service-hijacking",
+    "path": "TA0040_impact/T1496.004_cloud-service-hijacking/SKILL.md"
+  },
+  {
+    "id": "T1496_resource-hijacking",
+    "title": "T1496 resource-hijacking",
+    "path": "TA0040_impact/T1496_resource-hijacking/SKILL.md"
+  },
+  {
+    "id": "T1498.001_direct-network-flood",
+    "title": "T1498.001 direct-network-flood",
+    "path": "TA0040_impact/T1498.001_direct-network-flood/SKILL.md"
+  },
+  {
+    "id": "T1498.002_reflection-amplification",
+    "title": "T1498.002 reflection-amplification",
+    "path": "TA0040_impact/T1498.002_reflection-amplification/SKILL.md"
+  },
+  {
+    "id": "T1498_network-denial-of-service",
+    "title": "T1498 network-denial-of-service",
+    "path": "TA0040_impact/T1498_network-denial-of-service/SKILL.md"
+  },
+  {
+    "id": "T1499.001_os-exhaustion-flood",
+    "title": "T1499.001 os-exhaustion-flood",
+    "path": "TA0040_impact/T1499.001_os-exhaustion-flood/SKILL.md"
+  },
+  {
+    "id": "T1499.002_service-exhaustion-flood",
+    "title": "T1499.002 service-exhaustion-flood",
+    "path": "TA0040_impact/T1499.002_service-exhaustion-flood/SKILL.md"
+  },
+  {
+    "id": "T1499.003_application-exhaustion-flood",
+    "title": "T1499.003 application-exhaustion-flood",
+    "path": "TA0040_impact/T1499.003_application-exhaustion-flood/SKILL.md"
+  },
+  {
+    "id": "T1499_endpoint-denial-of-service",
+    "title": "T1499 endpoint-denial-of-service",
+    "path": "TA0040_impact/T1499_endpoint-denial-of-service/SKILL.md"
+  },
+  {
+    "id": "T1529_system-shutdownreboot",
+    "title": "T1529 system-shutdownreboot",
+    "path": "TA0040_impact/T1529_system-shutdownreboot/SKILL.md"
+  },
+  {
+    "id": "T1531_account-access-removal",
+    "title": "T1531 account-access-removal",
+    "path": "TA0040_impact/T1531_account-access-removal/SKILL.md"
+  },
+  {
+    "id": "T1561.001_disk-content-wipe",
+    "title": "T1561.001 disk-content-wipe",
+    "path": "TA0040_impact/T1561.001_disk-content-wipe/SKILL.md"
+  },
+  {
+    "id": "T1561.002_disk-structure-wipe",
+    "title": "T1561.002 disk-structure-wipe",
+    "path": "TA0040_impact/T1561.002_disk-structure-wipe/SKILL.md"
+  },
+  {
+    "id": "T1561_disk-wipe",
+    "title": "T1561 disk-wipe",
+    "path": "TA0040_impact/T1561_disk-wipe/SKILL.md"
+  },
+  {
+    "id": "T1565.001_stored-data-manipulation",
+    "title": "T1565.001 stored-data-manipulation",
+    "path": "TA0040_impact/T1565.001_stored-data-manipulation/SKILL.md"
+  },
+  {
+    "id": "T1565.002_transmitted-data-manipulation",
+    "title": "T1565.002 transmitted-data-manipulation",
+    "path": "TA0040_impact/T1565.002_transmitted-data-manipulation/SKILL.md"
+  },
+  {
+    "id": "T1565.003_runtime-data-manipulation",
+    "title": "T1565.003 runtime-data-manipulation",
+    "path": "TA0040_impact/T1565.003_runtime-data-manipulation/SKILL.md"
+  },
+  {
+    "id": "T1565_data-manipulation",
+    "title": "T1565 data-manipulation",
+    "path": "TA0040_impact/T1565_data-manipulation/SKILL.md"
+  },
+  {
+    "id": "T1657_financial-theft",
+    "title": "T1657 financial-theft",
+    "path": "TA0040_impact/T1657_financial-theft/SKILL.md"
+  },
+  {
+    "id": "T1667_email-bombing",
+    "title": "T1667 email-bombing",
+    "path": "TA0040_impact/T1667_email-bombing/SKILL.md"
+  },
+  {
+    "id": "t1499-004-application-or-system",
+    "title": "t1499-004-application-or-system",
+    "path": "TA0040_impact/t1499-004-application-or-system/SKILL.md"
+  },
+  {
+    "id": "T1583.001_domains",
+    "title": "T1583.001 domains",
+    "path": "TA0042_resource-development/T1583.001_domains/SKILL.md"
+  },
+  {
+    "id": "T1583.002_dns-server",
+    "title": "T1583.002 dns-server",
+    "path": "TA0042_resource-development/T1583.002_dns-server/SKILL.md"
+  },
+  {
+    "id": "T1583.003_virtual-private-server",
+    "title": "T1583.003 virtual-private-server",
+    "path": "TA0042_resource-development/T1583.003_virtual-private-server/SKILL.md"
+  },
+  {
+    "id": "T1583.004_server",
+    "title": "T1583.004 server",
+    "path": "TA0042_resource-development/T1583.004_server/SKILL.md"
+  },
+  {
+    "id": "T1583.005_botnet",
+    "title": "T1583.005 botnet",
+    "path": "TA0042_resource-development/T1583.005_botnet/SKILL.md"
+  },
+  {
+    "id": "T1583.006_web-services",
+    "title": "T1583.006 web-services",
+    "path": "TA0042_resource-development/T1583.006_web-services/SKILL.md"
+  },
+  {
+    "id": "T1583.007_serverless",
+    "title": "T1583.007 serverless",
+    "path": "TA0042_resource-development/T1583.007_serverless/SKILL.md"
+  },
+  {
+    "id": "T1583.008_malvertising",
+    "title": "T1583.008 malvertising",
+    "path": "TA0042_resource-development/T1583.008_malvertising/SKILL.md"
+  },
+  {
+    "id": "T1583_acquire-infrastructure",
+    "title": "T1583 acquire-infrastructure",
+    "path": "TA0042_resource-development/T1583_acquire-infrastructure/SKILL.md"
+  },
+  {
+    "id": "T1584.001_domains",
+    "title": "T1584.001 domains",
+    "path": "TA0042_resource-development/T1584.001_domains/SKILL.md"
+  },
+  {
+    "id": "T1584.002_dns-server",
+    "title": "T1584.002 dns-server",
+    "path": "TA0042_resource-development/T1584.002_dns-server/SKILL.md"
+  },
+  {
+    "id": "T1584.003_virtual-private-server",
+    "title": "T1584.003 virtual-private-server",
+    "path": "TA0042_resource-development/T1584.003_virtual-private-server/SKILL.md"
+  },
+  {
+    "id": "T1584.004_server",
+    "title": "T1584.004 server",
+    "path": "TA0042_resource-development/T1584.004_server/SKILL.md"
+  },
+  {
+    "id": "T1584.005_botnet",
+    "title": "T1584.005 botnet",
+    "path": "TA0042_resource-development/T1584.005_botnet/SKILL.md"
+  },
+  {
+    "id": "T1584.006_web-services",
+    "title": "T1584.006 web-services",
+    "path": "TA0042_resource-development/T1584.006_web-services/SKILL.md"
+  },
+  {
+    "id": "T1584.007_serverless",
+    "title": "T1584.007 serverless",
+    "path": "TA0042_resource-development/T1584.007_serverless/SKILL.md"
+  },
+  {
+    "id": "T1584.008_network-devices",
+    "title": "T1584.008 network-devices",
+    "path": "TA0042_resource-development/T1584.008_network-devices/SKILL.md"
+  },
+  {
+    "id": "T1584_compromise-infrastructure",
+    "title": "T1584 compromise-infrastructure",
+    "path": "TA0042_resource-development/T1584_compromise-infrastructure/SKILL.md"
+  },
+  {
+    "id": "T1585.001_social-media-accounts",
+    "title": "T1585.001 social-media-accounts",
+    "path": "TA0042_resource-development/T1585.001_social-media-accounts/SKILL.md"
+  },
+  {
+    "id": "T1585.002_email-accounts",
+    "title": "T1585.002 email-accounts",
+    "path": "TA0042_resource-development/T1585.002_email-accounts/SKILL.md"
+  },
+  {
+    "id": "T1585.003_cloud-accounts",
+    "title": "T1585.003 cloud-accounts",
+    "path": "TA0042_resource-development/T1585.003_cloud-accounts/SKILL.md"
+  },
+  {
+    "id": "T1585_establish-accounts",
+    "title": "T1585 establish-accounts",
+    "path": "TA0042_resource-development/T1585_establish-accounts/SKILL.md"
+  },
+  {
+    "id": "T1586.001_social-media-accounts",
+    "title": "T1586.001 social-media-accounts",
+    "path": "TA0042_resource-development/T1586.001_social-media-accounts/SKILL.md"
+  },
+  {
+    "id": "T1586.002_email-accounts",
+    "title": "T1586.002 email-accounts",
+    "path": "TA0042_resource-development/T1586.002_email-accounts/SKILL.md"
+  },
+  {
+    "id": "T1586.003_cloud-accounts",
+    "title": "T1586.003 cloud-accounts",
+    "path": "TA0042_resource-development/T1586.003_cloud-accounts/SKILL.md"
+  },
+  {
+    "id": "T1586_compromise-accounts",
+    "title": "T1586 compromise-accounts",
+    "path": "TA0042_resource-development/T1586_compromise-accounts/SKILL.md"
+  },
+  {
+    "id": "T1587.001_malware",
+    "title": "T1587.001 malware",
+    "path": "TA0042_resource-development/T1587.001_malware/SKILL.md"
+  },
+  {
+    "id": "T1587.002_code-signing-certificates",
+    "title": "T1587.002 code-signing-certificates",
+    "path": "TA0042_resource-development/T1587.002_code-signing-certificates/SKILL.md"
+  },
+  {
+    "id": "T1587.003_digital-certificates",
+    "title": "T1587.003 digital-certificates",
+    "path": "TA0042_resource-development/T1587.003_digital-certificates/SKILL.md"
+  },
+  {
+    "id": "T1587.004_exploits",
+    "title": "T1587.004 exploits",
+    "path": "TA0042_resource-development/T1587.004_exploits/SKILL.md"
+  },
+  {
+    "id": "T1587_develop-capabilities",
+    "title": "T1587 develop-capabilities",
+    "path": "TA0042_resource-development/T1587_develop-capabilities/SKILL.md"
+  },
+  {
+    "id": "T1588.001_malware",
+    "title": "T1588.001 malware",
+    "path": "TA0042_resource-development/T1588.001_malware/SKILL.md"
+  },
+  {
+    "id": "T1588.002_tool",
+    "title": "T1588.002 tool",
+    "path": "TA0042_resource-development/T1588.002_tool/SKILL.md"
+  },
+  {
+    "id": "T1588.003_code-signing-certificates",
+    "title": "T1588.003 code-signing-certificates",
+    "path": "TA0042_resource-development/T1588.003_code-signing-certificates/SKILL.md"
+  },
+  {
+    "id": "T1588.004_digital-certificates",
+    "title": "T1588.004 digital-certificates",
+    "path": "TA0042_resource-development/T1588.004_digital-certificates/SKILL.md"
+  },
+  {
+    "id": "T1588.005_exploits",
+    "title": "T1588.005 exploits",
+    "path": "TA0042_resource-development/T1588.005_exploits/SKILL.md"
+  },
+  {
+    "id": "T1588.006_vulnerabilities",
+    "title": "T1588.006 vulnerabilities",
+    "path": "TA0042_resource-development/T1588.006_vulnerabilities/SKILL.md"
+  },
+  {
+    "id": "T1588.007_artificial-intelligence",
+    "title": "T1588.007 artificial-intelligence",
+    "path": "TA0042_resource-development/T1588.007_artificial-intelligence/SKILL.md"
+  },
+  {
+    "id": "T1588_obtain-capabilities",
+    "title": "T1588 obtain-capabilities",
+    "path": "TA0042_resource-development/T1588_obtain-capabilities/SKILL.md"
+  },
+  {
+    "id": "T1608.001_upload-malware",
+    "title": "T1608.001 upload-malware",
+    "path": "TA0042_resource-development/T1608.001_upload-malware/SKILL.md"
+  },
+  {
+    "id": "T1608.002_upload-tool",
+    "title": "T1608.002 upload-tool",
+    "path": "TA0042_resource-development/T1608.002_upload-tool/SKILL.md"
+  },
+  {
+    "id": "T1608.003_install-digital-certificate",
+    "title": "T1608.003 install-digital-certificate",
+    "path": "TA0042_resource-development/T1608.003_install-digital-certificate/SKILL.md"
+  },
+  {
+    "id": "T1608.004_drive-by-target",
+    "title": "T1608.004 drive-by-target",
+    "path": "TA0042_resource-development/T1608.004_drive-by-target/SKILL.md"
+  },
+  {
+    "id": "T1608.005_link-target",
+    "title": "T1608.005 link-target",
+    "path": "TA0042_resource-development/T1608.005_link-target/SKILL.md"
+  },
+  {
+    "id": "T1608.006_seo-poisoning",
+    "title": "T1608.006 seo-poisoning",
+    "path": "TA0042_resource-development/T1608.006_seo-poisoning/SKILL.md"
+  },
+  {
+    "id": "T1608_stage-capabilities",
+    "title": "T1608 stage-capabilities",
+    "path": "TA0042_resource-development/T1608_stage-capabilities/SKILL.md"
+  },
+  {
+    "id": "T1650_acquire-access",
+    "title": "T1650 acquire-access",
+    "path": "TA0042_resource-development/T1650_acquire-access/SKILL.md"
+  },
+  {
+    "id": "T1589.001_credentials",
+    "title": "T1589.001 credentials",
+    "path": "TA0043_reconnaissance/T1589.001_credentials/SKILL.md"
+  },
+  {
+    "id": "T1589.002_email-addresses",
+    "title": "T1589.002 email-addresses",
+    "path": "TA0043_reconnaissance/T1589.002_email-addresses/SKILL.md"
+  },
+  {
+    "id": "T1589.003_employee-names",
+    "title": "T1589.003 employee-names",
+    "path": "TA0043_reconnaissance/T1589.003_employee-names/SKILL.md"
+  },
+  {
+    "id": "T1589_gather-victim-identity-information",
+    "title": "T1589 gather-victim-identity-information",
+    "path": "TA0043_reconnaissance/T1589_gather-victim-identity-information/SKILL.md"
+  },
+  {
+    "id": "T1590.001_domain-properties",
+    "title": "T1590.001 domain-properties",
+    "path": "TA0043_reconnaissance/T1590.001_domain-properties/SKILL.md"
+  },
+  {
+    "id": "T1590.002_dns",
+    "title": "T1590.002 dns",
+    "path": "TA0043_reconnaissance/T1590.002_dns/SKILL.md"
+  },
+  {
+    "id": "T1590.003_network-trust-dependencies",
+    "title": "T1590.003 network-trust-dependencies",
+    "path": "TA0043_reconnaissance/T1590.003_network-trust-dependencies/SKILL.md"
+  },
+  {
+    "id": "T1590.004_network-topology",
+    "title": "T1590.004 network-topology",
+    "path": "TA0043_reconnaissance/T1590.004_network-topology/SKILL.md"
+  },
+  {
+    "id": "T1590.005_ip-addresses",
+    "title": "T1590.005 ip-addresses",
+    "path": "TA0043_reconnaissance/T1590.005_ip-addresses/SKILL.md"
+  },
+  {
+    "id": "T1590.006_network-security-appliances",
+    "title": "T1590.006 network-security-appliances",
+    "path": "TA0043_reconnaissance/T1590.006_network-security-appliances/SKILL.md"
+  },
+  {
+    "id": "T1590_gather-victim-network-information",
+    "title": "T1590 gather-victim-network-information",
+    "path": "TA0043_reconnaissance/T1590_gather-victim-network-information/SKILL.md"
+  },
+  {
+    "id": "T1591.001_determine-physical-locations",
+    "title": "T1591.001 determine-physical-locations",
+    "path": "TA0043_reconnaissance/T1591.001_determine-physical-locations/SKILL.md"
+  },
+  {
+    "id": "T1591.002_business-relationships",
+    "title": "T1591.002 business-relationships",
+    "path": "TA0043_reconnaissance/T1591.002_business-relationships/SKILL.md"
+  },
+  {
+    "id": "T1591.003_identify-business-tempo",
+    "title": "T1591.003 identify-business-tempo",
+    "path": "TA0043_reconnaissance/T1591.003_identify-business-tempo/SKILL.md"
+  },
+  {
+    "id": "T1591.004_identify-roles",
+    "title": "T1591.004 identify-roles",
+    "path": "TA0043_reconnaissance/T1591.004_identify-roles/SKILL.md"
+  },
+  {
+    "id": "T1591_gather-victim-org-information",
+    "title": "T1591 gather-victim-org-information",
+    "path": "TA0043_reconnaissance/T1591_gather-victim-org-information/SKILL.md"
+  },
+  {
+    "id": "T1592.001_hardware",
+    "title": "T1592.001 hardware",
+    "path": "TA0043_reconnaissance/T1592.001_hardware/SKILL.md"
+  },
+  {
+    "id": "T1592.002_software",
+    "title": "T1592.002 software",
+    "path": "TA0043_reconnaissance/T1592.002_software/SKILL.md"
+  },
+  {
+    "id": "T1592.003_firmware",
+    "title": "T1592.003 firmware",
+    "path": "TA0043_reconnaissance/T1592.003_firmware/SKILL.md"
+  },
+  {
+    "id": "T1592.004_client-configurations",
+    "title": "T1592.004 client-configurations",
+    "path": "TA0043_reconnaissance/T1592.004_client-configurations/SKILL.md"
+  },
+  {
+    "id": "T1592_gather-victim-host-information",
+    "title": "T1592 gather-victim-host-information",
+    "path": "TA0043_reconnaissance/T1592_gather-victim-host-information/SKILL.md"
+  },
+  {
+    "id": "T1593.001_social-media",
+    "title": "T1593.001 social-media",
+    "path": "TA0043_reconnaissance/T1593.001_social-media/SKILL.md"
+  },
+  {
+    "id": "T1593.002_search-engines",
+    "title": "T1593.002 search-engines",
+    "path": "TA0043_reconnaissance/T1593.002_search-engines/SKILL.md"
+  },
+  {
+    "id": "T1593.003_code-repositories",
+    "title": "T1593.003 code-repositories",
+    "path": "TA0043_reconnaissance/T1593.003_code-repositories/SKILL.md"
+  },
+  {
+    "id": "T1593_search-open-websitesdomains",
+    "title": "T1593 search-open-websitesdomains",
+    "path": "TA0043_reconnaissance/T1593_search-open-websitesdomains/SKILL.md"
+  },
+  {
+    "id": "T1594_search-victim-owned-websites",
+    "title": "T1594 search-victim-owned-websites",
+    "path": "TA0043_reconnaissance/T1594_search-victim-owned-websites/SKILL.md"
+  },
+  {
+    "id": "T1595.001_scanning-ip-blocks",
+    "title": "T1595.001 scanning-ip-blocks",
+    "path": "TA0043_reconnaissance/T1595.001_scanning-ip-blocks/SKILL.md"
+  },
+  {
+    "id": "T1595.002_vulnerability-scanning",
+    "title": "T1595.002 vulnerability-scanning",
+    "path": "TA0043_reconnaissance/T1595.002_vulnerability-scanning/SKILL.md"
+  },
+  {
+    "id": "T1595.003_wordlist-scanning",
+    "title": "T1595.003 wordlist-scanning",
+    "path": "TA0043_reconnaissance/T1595.003_wordlist-scanning/SKILL.md"
+  },
+  {
+    "id": "T1595_active-scanning",
+    "title": "T1595 active-scanning",
+    "path": "TA0043_reconnaissance/T1595_active-scanning/SKILL.md"
+  },
+  {
+    "id": "T1596.001_dnspassive-dns",
+    "title": "T1596.001 dnspassive-dns",
+    "path": "TA0043_reconnaissance/T1596.001_dnspassive-dns/SKILL.md"
+  },
+  {
+    "id": "T1596.002_whois",
+    "title": "T1596.002 whois",
+    "path": "TA0043_reconnaissance/T1596.002_whois/SKILL.md"
+  },
+  {
+    "id": "T1596.003_digital-certificates",
+    "title": "T1596.003 digital-certificates",
+    "path": "TA0043_reconnaissance/T1596.003_digital-certificates/SKILL.md"
+  },
+  {
+    "id": "T1596.004_cdns",
+    "title": "T1596.004 cdns",
+    "path": "TA0043_reconnaissance/T1596.004_cdns/SKILL.md"
+  },
+  {
+    "id": "T1596.005_scan-databases",
+    "title": "T1596.005 scan-databases",
+    "path": "TA0043_reconnaissance/T1596.005_scan-databases/SKILL.md"
+  },
+  {
+    "id": "T1596_search-open-technical-databases",
+    "title": "T1596 search-open-technical-databases",
+    "path": "TA0043_reconnaissance/T1596_search-open-technical-databases/SKILL.md"
+  },
+  {
+    "id": "T1597.001_threat-intel-vendors",
+    "title": "T1597.001 threat-intel-vendors",
+    "path": "TA0043_reconnaissance/T1597.001_threat-intel-vendors/SKILL.md"
+  },
+  {
+    "id": "T1597.002_purchase-technical-data",
+    "title": "T1597.002 purchase-technical-data",
+    "path": "TA0043_reconnaissance/T1597.002_purchase-technical-data/SKILL.md"
+  },
+  {
+    "id": "T1597_search-closed-sources",
+    "title": "T1597 search-closed-sources",
+    "path": "TA0043_reconnaissance/T1597_search-closed-sources/SKILL.md"
+  },
+  {
+    "id": "T1598.001_spearphishing-service",
+    "title": "T1598.001 spearphishing-service",
+    "path": "TA0043_reconnaissance/T1598.001_spearphishing-service/SKILL.md"
+  },
+  {
+    "id": "T1598.002_spearphishing-attachment",
+    "title": "T1598.002 spearphishing-attachment",
+    "path": "TA0043_reconnaissance/T1598.002_spearphishing-attachment/SKILL.md"
+  },
+  {
+    "id": "T1598.003_spearphishing-link",
+    "title": "T1598.003 spearphishing-link",
+    "path": "TA0043_reconnaissance/T1598.003_spearphishing-link/SKILL.md"
+  },
+  {
+    "id": "T1598.004_spearphishing-voice",
+    "title": "T1598.004 spearphishing-voice",
+    "path": "TA0043_reconnaissance/T1598.004_spearphishing-voice/SKILL.md"
+  },
+  {
+    "id": "T1598_phishing-for-information",
+    "title": "T1598 phishing-for-information",
+    "path": "TA0043_reconnaissance/T1598_phishing-for-information/SKILL.md"
+  },
+  {
+    "id": "T1681_search-threat-vendor-data",
+    "title": "T1681 search-threat-vendor-data",
+    "path": "TA0043_reconnaissance/T1681_search-threat-vendor-data/SKILL.md"
+  }
+]
