@@ -1,5 +1,7 @@
 # Babata
 
+> 本项目基于 BreachWeave 进行二次开发，面向已获合法授权的渗透测试项目，持续完善多 Agent 协作、实测证据治理与 Taric 权威状态管理能力。
+
 Babata 是面向已获合法授权的渗透测试项目的多 Agent 协作平台。它以本地项目和资产为中心，由 Planner 持续调度 Solver，并通过 Observer 监督执行过程，最终沉淀共享情报、验证记录和渗透测试报告。
 
 ## 核心能力
@@ -114,23 +116,7 @@ Web 登录页也支持开放注册。需要关闭时，在 Host 配置中将 `tc
 | Stale Timeout | 60 分钟 | Solver 超过该时间后可被视为 stale 并参与资源回收 |
 | Docker Network Mode | `host` | 可切换为 `bridge` |
 
-## 竞赛成绩
-
-| 起始日期   | 结束日期   | 竞赛                                                                                                            | 赛段     | 获奖情况 | 排名    |
-| ---------- | ---------- | --------------------------------------------------------------------------------------------------------------- | -------- | -------- | ------- |
-| 2026-04-13 | 2026-04-17 | [腾讯云黑客松智能渗透测试挑战赛（第二期）](https://zc.tencent.com/competition/competitionHackathon?code=cha004) | 线上初赛 | N/A      | 1 / 613 |
-| 2026-04-25 | 2026-04-25 | [腾讯云黑客松智能渗透测试挑战赛（第二期）](https://zc.tencent.com/competition/competitionHackathon?code=cha004) | 线下决赛 | 一等奖   | 1 / 613 |
-
-<a href="https://zc.tencent.com/competition/competitionHackathon?code=cha004">
-    <img width="1604" height="460" alt="dc25eea9efae81999d4660a747aa0b9c" src="https://github.com/user-attachments/assets/2cda17c3-e668-4459-abc0-e46a745860be" />
-</a>
-
 ![](./docs/design.png)
-
-
-https://github.com/user-attachments/assets/b051927e-b64f-4bdf-833d-d542e328ad20
-
-
 
 ## 架构核心
 
