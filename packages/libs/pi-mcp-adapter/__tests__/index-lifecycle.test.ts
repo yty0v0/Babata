@@ -1,72 +1,23 @@
-import { beforeEach, describe, expect, it, vi } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, mock, spyOn } from "bun:test";
+import * as config from "../config.js";
+import * as directTools from "../direct-tools.js";
+import * as init from "../init.js";
+import * as metadataCache from "../metadata-cache.js";
+import mcpAdapter from "../index.ts";
 
-const mocks = vi.hoisted(() => ({
-  initializeMcp: vi.fn(),
-  updateStatusBar: vi.fn(),
-  flushMetadataCache: vi.fn(),
-  loadMcpConfig: vi.fn(() => ({ mcpServers: {} })),
-  loadMetadataCache: vi.fn(() => null),
-  buildProxyDescription: vi.fn(() => "MCP gateway"),
-  createDirectToolExecutor: vi.fn(() => vi.fn()),
-  resolveDirectTools: vi.fn(() => []),
-  showStatus: vi.fn(),
-  showTools: vi.fn(),
-  reconnectServers: vi.fn(),
-  authenticateServer: vi.fn(),
-  openMcpPanel: vi.fn(),
-  executeCall: vi.fn(),
-  executeConnect: vi.fn(),
-  executeDescribe: vi.fn(),
-  executeList: vi.fn(),
-  executeSearch: vi.fn(),
-  executeStatus: vi.fn(),
-  executeUiMessages: vi.fn(),
-  getConfigPathFromArgv: vi.fn(() => undefined),
-  truncateAtWord: vi.fn((text: string) => text),
-}));
+function createMocks() {
+  return {
+    initializeMcp: spyOn(init, "initializeMcp"),
+    updateStatusBar: spyOn(init, "updateStatusBar").mockImplementation(() => {}),
+    flushMetadataCache: spyOn(init, "flushMetadataCache").mockImplementation(() => {}),
+    loadMcpConfig: spyOn(config, "loadMcpConfig").mockReturnValue({ mcpServers: {} }),
+    loadMetadataCache: spyOn(metadataCache, "loadMetadataCache").mockReturnValue(null),
+    buildProxyDescription: spyOn(directTools, "buildProxyDescription").mockReturnValue("MCP gateway"),
+    resolveDirectTools: spyOn(directTools, "resolveDirectTools").mockReturnValue([]),
+  };
+}
 
-vi.mock("../init.js", () => ({
-  initializeMcp: mocks.initializeMcp,
-  updateStatusBar: mocks.updateStatusBar,
-  flushMetadataCache: mocks.flushMetadataCache,
-}));
-
-vi.mock("../config.js", () => ({
-  loadMcpConfig: mocks.loadMcpConfig,
-}));
-
-vi.mock("../metadata-cache.js", () => ({
-  loadMetadataCache: mocks.loadMetadataCache,
-}));
-
-vi.mock("../direct-tools.js", () => ({
-  buildProxyDescription: mocks.buildProxyDescription,
-  createDirectToolExecutor: mocks.createDirectToolExecutor,
-  resolveDirectTools: mocks.resolveDirectTools,
-}));
-
-vi.mock("../commands.js", () => ({
-  showStatus: mocks.showStatus,
-  showTools: mocks.showTools,
-  reconnectServers: mocks.reconnectServers,
-  authenticateServer: mocks.authenticateServer,
-  openMcpPanel: mocks.openMcpPanel,
-}));
-
-vi.mock("../proxy-modes.js", () => ({
-  executeCall: mocks.executeCall,
-  executeConnect: mocks.executeConnect,
-  executeDescribe: mocks.executeDescribe,
-  executeList: mocks.executeList,
-  executeSearch: mocks.executeSearch,
-  executeStatus: mocks.executeStatus,
-  executeUiMessages: mocks.executeUiMessages,
-}));
-
-vi.mock("../utils.js", () => ({
-  getConfigPathFromArgv: mocks.getConfigPathFromArgv,
-  truncateAtWord: mocks.truncateAtWord,
-}));
+let mocks: ReturnType<typeof createMocks>;
 
 function createDeferred<T>() {
   let resolve!: (value: T) => void;
@@ -79,7 +30,7 @@ function createDeferred<T>() {
 function createState() {
   return {
     manager: { getAllConnections: () => new Map() },
-    lifecycle: { gracefulShutdown: vi.fn().mockResolvedValue(undefined) },
+    lifecycle: { gracefulShutdown: mock().mockResolvedValue(undefined) },
     toolMetadata: new Map(),
     config: { mcpServers: {} },
     failureTracker: new Map(),
@@ -87,7 +38,7 @@ function createState() {
     consentManager: {},
     uiServer: null,
     completedUiSessions: [],
-    openBrowser: vi.fn(),
+    openBrowser: mock(),
   } as any;
 }
 
@@ -96,33 +47,24 @@ function createPi() {
   return {
     handlers,
     api: {
-      registerTool: vi.fn(),
-      registerFlag: vi.fn(),
-      registerCommand: vi.fn(),
-      on: vi.fn((event: string, handler: (...args: any[]) => unknown) => {
+      registerTool: mock(),
+      registerFlag: mock(),
+      registerCommand: mock(),
+      on: mock((event: string, handler: (...args: any[]) => unknown) => {
         handlers.set(event, handler);
       }),
-      getAllTools: vi.fn(() => []),
+      getAllTools: mock(() => []),
     } as any,
   };
 }
 
 describe("mcpAdapter session lifecycle", () => {
   beforeEach(() => {
-    vi.resetModules();
-    for (const value of Object.values(mocks)) {
-      if (typeof value === "function" && "mockReset" in value) {
-        value.mockReset();
-      }
-    }
+    mocks = createMocks();
+  });
 
-    mocks.loadMcpConfig.mockReturnValue({ mcpServers: {} });
-    mocks.loadMetadataCache.mockReturnValue(null);
-    mocks.buildProxyDescription.mockReturnValue("MCP gateway");
-    mocks.createDirectToolExecutor.mockReturnValue(vi.fn());
-    mocks.resolveDirectTools.mockReturnValue([]);
-    mocks.getConfigPathFromArgv.mockReturnValue(undefined);
-    mocks.truncateAtWord.mockImplementation((text: string) => text);
+  afterEach(() => {
+    mock.restore();
   });
 
   it("starts a replacement init immediately and shuts down stale init results", async () => {
@@ -132,7 +74,6 @@ describe("mcpAdapter session lifecycle", () => {
       .mockReturnValueOnce(first.promise)
       .mockReturnValueOnce(second.promise);
 
-    const { default: mcpAdapter } = await import("../index.ts");
     const { api, handlers } = createPi();
     mcpAdapter(api);
 
@@ -159,7 +100,7 @@ describe("mcpAdapter session lifecycle", () => {
     await Promise.resolve();
 
     expect(mocks.updateStatusBar).not.toHaveBeenCalledWith(staleState);
-    expect(mocks.flushMetadataCache).toHaveBeenCalledWith(staleState);
+    expect(mocks.flushMetadataCache).toHaveBeenCalledWith(staleState, undefined);
     expect(staleState.lifecycle.gracefulShutdown).toHaveBeenCalledTimes(1);
   });
 
@@ -170,10 +111,9 @@ describe("mcpAdapter session lifecycle", () => {
       throw new Error("status boom");
     });
 
-    const consoleError = vi.spyOn(console, "error").mockImplementation(() => {});
+    const consoleError = spyOn(console, "error").mockImplementation(() => {});
 
     try {
-      const { default: mcpAdapter } = await import("../index.ts");
       const { api, handlers } = createPi();
       mcpAdapter(api);
 

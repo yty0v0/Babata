@@ -3,8 +3,11 @@ import { mkdtemp, readdir, rm } from "fs/promises"
 import { tmpdir } from "os"
 import { resolve } from "path"
 import type { ConfigManager } from "../config/index"
+import { deriveCompositeProjectKey } from "../project/types"
+import type { ChallengeMemoryProvider, ChallengeMemoryScope } from "./memory-provider"
 import { CHALLENGE_ENV_DIR } from "./env"
 import { ChallengeManager } from "./manager"
+import { createChallengeRecord } from "./store"
 
 let challengeDir: string
 let manager: ChallengeManager
@@ -103,6 +106,103 @@ describe("challenge-memory", () => {
         expect(entries).toHaveLength(2)
         expect(entries.some((item) => item.kind === "fact")).toBe(true)
         expect(entries.some((item) => item.kind === "failure")).toBe(true)
+    })
+
+    test("Taric-managed challenge reads fail closed instead of falling back to local JSON", async () => {
+        const project = {
+            mode: "competition" as const,
+            provider: "local_practice" as const,
+            tenant_id: "tenant-a",
+            platform_id: "platform-a",
+            competition_id: "competition-a",
+            team_id: "team-a",
+            challenge_code: "challenge-a",
+            memory_mode: "taric_best_effort" as const,
+            taric_engagement_id: "engagement-a",
+        }
+        await manager.createChallenge(createChallengeRecord({ id: "taric-challenge", name: "Taric challenge", project }))
+        const rejectingManager = new ChallengeManager(
+            {
+                getHostSettings: async () => ({ runtime: {}, planner: {} }),
+            } as unknown as ConfigManager,
+            undefined,
+            undefined,
+            undefined,
+            async () => { throw new Error("Taric unavailable") },
+        )
+        await expect(rejectingManager.listMemory("taric-challenge")).rejects.toThrow("Taric unavailable")
+        await expect(readdir(resolve(challengeDir, "taric-challenge", "memory"))).rejects.toThrow()
+    })
+
+    test("routes a Taric project through one cached provider and a trusted composite scope", async () => {
+        const project = {
+            mode: "competition" as const,
+            provider: "local_practice" as const,
+            tenant_id: "tenant-a",
+            platform_id: "platform-a",
+            competition_id: "competition-a",
+            team_id: "team-a",
+            challenge_code: "challenge-taric",
+            memory_mode: "taric_best_effort" as const,
+            taric_engagement_id: "engagement-a",
+        }
+        await manager.createChallenge(createChallengeRecord({ id: "taric-project", name: "Taric project", project }))
+
+        const scopes: ChallengeMemoryScope[] = []
+        const provider = {
+            mode: "taric_best_effort" as const,
+            listMemory: async (scope: ChallengeMemoryScope) => {
+                scopes.push(scope)
+                return [{
+                    id: "taric-memory-1",
+                    challengeId: scope.challengeId,
+                    kind: "fact" as const,
+                    content: "authoritative fact",
+                    refs: [],
+                    source: "taric",
+                    trustState: "admitted" as const,
+                    created_at: "2026-10-31T00:00:00.000Z",
+                    updated_at: "2026-10-31T00:00:00.000Z",
+                }]
+            },
+        } as unknown as ChallengeMemoryProvider
+        let factoryCalls = 0
+        const providerManager = new ChallengeManager(
+            {
+                getHostSettings: async () => ({ runtime: {}, planner: {} }),
+            } as unknown as ConfigManager,
+            undefined,
+            undefined,
+            undefined,
+            async (scope) => {
+                factoryCalls += 1
+                expect(scope.projectKey).toBe(deriveCompositeProjectKey(project))
+                expect(scope.project?.taric_engagement_id).toBe("engagement-a")
+                return provider
+            },
+        )
+
+        expect((await providerManager.listMemory("taric-project"))[0].content).toBe("authoritative fact")
+        expect((await providerManager.listMemory("taric-project"))[0].content).toBe("authoritative fact")
+        expect(factoryCalls).toBe(1)
+        expect(scopes).toHaveLength(2)
+        expect(scopes.every((scope) => scope.challengeId === "taric-project" && scope.projectKey === deriveCompositeProjectKey(project))).toBe(true)
+        await expect(readdir(resolve(challengeDir, "taric-project", "memory"))).rejects.toThrow()
+    })
+    test("explicit legacy-local project keeps its challenge-scoped local board", async () => {
+        const project = {
+            mode: "competition" as const,
+            provider: "local_practice" as const,
+            tenant_id: "tenant-a",
+            platform_id: "platform-a",
+            competition_id: "competition-a",
+            team_id: "team-a",
+            challenge_code: "challenge-local",
+            memory_mode: "legacy_local" as const,
+        }
+        await manager.createChallenge(createChallengeRecord({ id: "local-challenge", name: "Local challenge", project }))
+        await manager.appendMemory({ challengeId: "local-challenge", kind: "fact", content: "local fact", source: "operator" })
+        expect((await manager.listMemory("local-challenge")).map((entry) => entry.content)).toEqual(["local fact"])
     })
 
     test("updates and deletes memory by id prefix", async () => {

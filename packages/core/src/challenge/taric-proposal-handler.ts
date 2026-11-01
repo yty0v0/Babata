@@ -1,6 +1,7 @@
-﻿import { CHALLENGE_ENV_CHALLENGE_ID } from "./env"
+import { CHALLENGE_ENV_CHALLENGE_ID } from "./env"
 import { HostBridgeError } from "./host-bridge-types"
 import { TaricBindingRegistry } from "./taric-binding-registry"
+import { normalizeObserverBoardProposal } from "./observer-board-proposal"
 import { normalizeTaricProposal } from "./taric-proposal-schema"
 import { TaricProposalOutbox, type TaricProposalDispatcher } from "./taric-proposal-outbox"
 import type { TaricWorkManager } from "./taric-work-manager"
@@ -17,6 +18,7 @@ export interface TaricProposalHandlerOptions {
     settings: TaricProposalSettings
     bindingRegistry?: TaricBindingRegistry
     workManager?: TaricWorkManager
+    getBoardProjectKey?: (challengeId: string) => Promise<string | undefined>
 }
 
 export function createTaricProposalHandler(options: TaricProposalHandlerOptions): HostBridgeHandler {
@@ -36,13 +38,24 @@ export function createTaricProposalHandler(options: TaricProposalHandlerOptions)
             return { degraded: true, reason: "challenge_taric_binding_unavailable" }
         }
 
-        const workState = context.getWorkState?.()
-        const checkpointAuthority = options.workManager && workState?.workRunId
-            ? await options.workManager.checkpointAuthority(workState.workRunId, workState.generation)
-            : undefined
         let proposal
+        let boardChange: { board: string; operation: string; target_ref?: string } | undefined
         try {
-            proposal = normalizeTaricProposal(context.params, checkpointAuthority)
+            const params = context.params && typeof context.params === "object" && !Array.isArray(context.params)
+                ? context.params as Record<string, unknown> : {}
+            if ("observer_board_change" in params) {
+                if (Object.keys(params).some((key) => key !== "observer_board_change")) throw new Error("board proposals must not specify identity or authority fields")
+                const projectKey = await options.getBoardProjectKey?.(challengeId) ?? "challenge:" + challengeId
+                const normalized = normalizeObserverBoardProposal(params.observer_board_change, projectKey, "observer:" + context.solverId)
+                proposal = normalized.proposal
+                boardChange = { board: normalized.change.board, operation: normalized.change.operation, ...(normalized.change.target_ref ? { target_ref: normalized.change.target_ref } : {}) }
+            } else {
+                const workState = context.getWorkState?.()
+                const checkpointAuthority = options.workManager && workState?.workRunId
+                    ? await options.workManager.checkpointAuthority(workState.workRunId, workState.generation)
+                    : undefined
+                proposal = normalizeTaricProposal(context.params, checkpointAuthority)
+            }
         } catch (error) {
             throw new HostBridgeError("validation_error", error instanceof Error ? error.message : String(error))
         }
@@ -82,12 +95,14 @@ export function createTaricProposalHandler(options: TaricProposalHandlerOptions)
                 proposal_id: entry.idempotency_key,
                 status: result.applied > 0 ? "acknowledged" : "pending",
                 replay: result,
+                ...(boardChange ? { board_change: boardChange, candidate_only: true, canonical_changed: false, trust_level: "L0" } : {}),
             }
         }
         return {
             proposal_id: entry.idempotency_key,
             status: entry.status,
             trust_level: "L0",
+            ...(boardChange ? { board_change: boardChange, candidate_only: true, canonical_changed: false } : {}),
         }
     }
 

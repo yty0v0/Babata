@@ -79,24 +79,30 @@ async function buildEmbeddedLinuxSolverBinary(): Promise<EmbeddedLinuxSolverBuil
 const embeddedLinuxSolver = await buildEmbeddedLinuxSolverBinary()
 embeddedLinuxSolverImportPath = embeddedLinuxSolver?.path ?? embeddedLinuxSolverFallbackPath
 await generateBuiltinAssets()
-await mkdir(dirname(outfile), { recursive: true })
+const outputDir = dirname(outfile)
+const outputPath = resolve(projectRoot, outfile)
+await mkdir(dirname(outputPath), { recursive: true })
 
 const result = await Bun.build({
     entrypoints: [entrypoint],
-    outdir: dirname(outfile),
-    naming: {
-        entry: dirname(outfile) === "." ? "[dir]/[name]" : "[name]",
-    },
+    outdir: ".",
     compile: {
         outfile,
         target: buildTarget,
     },
+    external: ["cpu-features"],
     plugins: [workspaceResolver, embeddedLinuxSolverResolver, tailwind],
 })
 
 if (embeddedLinuxSolver) await rm(embeddedLinuxSolver.tempDir, { recursive: true, force: true })
 
+if (result.success && !(await Bun.file(outputPath).exists())) {
+    console.error(`build reported success but output was not created: ${outputPath}`)
+    process.exit(1)
+}
+
 if (!result.success) {
+    if (result.logs.length === 0) console.error("Bun build failed without diagnostics", { target: buildTarget, outputPath })
     for (const log of result.logs) console.error(log.message)
     process.exit(1)
 }

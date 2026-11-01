@@ -3,6 +3,7 @@ import type { ChallengeApiChallenge, ChallengeApiHintData, ChallengeApiListData,
 import { createAgentSession, defineTool, SessionManager } from "@mariozechner/pi-coding-agent"
 import type { ResourceLoader, ToolDefinition } from "@mariozechner/pi-coding-agent"
 import type { ConfigManager, HostSettings } from "../config/index"
+import { readdir } from "node:fs/promises"
 import { join } from "path"
 import {
     CHALLENGE_ENV_CHALLENGE_ID,
@@ -68,6 +69,19 @@ import { CHALLENGE_PLANNER_PROMPT_NAME } from "../config/prompts/index"
 import type { TaricEngagementService } from "./taric-engagement-service"
 import { taricModelPrincipalId, type TaricResumePacket, type TaricWorkManager } from "./taric-work-manager"
 import type { TaricAuthoritativeState } from "./taric-authoritative-state"
+import { FileChallengeMemoryProvider } from "./memory-provider"
+import type {
+    ChallengeMemoryProvider,
+    ChallengeMemoryReadDiagnostics,
+    ChallengeMemoryReadResult,
+    ChallengeMemoryScope,
+} from "./memory-provider"
+import type { TaricMemoryProviderFactory } from "../taric/provider-factory"
+import { deriveCompositeProjectKey } from "../project/types"
+
+const OBSERVER_SETTLE_TIMEOUT_MS = 120_000
+const OBSERVER_SETTLE_GRACE_MS = 2_000
+const OBSERVER_SETTLE_POLL_MS = 250
 
 export type { IdeaStatus, MemoryKind, MemoryEntry, AddMemoryInput, IdeaRecord, AddIdeaInput, AddIdeaResult, UpdateIdeaInput } from "./memory"
 
@@ -683,6 +697,9 @@ export class ChallengeManager {
     private readonly taricEngagement: TaricEngagementService | undefined
     private readonly taricWork: TaricWorkManager | undefined
     private readonly taricState: TaricAuthoritativeState | undefined
+    private readonly taricMemoryProviderFactory: TaricMemoryProviderFactory | undefined
+    private readonly localMemoryProvider: FileChallengeMemoryProvider
+    private readonly memoryProviders = new Map<string, Promise<ChallengeMemoryProvider>>()
     private api: ChallengeApiClient | undefined
     private rootDir: string | undefined
     private runtime: RuntimeManager | undefined
@@ -700,11 +717,14 @@ export class ChallengeManager {
         taricEngagement?: TaricEngagementService,
         taricWork?: TaricWorkManager,
         taricState?: TaricAuthoritativeState,
+        taricMemoryProviderFactory?: TaricMemoryProviderFactory,
     ) {
         this.config = config
         this.taricEngagement = taricEngagement
         this.taricWork = taricWork
         this.taricState = taricState
+        this.taricMemoryProviderFactory = taricMemoryProviderFactory
+        this.localMemoryProvider = new FileChallengeMemoryProvider(() => this.getRootDir())
     }
 
     private log(scope: string, message: string, fields?: Record<string, unknown>): void {
@@ -1600,11 +1620,35 @@ export class ChallengeManager {
         return computeChallengeCompleted(challenge)
     }
 
+    private async getChallengeMemoryProvider(challengeId: string): Promise<{ provider: ChallengeMemoryProvider; scope: ChallengeMemoryScope }> {
+        const challenge = await this.getChallenge(challengeId)
+        if (!challenge) return { provider: this.localMemoryProvider, scope: { challengeId } }
+        const project = challenge.project
+        if (!project || project.memory_mode === "legacy_local") {
+            return { provider: this.localMemoryProvider, scope: { challengeId, ...(project ? { project, projectKey: deriveCompositeProjectKey(project) } : {}) } }
+        }
+        if (!this.taricMemoryProviderFactory) throw new Error(`Taric memory provider is not configured for ${project.memory_mode} challenge "${challengeId}"`)
+        const projectKey = deriveCompositeProjectKey(project)
+        const cacheKey = `${challengeId}:${projectKey}`
+        let providerPromise = this.memoryProviders.get(cacheKey)
+        if (!providerPromise) {
+            providerPromise = this.taricMemoryProviderFactory({ challengeId, project, projectKey })
+            this.memoryProviders.set(cacheKey, providerPromise)
+            providerPromise.catch(() => this.memoryProviders.delete(cacheKey))
+        }
+        return { provider: await providerPromise, scope: { challengeId, project, projectKey } }
+    }
     async appendMemory(input: AddMemoryInput): Promise<MemoryEntry> {
-        const rootDir = await this.getRootDir()
-        const entry = await appendChallengeMemory(rootDir, input)
+        const { provider, scope } = await this.getChallengeMemoryProvider(input.challengeId)
+        const { challengeId: _challengeId, ...memoryInput } = input
+        const entry = await provider.appendMemory(scope, memoryInput)
         this.broadcastChallengeBoardUpdateToRunningSolvers(input.challengeId, formatChallengeMemoryBroadcastMessage("added", entry))
         return entry
+    }
+
+    async isTaricProjectManaged(challengeId: string): Promise<boolean> {
+        const challenge = await this.getChallenge(challengeId)
+        return Boolean(challenge?.project && challenge.project.memory_mode !== "legacy_local")
     }
 
     async isTaricAuthoritativeActive(challengeId: string): Promise<boolean> {
@@ -1687,53 +1731,64 @@ export class ChallengeManager {
     }
 
     async listMemory(challengeId: string): Promise<MemoryEntry[]> {
-        const rootDir = await this.getRootDir()
-        return listChallengeMemory(rootDir, challengeId)
+        const { provider, scope } = await this.getChallengeMemoryProvider(challengeId)
+        return provider.listMemory(scope)
+    }
+
+    async getMemoryReadDiagnostics(challengeId: string): Promise<ChallengeMemoryReadDiagnostics | undefined> {
+        const { provider } = await this.getChallengeMemoryProvider(challengeId)
+        return provider.getReadDiagnostics?.()
+    }
+
+    async readMemoryBoard(challengeId: string): Promise<ChallengeMemoryReadResult> {
+        const { provider, scope } = await this.getChallengeMemoryProvider(challengeId)
+        if (provider.readBoard) return provider.readBoard(scope)
+        const [memory, ideas] = await Promise.all([provider.listMemory(scope), provider.listIdeas(scope)])
+        const diagnostics = provider.getReadDiagnostics?.()
+        return { memory, ideas, ...(diagnostics ? { diagnostics } : {}) }
     }
 
     async updateMemory(challengeId: string, entryIdOrPrefix: string, patch: { kind?: MemoryKind; content?: string; refs?: string[]; source?: string }): Promise<MemoryEntry> {
-        const rootDir = await this.getRootDir()
-        const entry = await updateChallengeMemory(rootDir, challengeId, entryIdOrPrefix, patch)
+        const { provider, scope } = await this.getChallengeMemoryProvider(challengeId)
+        const entry = await provider.updateMemory(scope, entryIdOrPrefix, patch)
         this.broadcastChallengeBoardUpdateToRunningSolvers(challengeId, formatChallengeMemoryBroadcastMessage("updated", entry))
         return entry
     }
 
     async deleteMemory(challengeId: string, entryIdOrPrefix: string): Promise<MemoryEntry> {
-        const rootDir = await this.getRootDir()
-        const entry = await deleteChallengeMemory(rootDir, challengeId, entryIdOrPrefix)
+        const { provider, scope } = await this.getChallengeMemoryProvider(challengeId)
+        const entry = await provider.deleteMemory(scope, entryIdOrPrefix)
         this.broadcastChallengeBoardUpdateToRunningSolvers(challengeId, formatChallengeMemoryBroadcastMessage("deleted", entry))
         return entry
     }
 
     async listIdeas(challengeId: string): Promise<IdeaRecord[]> {
-        const rootDir = await this.getRootDir()
-        return listChallengeIdeas(rootDir, challengeId)
+        const { provider, scope } = await this.getChallengeMemoryProvider(challengeId)
+        return provider.listIdeas(scope)
     }
 
     async searchIdeas(challengeId: string, query: string): Promise<IdeaRecord[]> {
-        const rootDir = await this.getRootDir()
-        return searchChallengeIdeas(rootDir, challengeId, query)
+        const { provider, scope } = await this.getChallengeMemoryProvider(challengeId)
+        return provider.searchIdeas(scope, query)
     }
 
     async addIdea(challengeId: string, input: AddIdeaInput): Promise<AddIdeaResult> {
-        const rootDir = await this.getRootDir()
-        const result = await addChallengeIdea(rootDir, challengeId, input)
-        if (result.created) {
-            this.broadcastChallengeBoardUpdateToRunningSolvers(challengeId, formatChallengeIdeaBroadcastMessage("added", result.item))
-        }
+        const { provider, scope } = await this.getChallengeMemoryProvider(challengeId)
+        const result = await provider.addIdea(scope, input)
+        if (result.created) this.broadcastChallengeBoardUpdateToRunningSolvers(challengeId, formatChallengeIdeaBroadcastMessage("added", result.item))
         return result
     }
 
     async updateIdea(challengeId: string, ideaIdOrPrefix: string, patch: UpdateIdeaInput): Promise<IdeaRecord> {
-        const rootDir = await this.getRootDir()
-        const item = await updateChallengeIdea(rootDir, challengeId, ideaIdOrPrefix, patch)
+        const { provider, scope } = await this.getChallengeMemoryProvider(challengeId)
+        const item = await provider.updateIdea(scope, ideaIdOrPrefix, patch)
         this.broadcastChallengeBoardUpdateToRunningSolvers(challengeId, formatChallengeIdeaBroadcastMessage("updated", item))
         return item
     }
 
     async deleteIdea(challengeId: string, ideaIdOrPrefix: string): Promise<IdeaRecord> {
-        const rootDir = await this.getRootDir()
-        const item = await deleteChallengeIdea(rootDir, challengeId, ideaIdOrPrefix)
+        const { provider, scope } = await this.getChallengeMemoryProvider(challengeId)
+        const item = await provider.deleteIdea(scope, ideaIdOrPrefix)
         this.broadcastChallengeBoardUpdateToRunningSolvers(challengeId, formatChallengeIdeaBroadcastMessage("deleted", item))
         return item
     }
@@ -1805,8 +1860,8 @@ export class ChallengeManager {
     private async seedSolverBoardFromChallenge(solverId: string, challengeId: string): Promise<void> {
         const taricActive = Boolean(await this.taricState?.isChallengeBound(challengeId))
         const [memoryItems, ideaItems] = await Promise.all([
-            taricActive ? this.listTaricMemoryProjection(challengeId) : this.listMemory(challengeId),
-            taricActive ? this.listTaricIdeasProjection(challengeId) : this.listIdeas(challengeId),
+            taricActive && !await this.isTaricProjectManaged(challengeId) ? this.listTaricMemoryProjection(challengeId) : this.listMemory(challengeId),
+            taricActive && !await this.isTaricProjectManaged(challengeId) ? this.listTaricIdeasProjection(challengeId) : this.listIdeas(challengeId),
         ])
         await seedSolverBoardSnapshot(
             {
@@ -2076,11 +2131,92 @@ export class ChallengeManager {
             }
             const solvers = await this.runtime.listAll()
             const active = solvers.filter((solver) => solver.challengeId === id && (solver.status === "starting" || solver.status === "running" || solver.status === "stopping"))
-            await Promise.allSettled(active.map((solver) => this.runtime!.stopSolver(solver.id)))
+            const solversToStop = await this.waitForObserverSolvers(id, active)
+            await Promise.allSettled(solversToStop.map((solver) => this.runtime!.stopSolver(solver.id)))
             await this.updateChallengePlannerStatus(id, "stop")
-            this.log("challenge:finish", "finished solved challenge cleanup", { challengeId: id, stoppedSolvers: active.map((solver) => solver.id) })
+            this.log("challenge:finish", "finished solved challenge cleanup", { challengeId: id, stoppedSolvers: solversToStop.map((solver) => solver.id) })
         } finally {
             this.finishingChallenges.delete(id)
+        }
+    }
+
+    private async waitForObserverSolvers(challengeId: string, active: SolverInstance[]): Promise<SolverInstance[]> {
+        const observerSolverIds: string[] = []
+        for (const solver of active) {
+            if (!solver.promptName) continue
+            const prompt = await this.config.getPrompt(solver.promptName).catch(() => undefined)
+            if (prompt?.meta.observerEnabled === true) observerSolverIds.push(solver.id)
+        }
+        if (observerSolverIds.length === 0) return active
+        const nonObserverSolvers = active.filter((solver) => !observerSolverIds.includes(solver.id))
+
+        this.log("challenge:finish", "waiting for observer reviews before solver cleanup", {
+            challengeId,
+            solverIds: observerSolverIds,
+            timeoutMs: OBSERVER_SETTLE_TIMEOUT_MS,
+        })
+        const waitStartedAt = Date.now()
+        const graceDeadline = waitStartedAt + OBSERVER_SETTLE_GRACE_MS
+        const deadline = Date.now() + OBSERVER_SETTLE_TIMEOUT_MS
+        let current = active
+        const completedReviewSolvers = new Set<string>()
+        let observerReviewsSettled = false
+        while (current.length > 0 && Date.now() < deadline) {
+            await Bun.sleep(OBSERVER_SETTLE_POLL_MS)
+            const live = await this.runtime?.listAll()
+            current = (live ?? []).filter((solver) =>
+                observerSolverIds.includes(solver.id) &&
+                (solver.status === "starting" || solver.status === "running" || solver.status === "stopping"),
+            )
+
+            if (Date.now() >= graceDeadline) {
+                for (const solver of current) {
+                    const observerState = await this.readObserverSettleState(solver.id)
+                    if (!observerState) continue
+                    const reviewStartedAt = observerState.last_review_started_at ? Date.parse(observerState.last_review_started_at) : Number.NaN
+                    const reviewFinishedAt = observerState.last_review_finished_at ? Date.parse(observerState.last_review_finished_at) : Number.NaN
+                    if (Number.isFinite(reviewStartedAt) && reviewStartedAt >= waitStartedAt) {
+                        if (!observerState.review_in_flight && observerState.queued_reviews === 0 && Number.isFinite(reviewFinishedAt) && reviewFinishedAt >= waitStartedAt) {
+                            completedReviewSolvers.add(solver.id)
+                        }
+                    }
+                }
+                if (completedReviewSolvers.size === observerSolverIds.length) {
+                    observerReviewsSettled = true
+                    break
+                }
+            }
+        }
+
+        if (current.length > 0 && !observerReviewsSettled) {
+            this.log("challenge:finish", "observer settle timeout reached; stopping remaining solvers", {
+                challengeId,
+                solverIds: current.map((solver) => solver.id),
+            })
+        }
+        return [...nonObserverSolvers, ...current]
+    }
+
+    private async readObserverSettleState(solverId: string): Promise<{
+        review_in_flight?: boolean
+        last_review_started_at?: string
+        last_review_finished_at?: string
+        queued_reviews: number
+    } | undefined> {
+        const observerDir = join(solverSessionDir(solverId), ".observer")
+        const stateFile = Bun.file(join(observerDir, "state.json"))
+        if (!(await stateFile.exists())) return undefined
+
+        try {
+            const state = (await stateFile.json()) as {
+                review_in_flight?: boolean
+                last_review_started_at?: string
+                last_review_finished_at?: string
+            }
+            const queued_reviews = (await readdir(join(observerDir, "review-queue")).catch(() => [])).filter((name) => name.endsWith(".json")).length
+            return { ...state, queued_reviews }
+        } catch {
+            return undefined
         }
     }
 
@@ -2449,8 +2585,8 @@ export class ChallengeManager {
         }
         const taricActive = Boolean(await this.taricState?.isChallengeBound(challenge.id))
         const [memoryItems, ideaItems, submissionItems] = await Promise.all([
-            taricActive ? this.listTaricMemoryProjection(challenge.id) : this.listMemory(challenge.id),
-            taricActive ? this.listTaricIdeasProjection(challenge.id) : this.listIdeas(challenge.id),
+            taricActive && !await this.isTaricProjectManaged(challenge.id) ? this.listTaricMemoryProjection(challenge.id) : this.listMemory(challenge.id),
+            taricActive && !await this.isTaricProjectManaged(challenge.id) ? this.listTaricIdeasProjection(challenge.id) : this.listIdeas(challenge.id),
             this.listSubmissionLogs(challenge.id),
         ])
         const entrypoint = entrypoints.map((item) => `- [${item.asset_hash}] ${item.asset}`).join("\n")

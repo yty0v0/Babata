@@ -1272,6 +1272,12 @@ export function ChallengePage({ challengeId }: { challengeId?: string }) {
                                         planner {challengePlannerStatus(details.challenge)}
                                     </Badge>
                                 </div>
+                                {details.read_diagnostics && details.read_diagnostics.status !== "complete" && (
+                                    <div role="status" className="max-w-2xl rounded-md border border-amber-600/30 bg-amber-500/10 px-3 py-2 text-xs text-amber-900 dark:text-amber-200">
+                                        Taric board read is {details.read_diagnostics.status ?? "degraded"}; displayed records may be incomplete.
+                                        {details.read_diagnostics.diagnostic_code ? ` (${details.read_diagnostics.diagnostic_code})` : ""}
+                                    </div>
+                                )}
                             </div>
                             <div className="shrink-0 space-y-3 text-right text-sm text-muted-foreground">
                                 <div>

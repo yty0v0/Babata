@@ -387,6 +387,11 @@ export interface ChallengeDetails {
     challenge: ChallengeInfoRecord
     memory: MemoryEntry[]
     ideas: IdeaRecord[]
+    read_diagnostics?: {
+        status?: "in_progress" | "complete" | "truncated" | "failed"
+        diagnostic_code?: string
+        [key: string]: unknown
+    }
     attempts: ChallengeAttemptLogRecord[]
     submissions: ChallengeSubmissionLogRecord[]
     stats: ChallengeStatsRecord
@@ -573,6 +578,13 @@ export interface TaricIntegrationStatus {
         lastError?: string
     }
     checkedAt: string
+    runtime?: {
+        ready: boolean
+        checkedAt: string
+        image?: string
+        volume?: string
+        failure?: { code: string; message: string }
+    }
 }
 
 export const taric = {

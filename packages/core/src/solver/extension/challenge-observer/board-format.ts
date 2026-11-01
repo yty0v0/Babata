@@ -27,12 +27,13 @@ export function formatMemoryTable(items: MemoryEntry[], options?: { contentMaxCh
     const rows = items.map((item) => [
         item.id,
         item.kind,
+        item.trustState ?? "legacy/unclassified",
         clipText(item.content, contentMaxChars),
         formatRefs(item.refs),
         item.source,
         options?.updatedAtFallback === true ? item.updated_at || item.created_at : item.updated_at,
     ])
-    return formatMarkdownTable(["ID", "Kind", "Content", "Refs", "Source", "Updated"], rows)
+    return formatMarkdownTable(["ID", "Kind", "Trust", "Content", "Refs", "Source", "Updated"], rows)
 }
 
 export function formatIdeaTable(items: IdeaRecord[], options?: { contentMaxChars?: number; resultMaxChars?: number; updatedAtFallback?: boolean }): string {
@@ -42,9 +43,10 @@ export function formatIdeaTable(items: IdeaRecord[], options?: { contentMaxChars
     const rows = items.map((item) => [
         item.id,
         item.status,
+        item.trustState ?? "legacy/unclassified",
         clipText(item.content, contentMaxChars),
         item.result ? clipText(item.result, resultMaxChars) : "-",
         options?.updatedAtFallback === true ? item.updated_at || item.created_at : item.updated_at,
     ])
-    return formatMarkdownTable(["ID", "Status", "Idea", "Result", "Updated"], rows)
+    return formatMarkdownTable(["ID", "Status", "Trust", "Idea", "Result", "Updated"], rows)
 }

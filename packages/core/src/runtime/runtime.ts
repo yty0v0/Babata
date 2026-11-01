@@ -1,4 +1,3 @@
-import Dockerode from "dockerode"
 import { basename, dirname, resolve } from "node:path"
 import { appendFile, mkdir, readdir, rename } from "node:fs/promises"
 import type {
@@ -203,8 +202,45 @@ function solverStartupLogPath(solverId: string): string {
     return resolve(solverDir(solverId), "startup.log")
 }
 
+type DockerImageInspect = {
+    Architecture?: unknown
+    Config?: {
+        Labels?: Record<string, string>
+    }
+}
+
+type DockerCommandResult = {
+    exitCode: number
+    stdout: string
+    stderr: string
+}
+
+async function runDockerCommand(args: string[]): Promise<DockerCommandResult> {
+    const proc = Bun.spawn(["docker", ...args], { stdout: "pipe", stderr: "pipe" })
+    const [exitCode, stdout, stderr] = await Promise.all([
+        proc.exited,
+        new Response(proc.stdout).text(),
+        new Response(proc.stderr).text(),
+    ])
+    return { exitCode, stdout, stderr }
+}
+
+async function inspectDockerImage(image: string): Promise<DockerImageInspect | undefined> {
+    const result = await runDockerCommand(["image", "inspect", image, "--format", "{{json .}}"])
+    if (result.exitCode === 0) {
+        try {
+            return JSON.parse(result.stdout) as DockerImageInspect
+        } catch {
+            throw new Error(`Docker returned invalid image metadata for ${image}`)
+        }
+    }
+
+    const error = result.stderr.trim() || result.stdout.trim() || `exit ${result.exitCode}`
+    if (/no such image/i.test(error)) return
+    throw new Error(`Docker image inspect failed for ${image}: ${error}`)
+}
+
 export class RuntimeManager {
-    private docker: Dockerode
     private config: ContainerConfig
     private solvers = new Map<string, SolverInstance>()
     private procs = new Map<string, Subprocess<"pipe", "pipe", "pipe">>()
@@ -217,7 +253,6 @@ export class RuntimeManager {
     private eventHandlers: SolverEventHandler[] = []
 
     constructor(config: ConfigManager, hostBridgeHandlers: HostBridgeHandler[], hostBridgeSecurity?: HostBridgeSecurityPolicy) {
-        this.docker = new Dockerode()
         this.config = {
             image: "tch-agent:latest",
             binds: [`${DEFAULT_CONFIG_DIR}:/root/.tch-agent/config:ro`],
@@ -406,8 +441,8 @@ export class RuntimeManager {
     /** Check if Docker daemon is accessible */
     async ping(): Promise<boolean> {
         try {
-            await this.docker.ping()
-            return true
+            const result = await runDockerCommand(["info", "--format", "{{.ServerVersion}}"])
+            return result.exitCode === 0
         } catch {
             return false
         }
@@ -415,13 +450,7 @@ export class RuntimeManager {
 
     /** Check if the configured image exists locally */
     async hasImage(image?: string): Promise<boolean> {
-        try {
-            const img = this.docker.getImage(image ?? this.config.image)
-            await img.inspect()
-            return true
-        } catch {
-            return false
-        }
+        return (await inspectDockerImage(image ?? this.config.image)) !== undefined
     }
 
     private async getDockerfileHash(dockerfilePath: string): Promise<string> {
@@ -429,24 +458,9 @@ export class RuntimeManager {
         return hashDockerfileContent(content)
     }
 
-    private async getImageDockerfileHash(image?: string): Promise<string | undefined> {
-        try {
-            const img = this.docker.getImage(image ?? this.config.image)
-            const inspect = await img.inspect()
-            return inspect.Config?.Labels?.[DOCKERFILE_HASH_LABEL]
-        } catch {
-            return
-        }
-    }
-
     private async getImageArchitecture(image?: string): Promise<string | undefined> {
-        try {
-            const img = this.docker.getImage(image ?? this.config.image)
-            const inspect = await img.inspect()
-            return inspect.Architecture
-        } catch {
-            return
-        }
+        const inspect = await inspectDockerImage(image ?? this.config.image)
+        return typeof inspect?.Architecture === "string" ? inspect.Architecture : undefined
     }
 
     /**

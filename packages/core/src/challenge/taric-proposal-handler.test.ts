@@ -1,4 +1,4 @@
-﻿import { afterEach, describe, expect, mock, test } from "bun:test"
+import { afterEach, describe, expect, mock, test } from "bun:test"
 import { mkdtemp, rm } from "node:fs/promises"
 import { tmpdir } from "node:os"
 import { join } from "node:path"
@@ -206,4 +206,69 @@ describe("Taric proposal handler", () => {
             ),
         ).rejects.toBeInstanceOf(HostBridgeError)
     })
+    test("observer curation is host-scoped and deduplicated in the existing outbox", async () => {
+        const bindingRegistry = await createBindingRegistry()
+        const outbox = await createOutbox()
+        const getBoardProjectKey = mock(async (_challengeId: string) => "host-project-a")
+        const handler = createTaricProposalHandler({ settings: { enabled: true, outbox }, bindingRegistry, getBoardProjectKey })
+        const params = { observer_board_change: { board: "memory", operation: "add", memory_kind: "failure", content: "The tested anonymous request returned 403", refs: claimParams.content.evidence_refs, limitations: ["Only this request and identity"] } }
+        const first = await handler.handle(createContext(params))
+        const second = await handler.handle(createContext(params))
+        expect(first.data).toMatchObject({ status: "pending", trust_level: "L0", candidate_only: true, canonical_changed: false, board_change: { board: "memory", operation: "add" } })
+        expect(second.data).toEqual(first.data)
+        expect(getBoardProjectKey).toHaveBeenCalledWith("web-001")
+        const entries = await outbox.list()
+        expect(entries).toHaveLength(1)
+        expect(entries[0]?.proposal.content.title).toBe("BreachWeave [host-project-a] memory (failure): observer:solver-a")
+        expect(entries[0]?.proposal.content.status).toBe("proposed")
+        expect(entries[0]?.proposal.expected_version).toBe(0)
+        expect(entries[0]?.proposal.target_id).toBeUndefined()
+    })
+
+    test("observer curation remains available after the executor work run is checkpointed", async () => {
+        const bindingRegistry = await createBindingRegistry()
+        const outbox = await createOutbox()
+        const checkpointAuthority = mock(async () => {
+            throw new HostBridgeError("stale_version", "work run is checkpointed")
+        })
+        const workManager = { checkpointAuthority } as unknown as TaricWorkManager
+        const handler = createTaricProposalHandler({ settings: { enabled: true, outbox }, bindingRegistry, workManager })
+        const params = { observer_board_change: { board: "memory", operation: "add", memory_kind: "evidence", content: "Fresh evidence was observed", refs: claimParams.content.evidence_refs, limitations: ["Read-only validation"] } }
+
+        const result = await handler.handle({
+            ...createContextWithWork(params, "checkpointed-run", 1),
+            getWorkState: () => ({ workRunId: "checkpointed-run", attemptId: "attempt-a", generation: 1, readSeq: 9, leaseState: "active" }),
+        })
+
+        expect(result.data).toMatchObject({ status: "pending", candidate_only: true, canonical_changed: false })
+        expect(checkpointAuthority).not.toHaveBeenCalled()
+        expect(await outbox.list()).toHaveLength(1)
+    })
+
+    test("observer cannot choose scope or authority and invalid input never reaches the outbox", async () => {
+        const outbox = await createOutbox()
+        const handler = createTaricProposalHandler({ settings: { enabled: true, outbox }, bindingRegistry: await createBindingRegistry() })
+        const change = { board: "idea", operation: "add", content: "Check upload route", refs: claimParams.content.evidence_refs, limitations: ["Untested hypothesis"] }
+        for (const params of [
+            { observer_board_change: change, engagement_id: "other" },
+            { observer_board_change: { ...change, project_key: "other" } },
+            { observer_board_change: { ...change, refs: ["tool:curl"] } },
+            { observer_board_change: { ...change, operation: "update", target_ref: "idea_local", result: "failed" } },
+        ]) {
+            await expect(handler.handle(createContext(params))).rejects.toBeInstanceOf(HostBridgeError)
+        }
+        expect(await outbox.list()).toHaveLength(0)
+    })
+
+    test("disabled and unbound observer submissions remain degraded with no local fallback", async () => {
+        const outbox = await createOutbox()
+        const handler = createTaricProposalHandler({ settings: { enabled: false, outbox }, bindingRegistry: await createBindingRegistry() })
+        const params = { observer_board_change: { board: "idea", operation: "add", content: "Check handler", refs: claimParams.content.evidence_refs, limitations: ["Unverified"] } }
+        expect((await handler.handle(createContext(params))).data).toMatchObject({ degraded: true, reason: "taric_proposal_disabled" })
+        const unbound = createTaricProposalHandler({ settings: { enabled: true, outbox }, bindingRegistry: await createBindingRegistry() })
+        const context = { ...createContext(params), getSolverEnvValue: () => undefined }
+        expect((await unbound.handle(context)).data).toMatchObject({ degraded: true, reason: "challenge_taric_binding_unavailable" })
+        expect(await outbox.list()).toHaveLength(0)
+    })
+
 })

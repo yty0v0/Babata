@@ -88,10 +88,6 @@ export function TaricProposalsPanel({ challengeId }: { challengeId: string }) {
         return <div className="rounded-lg border border-destructive/30 bg-destructive/5 px-3 py-2 text-sm text-destructive">{error}</div>
     }
 
-    if (proposals.length === 0) {
-        return <div className="text-sm text-muted-foreground">No Taric proposals yet.</div>
-    }
-
     return (
         <div className="min-w-0 space-y-3">
             {status && (
@@ -101,6 +97,11 @@ export function TaricProposalsPanel({ challengeId }: { challengeId: string }) {
                     </Badge>
                     <Badge variant="outline">{status.sidecarRunning ? `sidecar :${status.sidecarPort ?? 0}` : "sidecar stopped"}</Badge>
                     <Badge variant="outline">{status.authorityReachable ? "authority reachable" : "authority unavailable"}</Badge>
+                    {status.runtime && (
+                        <Badge variant="outline" className={status.runtime.ready ? "border-green-600/30 bg-green-500/15 text-green-700" : "border-amber-600/30 bg-amber-500/15 text-amber-800"}>
+                            {status.runtime.ready ? "runtime ready" : `runtime unavailable: ${status.runtime.failure?.code ?? "unknown"}`}
+                        </Badge>
+                    )}
                     <span className="text-xs text-muted-foreground">
                         pending {status.outboxPending} / failed {status.outboxFailed}
                     </span>
@@ -111,6 +112,7 @@ export function TaricProposalsPanel({ challengeId }: { challengeId: string }) {
                     )}
                 </div>
             )}
+            {proposals.length === 0 && <div className="text-sm text-muted-foreground">No Taric proposals yet.</div>}
             {proposals.map((entry) => {
                 const busy = busyKey === entry.idempotency_key
                 const limitations = textList((entry.proposal.content as Record<string, unknown>).limitations)

@@ -206,6 +206,22 @@ describe("attachObserverLoop", () => {
         expect(rounds[0]?.tool_logs[0]?.tool_name).toBe("challenge_get_hint")
     })
 
+    test("forces an Observer review after successful report submission", async () => {
+        const harness = createExtensionApiHarness()
+        attachObserverLoopForTest(harness.pi as never, {})
+        const ctx = { sessionManager: { getEntries: () => [] } }
+        await harness.emit("tool_execution_start", { toolCallId: "report-1", args: { asset_hash: "abc" } })
+        await harness.emit("tool_execution_end", {
+            toolCallId: "report-1",
+            toolName: "challenge_submit_report",
+            result: { content: [{ type: "text", text: "report submitted and checkpoint closed" }] },
+            isError: false,
+        })
+        await harness.emit("message_end", { message: { role: "assistant", content: [{ type: "text", text: "report submitted" }] } }, ctx)
+        await waitUntil(() => reviewCalls.length === 1)
+        expect(reviewCalls[0]?.[1]).toMatchObject({ reason: "report_submission" })
+    })
+
     test("dedupes repeated efficiency reminders within the cooldown window", async () => {
         const harness = createExtensionApiHarness()
         attachObserverLoopForTest(harness.pi as never, {})

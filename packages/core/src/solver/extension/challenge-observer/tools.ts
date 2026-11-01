@@ -1,62 +1,14 @@
 import { defineTool } from "@mariozechner/pi-coding-agent"
 import type { Static } from "@sinclair/typebox"
 import { Type } from "@sinclair/typebox"
-import type { IdeaRecord, IdeaStatus, MemoryEntry, MemoryKind } from "../../../challenge/memory"
+import type { IdeaRecord, MemoryEntry } from "../../../challenge/memory"
 import { requestHostBridge } from "../../../challenge/host-bridge-client"
-import { CHALLENGE_ENV_TARIC_BINDING_ACTIVE } from "../../../challenge/env"
-import {
-    addSolverBoardIdea,
-    appendSolverBoardMemory,
-    deleteSolverBoardMemory,
-    listSolverBoardIdeas,
-    listSolverBoardMemory,
-    searchSolverBoardIdeas,
-    updateSolverBoardIdea,
-    updateSolverBoardMemory,
-} from "../../board-store"
+import { parseObserverBoardChange } from "../../../challenge/observer-board-proposal"
+import type { ObserverBoardChange } from "../../../challenge/observer-board-proposal"
+import { listSolverBoardIdeas, listSolverBoardMemory, searchSolverBoardIdeas } from "../../board-store"
 import { formatIdeaTable, formatMemoryTable } from "./board-format"
 
 const EmptyParams = Type.Object({})
-const memoryKindToolParam = Type.Union([Type.Literal("fact"), Type.Literal("evidence"), Type.Literal("failure"), Type.Literal("note"), Type.Literal("hint")])
-const ideaStatusToolParam = Type.Union([Type.Literal("pending"), Type.Literal("testing"), Type.Literal("verified"), Type.Literal("failed"), Type.Literal("skipped")])
-
-const memoryAddToolParams = Type.Object({
-    kind: memoryKindToolParam,
-    content: Type.String(),
-    refs: Type.Optional(Type.Array(Type.String())),
-    source: Type.Optional(Type.String()),
-    publish_to_challenge: Type.Optional(
-        Type.Boolean({
-            description:
-                "Set true when this memory is a challenge-level fact, evidence, hint, key constraint, or clear failure boundary worth sharing with same-challenge solvers. Omit or false only for solver-local context.",
-        }),
-    ),
-})
-
-const memoryUpdateToolParams = Type.Object({
-    entry_id: Type.String(),
-    kind: Type.Optional(memoryKindToolParam),
-    content: Type.Optional(Type.String()),
-    refs: Type.Optional(Type.Array(Type.String())),
-    source: Type.Optional(Type.String()),
-})
-
-const memoryDeleteToolParams = Type.Object({
-    entry_id: Type.String(),
-})
-
-const ideaAddToolParams = Type.Object({
-    content: Type.String({ minLength: 1 }),
-    status: Type.Optional(ideaStatusToolParam),
-    result: Type.Optional(Type.String()),
-    publish_to_challenge: Type.Optional(
-        Type.Boolean({
-            description:
-                "Set true when this idea is a reusable challenge-level attack direction, key hint, or clear failure boundary worth sharing with same-challenge solvers. Omit or false only for solver-local hypotheses.",
-        }),
-    ),
-})
-
 const ideaSearchToolParams = Type.Object({
     query: Type.String(),
 })
@@ -70,38 +22,14 @@ const steerToolParams = Type.Object({
     message: Type.String({ minLength: 1 }),
 })
 
-const ideaUpdateToolParams = Type.Object({
-    idea_id: Type.String(),
-    status: ideaStatusToolParam,
-    result: Type.Optional(Type.String()),
-})
-
-type MemoryAddToolInput = Static<typeof memoryAddToolParams> & { kind: MemoryKind }
-type MemoryUpdateToolInput = Static<typeof memoryUpdateToolParams> & { kind?: MemoryKind }
-type MemoryDeleteToolInput = Static<typeof memoryDeleteToolParams>
 type IdeaSearchToolInput = Static<typeof ideaSearchToolParams>
 type QuerySolverHistoryToolInput = Static<typeof querySolverHistoryToolParams>
-type IdeaAddToolInput = Static<typeof ideaAddToolParams>
 type SteerToolInput = Static<typeof steerToolParams>
-type IdeaUpdateToolInput = Static<typeof ideaUpdateToolParams> & { status: IdeaStatus }
 
 function clipText(value: string, maxChars: number): string {
     const text = value.trim()
     if (text.length <= maxChars) return text
     return `${text.slice(0, maxChars)}...`
-}
-
-function isTaricAuthoritativeActive(): boolean {
-    return process.env[CHALLENGE_ENV_TARIC_BINDING_ACTIVE]?.trim() === "1"
-}
-
-function formatMemoryMutation(action: "added" | "updated" | "deleted", entry: MemoryEntry): string {
-    return `${action} memory [${entry.kind}] ${entry.id}: ${clipText(entry.content, 160)}`
-}
-
-function formatIdeaMutation(action: "added" | "updated", item: IdeaRecord): string {
-    const result = item.result.trim()
-    return `${action} idea [${item.status}] ${item.id}: ${clipText(item.content, 140)}${result ? ` -> ${clipText(result, 160)}` : ""}`
 }
 
 function formatLayeredMemoryTable(localItems: MemoryEntry[], challengeItems: MemoryEntry[]): string {
@@ -124,30 +52,41 @@ function formatLayeredIdeaTable(localItems: IdeaRecord[], challengeItems: IdeaRe
     ].join("\n")
 }
 
-async function listChallengeMemoryLayer(): Promise<MemoryEntry[]> {
+interface ChallengeLayerRead<T> {
+    items: T[]
+    diagnostics?: { status?: string; diagnostic_code?: string; diagnosticCode?: string }
+}
+
+function challengeReadNotice(diagnostics?: ChallengeLayerRead<unknown>["diagnostics"]): string {
+    if (!diagnostics || diagnostics.status === "complete") return ""
+    const code = diagnostics.diagnostic_code ?? diagnostics.diagnosticCode
+    return `\n\n> WARNING: challenge board read is ${diagnostics.status ?? "degraded"}; results may be incomplete${code ? ` (${code})` : ""}.`
+}
+
+async function listChallengeMemoryLayer(): Promise<ChallengeLayerRead<MemoryEntry>> {
     try {
-        const result = await requestHostBridge<{ items: MemoryEntry[] }>("challenge_memory_list", {})
-        return Array.isArray(result.items) ? result.items : []
+        const result = await requestHostBridge<{ items: MemoryEntry[]; read_diagnostics?: ChallengeLayerRead<unknown>["diagnostics"] }>("challenge_memory_list", {})
+        return { items: Array.isArray(result.items) ? result.items : [], diagnostics: result.read_diagnostics }
     } catch {
-        return []
+        return { items: [], diagnostics: { status: "failed", diagnostic_code: "host_bridge_read_failed" } }
     }
 }
 
-async function listChallengeIdeaLayer(): Promise<IdeaRecord[]> {
+async function listChallengeIdeaLayer(): Promise<ChallengeLayerRead<IdeaRecord>> {
     try {
-        const result = await requestHostBridge<{ items: IdeaRecord[] }>("challenge_idea_list", {})
-        return Array.isArray(result.items) ? result.items : []
+        const result = await requestHostBridge<{ items: IdeaRecord[]; read_diagnostics?: ChallengeLayerRead<unknown>["diagnostics"] }>("challenge_idea_list", {})
+        return { items: Array.isArray(result.items) ? result.items : [], diagnostics: result.read_diagnostics }
     } catch {
-        return []
+        return { items: [], diagnostics: { status: "failed", diagnostic_code: "host_bridge_read_failed" } }
     }
 }
 
-async function searchChallengeIdeaLayer(query: string): Promise<IdeaRecord[]> {
+async function searchChallengeIdeaLayer(query: string): Promise<ChallengeLayerRead<IdeaRecord>> {
     try {
-        const result = await requestHostBridge<{ items: IdeaRecord[] }>("challenge_idea_search", { query })
-        return Array.isArray(result.items) ? result.items : []
+        const result = await requestHostBridge<{ items: IdeaRecord[]; read_diagnostics?: ChallengeLayerRead<unknown>["diagnostics"] }>("challenge_idea_search", { query })
+        return { items: Array.isArray(result.items) ? result.items : [], diagnostics: result.read_diagnostics }
     } catch {
-        return []
+        return { items: [], diagnostics: { status: "failed", diagnostic_code: "host_bridge_read_failed" } }
     }
 }
 
@@ -272,189 +211,140 @@ function formatSolverHistory(records: SolverHistoryRecord[], totalEntries: numbe
     ].join("\n")
 }
 
-const observerSidecarBoardTools = [
-    defineTool({
-        name: "memory_list",
-        label: "Memory List",
-        description: "List current durable memory entries. Use first, and re-check before deleting or merging entries.",
-        promptSnippet: "memory_list: inspect current durable memory before curating it",
-        parameters: EmptyParams,
-        async execute() {
-            const [items, challengeItems] = await Promise.all([listSolverBoardMemory(), listChallengeMemoryLayer()])
+const evidenceFields = {
+    refs: Type.Array(Type.String({ format: "uuid" }), { minItems: 1, maxItems: 20, description: "Real Taric evidence UUIDs from solver results or taric_board_query; never fabricate IDs." }),
+    limitations: Type.Array(Type.String({ minLength: 1, maxLength: 8000 }), { minItems: 1, maxItems: 10, description: "Exact tested scope and remaining uncertainty; one failed payload does not refute an entire route." }),
+}
+const memoryFields = {
+    kind: Type.Union([Type.Literal("fact"), Type.Literal("evidence"), Type.Literal("failure"), Type.Literal("note"), Type.Literal("hint")]),
+    content: Type.String({ minLength: 1, maxLength: 8000 }),
+    ...evidenceFields,
+}
+const ideaFields = {
+    content: Type.String({ minLength: 1, maxLength: 8000 }),
+    status: Type.Optional(Type.Union([Type.Literal("pending"), Type.Literal("testing"), Type.Literal("verified"), Type.Literal("failed"), Type.Literal("skipped")])),
+    result: Type.Optional(Type.String({ minLength: 1, maxLength: 8000 })),
+    ...evidenceFields,
+}
+
+interface ObserverProposalResponse {
+    proposal_id?: string
+    status?: string
+    degraded?: boolean
+    reason?: string
+    candidate_only?: boolean
+    canonical_changed?: boolean
+}
+
+interface ObserverProposalResult {
+    isError?: boolean
+    content: Array<{ type: "text"; text: string }>
+    details: {
+        submitted: boolean
+        canonical_changed: false
+        candidate_only?: boolean
+        proposal_id?: string
+        status?: string
+        response?: ObserverProposalResponse
+    }
+}
+
+async function submitObserverBoardChange(input: ObserverBoardChange): Promise<ObserverProposalResult> {
+    try {
+        const change = parseObserverBoardChange(input)
+        const response = await requestHostBridge<ObserverProposalResponse>("taric_proposal_submit", { observer_board_change: change })
+        const accepted = response.degraded !== true && typeof response.proposal_id === "string" && response.proposal_id.length > 0
+            && ["pending", "inflight", "acknowledged"].includes(response.status ?? "")
+            && response.candidate_only === true && response.canonical_changed === false
+        if (!accepted) {
             return {
-                content: [{ type: "text", text: formatLayeredMemoryTable(items, challengeItems) }],
-                details: { items, challenge_items: challengeItems },
+                isError: true,
+                content: [{ type: "text" as const, text: "Board proposal unavailable: " + (response.reason ?? response.status ?? "host did not confirm a candidate") + ". No canonical change or local fallback was made." }],
+                details: { submitted: false, canonical_changed: false, response },
             }
-        },
-    }),
-    defineTool({
-        name: "memory_add",
-        label: "Memory Add",
-        description: "Add one durable memory entry. Use only for facts, evidence, failure boundaries, hints, or important constraints worth keeping.",
-        promptSnippet: "memory_add: add durable fact/evidence/failure/hint/constraint",
-        parameters: memoryAddToolParams,
-        async execute(_toolCallId, params: MemoryAddToolInput) {
-            if (isTaricAuthoritativeActive()) {
-                throw new Error("Taric is the authoritative state blackboard; memory_add is read-only")
-            }
-            const source = params.source?.trim() || "observer"
-            const entry = await appendSolverBoardMemory({
-                kind: params.kind,
-                content: params.content,
-                refs: params.refs ?? [],
-                source,
-            })
-            const challengeEntry =
-                params.publish_to_challenge === true
-                    ? (
-                          await requestHostBridge<{ entry: MemoryEntry }>("challenge_memory_add", {
-                              kind: params.kind,
-                              content: params.content,
-                              refs: params.refs ?? [],
-                              ...(params.source?.trim() ? { source } : {}),
-                          })
-                      ).entry
-                    : undefined
-            return {
-                content: [
-                    {
-                        type: "text",
-                        text: challengeEntry
-                            ? `${formatMemoryMutation("added", entry)}\npublished challenge memory ${challengeEntry.id}`
-                            : formatMemoryMutation("added", entry),
-                    },
-                ],
-                details: { entry, ...(challengeEntry ? { challenge_entry: challengeEntry } : {}) },
-            }
-        },
-    }),
-    defineTool({
-        name: "memory_update",
-        label: "Memory Update",
-        description: "Update one memory entry by id or id prefix. Use when a memory entry should be tightened, merged, or rewritten into a stronger durable conclusion.",
-        promptSnippet: "memory_update: tighten or merge an existing memory entry",
-        parameters: memoryUpdateToolParams,
-        async execute(_toolCallId, params: MemoryUpdateToolInput) {
-            if (isTaricAuthoritativeActive()) {
-                throw new Error("Taric is the authoritative state blackboard; memory_update is read-only")
-            }
-            const entry = await updateSolverBoardMemory(params.entry_id, {
-                ...(params.kind ? { kind: params.kind } : {}),
-                ...(params.content !== undefined ? { content: params.content } : {}),
-                ...(params.refs !== undefined ? { refs: params.refs } : {}),
-                ...(params.source !== undefined ? { source: params.source } : {}),
-            })
-            return {
-                content: [{ type: "text", text: formatMemoryMutation("updated", entry) }],
-                details: { entry },
-            }
-        },
-    }),
-    defineTool({
-        name: "memory_delete",
-        label: "Memory Delete",
-        description: "Delete one memory entry by id or id prefix. Use for duplicates, low-value action logs, stale entries, or memory superseded by a stronger record.",
-        promptSnippet: "memory_delete: remove duplicate, noisy, stale, or superseded memory",
-        parameters: memoryDeleteToolParams,
-        async execute(_toolCallId, params: MemoryDeleteToolInput) {
-            if (isTaricAuthoritativeActive()) {
-                throw new Error("Taric is the authoritative state blackboard; memory_delete is read-only")
-            }
-            const entry = await deleteSolverBoardMemory(params.entry_id)
-            return {
-                content: [{ type: "text", text: formatMemoryMutation("deleted", entry) }],
-                details: { entry },
-            }
-        },
-    }),
-    defineTool({
-        name: "idea_list",
-        label: "Idea List",
-        description: "List current strategy ideas. Use first to inspect the existing attack hypothesis board.",
-        promptSnippet: "idea_list: inspect current attack hypotheses before curation",
-        parameters: EmptyParams,
-        async execute() {
-            const [items, challengeItems] = await Promise.all([listSolverBoardIdeas(), listChallengeIdeaLayer()])
-            return {
-                content: [{ type: "text", text: formatLayeredIdeaTable(items, challengeItems) }],
-                details: { items, challenge_items: challengeItems },
-            }
-        },
-    }),
-    defineTool({
-        name: "idea_search",
-        label: "Idea Search",
-        description: "Search strategy ideas by keyword. Use before adding a new idea to avoid near-duplicate attack hypotheses.",
-        promptSnippet: "idea_search: check whether a similar attack hypothesis already exists",
-        parameters: ideaSearchToolParams,
-        async execute(_toolCallId, params: IdeaSearchToolInput) {
-            const [items, challengeItems] = await Promise.all([searchSolverBoardIdeas(params.query), searchChallengeIdeaLayer(params.query)])
-            return {
-                content: [{ type: "text", text: formatLayeredIdeaTable(items, challengeItems) }],
-                details: { query: params.query, items, challenge_items: challengeItems },
-            }
-        },
-    }),
-    defineTool({
-        name: "idea_add",
-        label: "Idea Add",
-        description: "Add one strategy idea. You can set status/result at creation time. Use only for concrete attack hypotheses, not for observations or completed actions.",
-        promptSnippet: "idea_add: add one concrete attack hypothesis with optional status/result",
-        parameters: ideaAddToolParams,
-        async execute(_toolCallId, params: IdeaAddToolInput) {
-            if (isTaricAuthoritativeActive()) {
-                throw new Error("Taric is the authoritative state blackboard; idea_add is read-only")
-            }
-            const result = await addSolverBoardIdea({
-                content: params.content,
-                status: params.status,
-                result: params.result ?? "",
-            })
-            const challengeResult =
-                params.publish_to_challenge === true
-                    ? await requestHostBridge<{ created: boolean; item: IdeaRecord }>("challenge_idea_add", {
-                          content: params.content,
-                          ...(params.status ? { status: params.status } : {}),
-                          result: params.result ?? "",
-                      })
-                    : undefined
-            return {
-                content: [
-                    {
-                        type: "text",
-                        text: challengeResult
-                            ? `${formatIdeaMutation("added", result.item)}\npublished challenge idea ${challengeResult.item.id}`
-                            : formatIdeaMutation("added", result.item),
-                    },
-                ],
-                details: {
-                    ...result,
-                    ...(challengeResult ? { challenge_created: challengeResult.created, challenge_item: challengeResult.item } : {}),
-                },
-            }
-        },
-    }),
-    defineTool({
-        name: "idea_update",
-        label: "Idea Update",
-        description: "Update one strategy idea status and result by id or id prefix. Use when a hypothesis starts testing or reaches verified/failed/skipped.",
-        promptSnippet: "idea_update: advance hypothesis lifecycle and record result",
-        parameters: ideaUpdateToolParams,
-        async execute(_toolCallId, params: IdeaUpdateToolInput) {
-            if (isTaricAuthoritativeActive()) {
-                throw new Error("Taric is the authoritative state blackboard; idea_update is read-only")
-            }
-            const item = await updateSolverBoardIdea(params.idea_id, {
-                status: params.status,
-                result: params.result ?? "",
-            })
-            return {
-                content: [{ type: "text", text: formatIdeaMutation("updated", item) }],
-                details: { item },
-            }
-        },
-    }),
-]
+        }
+        return {
+            content: [{ type: "text" as const, text: "Proposed " + change.board + " " + change.operation + " (L0 candidate " + response.proposal_id + "; " + response.status + "). Await Taric governance; the original board record is unchanged." }],
+            details: { submitted: true, candidate_only: true, canonical_changed: false, proposal_id: response.proposal_id, status: response.status },
+        }
+    } catch (error) {
+        return {
+            isError: true,
+            content: [{ type: "text" as const, text: "Board proposal failed: " + (error instanceof Error ? error.message : String(error)) + ". No canonical change or local fallback was made." }],
+            details: { submitted: false, canonical_changed: false },
+        }
+    }
+}
+
+function createObserverCurationTools() {
+    return [
+        defineTool({
+            name: "memory_add", label: "Propose Memory",
+            description: "Propose a new durable memory backed by real Taric evidence. Read the board first. This queues an L0 candidate through the host, never a local file or an admitted fact.",
+            parameters: Type.Object(memoryFields, { additionalProperties: false }),
+            async execute(_id, params) {
+                return submitObserverBoardChange({ board: "memory", operation: "add", memory_kind: params.kind, content: params.content, refs: params.refs, limitations: params.limitations })
+            },
+        }),
+        defineTool({
+            name: "memory_update", label: "Propose Memory Revision",
+            description: "Propose an evidenced replacement of a memory by its real Taric UUID. The original stays unchanged until host/Taric governance resolves the request; do not claim it was updated.",
+            parameters: Type.Object({ id: Type.String({ format: "uuid" }), ...memoryFields }, { additionalProperties: false }),
+            async execute(_id, params) {
+                return submitObserverBoardChange({ board: "memory", operation: "update", target_ref: params.id, memory_kind: params.kind, content: params.content, refs: params.refs, limitations: params.limitations })
+            },
+        }),
+        defineTool({
+            name: "memory_delete", label: "Propose Memory Retirement",
+            description: "Request retirement of a superseded or incorrect memory, with its real Taric UUID, evidence and reason. This is an immutable candidate request, not deletion or evidence destruction.",
+            parameters: Type.Object({ id: Type.String({ format: "uuid" }), reason: Type.String({ minLength: 1, maxLength: 8000 }), ...evidenceFields }, { additionalProperties: false }),
+            async execute(_id, params) {
+                return submitObserverBoardChange({ board: "memory", operation: "retire", target_ref: params.id, content: params.reason, refs: params.refs, limitations: params.limitations })
+            },
+        }),
+        defineTool({
+            name: "idea_add", label: "Propose Idea",
+            description: "Propose a new testable hypothesis only when the board lacks it. Cite real Taric evidence and limitations. Requested status is an observer assessment, never authoritative verification.",
+            parameters: Type.Object(ideaFields, { additionalProperties: false }),
+            async execute(_id, params) {
+                return submitObserverBoardChange({ board: "idea", operation: "add", ...params })
+            },
+        }),
+        defineTool({
+            name: "idea_update", label: "Propose Idea Resolution",
+            description: "Prefer closing an existing hypothesis over adding another. Supply its real Taric UUID, replacement content, scoped result and evidence. A verified/failed/skipped request is a candidate assessment; the original status is unchanged.",
+            parameters: Type.Object({ ...ideaFields, id: Type.String({ format: "uuid" }), result: Type.String({ minLength: 1, maxLength: 8000 }) }, { additionalProperties: false }),
+            async execute(_id, params) {
+                const { id, ...change } = params
+                return submitObserverBoardChange({ board: "idea", operation: "update", target_ref: id, ...change })
+            },
+        }),
+        defineTool({
+            name: "taric_board_query", label: "Taric Evidence Read",
+            description: "Read a bounded, host-scoped Taric evidence/context/resource page when real evidence or target UUIDs are missing. Respect degraded/partial results and cursors. Read-only; never query unrelated projects.",
+            parameters: Type.Object({
+                operation: Type.Union([Type.Literal("evidence.query"), Type.Literal("resource.query"), Type.Literal("context.query")]),
+                kind: Type.Optional(Type.String({ minLength: 1, maxLength: 100 })),
+                cursor: Type.Optional(Type.String({ maxLength: 512 })),
+                page_size: Type.Optional(Type.Integer({ minimum: 1, maximum: 20 })),
+            }, { additionalProperties: false }),
+            async execute(_id, params) {
+                const data = await requestHostBridge<Record<string, unknown>>("taric_board_query", {
+                    ...params,
+                    page_size: params.page_size ?? 10,
+                    budget: params.operation === "context.query" ? 4000 : 20,
+                })
+                const json = JSON.stringify(data)
+                const truncated = json.length > 16000
+                return {
+                    ...(data.degraded === true ? { isError: true } : {}),
+                    content: [{ type: "text" as const, text: clipText(json, 16000) + (truncated ? "\nWARNING: display truncated; use a smaller page." : "") }],
+                    details: { data, display_truncated: truncated },
+                }
+            },
+        }),
+    ]
+}
 
 export function createObserverSidecarTools(sendCorrectionNotice?: (message: string) => Promise<boolean> | boolean) {
     return createObserverSidecarToolsWithOptions({ sendCorrectionNotice })
@@ -467,7 +357,8 @@ export function createObserverSidecarToolsWithOptions(options?: {
     const sendCorrectionNotice = options?.sendCorrectionNotice
     const getSolverEntries = options?.getSolverEntries
     return [
-        ...observerSidecarBoardTools,
+        ...challengeObserverAgentTools,
+        ...createObserverCurationTools(),
         defineTool({
             name: "query_solver_history",
             label: "Query Solver History",
@@ -495,12 +386,12 @@ export function createObserverSidecarToolsWithOptions(options?: {
             name: "send_efficiency_reminder",
             label: "Efficiency Reminder",
             description:
-                "Send one short efficiency reminder only when the solver is clearly and persistently stuck in a low-efficiency mode. If the solver cannot make further breakthrough and already has reportable evidence, verified findings, or clear failure boundaries, you may remind it to consider submitting a report. Do not interrupt healthy ongoing work, and do not use this as a substitute for ideas or memory.",
+                "As a last resort, send a concise evidence-based correction for persistent mainline drift or repeated low-information actions after board curation is insufficient. Identify the observed problem and the next minimal verification action. Do not interrupt healthy progress or claim that board state was changed.",
             promptSnippet:
-                "send_efficiency_reminder: use sparingly for persistent low-efficiency behavior; if no further breakthrough is likely, remind the solver it may submit a report with current evidence/failure boundaries",
+                "send_efficiency_reminder: sparingly send an evidence-based mainline correction with one concrete next verification action",
             parameters: steerToolParams,
             async execute(_toolCallId, params: SteerToolInput) {
-                const delivered = (await sendCorrectionNotice?.(params.message)) !== false
+                const delivered = sendCorrectionNotice ? (await sendCorrectionNotice(params.message)) !== false : false
                 return {
                     content: [
                         {
@@ -525,10 +416,11 @@ export const challengeObserverAgentTools = [
         promptSnippet: "memory_list: review durable facts/evidence/failures before choosing next step",
         parameters: EmptyParams,
         async execute() {
-            const [items, challengeItems] = await Promise.all([listSolverBoardMemory(), listChallengeMemoryLayer()])
+            const [items, challengeRead] = await Promise.all([listSolverBoardMemory(), listChallengeMemoryLayer()])
+            const challengeItems = challengeRead.items
             return {
-                content: [{ type: "text", text: formatLayeredMemoryTable(items, challengeItems) }],
-                details: { items, challenge_items: challengeItems },
+                content: [{ type: "text", text: formatLayeredMemoryTable(items, challengeItems) + challengeReadNotice(challengeRead.diagnostics) }],
+                details: { items, challenge_items: challengeItems, challenge_read_diagnostics: challengeRead.diagnostics },
             }
         },
     }),
@@ -539,10 +431,11 @@ export const challengeObserverAgentTools = [
         promptSnippet: "idea_list: review current attack hypotheses before choosing direction",
         parameters: EmptyParams,
         async execute() {
-            const [items, challengeItems] = await Promise.all([listSolverBoardIdeas(), listChallengeIdeaLayer()])
+            const [items, challengeRead] = await Promise.all([listSolverBoardIdeas(), listChallengeIdeaLayer()])
+            const challengeItems = challengeRead.items
             return {
-                content: [{ type: "text", text: formatLayeredIdeaTable(items, challengeItems) }],
-                details: { items, challenge_items: challengeItems },
+                content: [{ type: "text", text: formatLayeredIdeaTable(items, challengeItems) + challengeReadNotice(challengeRead.diagnostics) }],
+                details: { items, challenge_items: challengeItems, challenge_read_diagnostics: challengeRead.diagnostics },
             }
         },
     }),
@@ -553,10 +446,11 @@ export const challengeObserverAgentTools = [
         promptSnippet: "idea_search: check whether this vector is already on the current board",
         parameters: ideaSearchToolParams,
         async execute(_toolCallId, params: IdeaSearchToolInput) {
-            const [items, challengeItems] = await Promise.all([searchSolverBoardIdeas(params.query), searchChallengeIdeaLayer(params.query)])
+            const [items, challengeRead] = await Promise.all([searchSolverBoardIdeas(params.query), searchChallengeIdeaLayer(params.query)])
+            const challengeItems = challengeRead.items
             return {
-                content: [{ type: "text", text: formatLayeredIdeaTable(items, challengeItems) }],
-                details: { query: params.query, items, challenge_items: challengeItems },
+                content: [{ type: "text", text: formatLayeredIdeaTable(items, challengeItems) + challengeReadNotice(challengeRead.diagnostics) }],
+                details: { query: params.query, items, challenge_items: challengeItems, challenge_read_diagnostics: challengeRead.diagnostics },
             }
         },
     }),

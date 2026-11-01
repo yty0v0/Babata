@@ -10,6 +10,9 @@ export interface ObserverRuntimeState {
     round: number
     current_round_tool_logs: ObserverToolLog[]
     tool_args_by_call_id: Record<string, string>
+    review_in_flight?: boolean
+    last_review_started_at?: string
+    last_review_finished_at?: string
     force_review_reason?: ObserverReviewPayload["reason"]
     last_reminder?: {
         sent_at: string
@@ -42,6 +45,7 @@ function createDefaultObserverRuntimeState(): ObserverRuntimeState {
         round: 0,
         current_round_tool_logs: [],
         tool_args_by_call_id: {},
+        review_in_flight: false,
     }
 }
 

@@ -1,4 +1,4 @@
-﻿import { describe, expect, mock, test } from "bun:test"
+import { describe, expect, mock, test } from "bun:test"
 import { mkdtemp, readFile } from "node:fs/promises"
 import { tmpdir } from "node:os"
 import { join } from "node:path"
@@ -41,6 +41,10 @@ describe("host bridge security", () => {
         expect(HOST_BRIDGE_ROLE_ACTIONS.planner.has("challenge_submit_report")).toBe(false)
         expect(HOST_BRIDGE_ROLE_ACTIONS.executor.has("challenge_submit_report")).toBe(true)
         expect(HOST_BRIDGE_ROLE_ACTIONS.observer.has("challenge_submit_report")).toBe(false)
+        expect(HOST_BRIDGE_ROLE_ACTIONS.observer.has("taric_proposal_submit")).toBe(true)
+        expect(HOST_BRIDGE_ROLE_ACTIONS.observer.has("taric_board_query")).toBe(true)
+        expect(HOST_BRIDGE_ROLE_ACTIONS.observer.has("challenge_memory_add")).toBe(false)
+        expect(HOST_BRIDGE_ROLE_ACTIONS.observer.has("challenge_idea_add")).toBe(false)
     })
 
     test("rejects solver without active role and writes denial audit", async () => {

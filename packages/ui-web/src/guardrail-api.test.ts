@@ -1,23 +1,26 @@
 import { describe, expect, test } from "bun:test"
 
-const BASE_URL = "http://127.0.0.1:3000"
-const TOKEN = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJiYjY1NWFmOS02MzgxLTRlMjItOWExNy1iMThiMDI2YTZkZTAiLCJ1c2VybmFtZSI6Imd1YXJkcmFpbF9kdndhXzE3OTI5MTY1NzYiLCJpYXQiOjE3OTI5MTY1NzcsImV4cCI6MTc5MzUyMTM3N30.MFYUJQYNmXEXgHzMgzrLNSR1YHiMo4X7w2LyxWqPwgU"
+// This is an opt-in deployed-server integration test. Do not silently bind it
+// to whichever application happens to be running on localhost:3000.
+const BASE_URL = process.env.BW_GUARDRAIL_API_URL
+const TOKEN = process.env.BW_GUARDRAIL_API_TOKEN
+const CHALLENGE_ID = process.env.BW_GUARDRAIL_CHALLENGE_ID
+const integrationConfigured = Boolean(BASE_URL && TOKEN && CHALLENGE_ID)
 
 async function fetchJson(path: string) {
-    const response = await fetch(`${BASE_URL}${path}`, {
+    return fetch(`${BASE_URL}${path}`, {
         headers: { Authorization: `Bearer ${TOKEN}` },
     })
-    return response
 }
 
-describe("guardrail audit API", () => {
+describe.skipIf(!integrationConfigured)("guardrail audit API integration", () => {
     test("missing challenge returns 404", async () => {
         const response = await fetchJson("/api/challenges/does-not-exist/guardrail-audit")
         expect(response.status).toBe(404)
     })
 
     test("existing challenge returns audit summary", async () => {
-        const response = await fetchJson("/api/challenges/dd3ac1a8/guardrail-audit")
+        const response = await fetchJson(`/api/challenges/${encodeURIComponent(CHALLENGE_ID!)}/guardrail-audit`)
         expect(response.status).toBe(200)
         const body = await response.json()
         expect(typeof body.observed).toBe("number")

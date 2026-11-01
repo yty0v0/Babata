@@ -92,7 +92,8 @@ describe("challenge host bridge notifications", () => {
                 updated_at: "2026-04-12T00:00:00.000Z",
             },
         }))
-        const handler = createChallengeHostBridgeHandler({ listIdeas, addIdea } as unknown as ChallengeManager)
+        const getMemoryReadDiagnostics = mock(async () => ({ status: "truncated", canonical: { pages: 2, records: 50 } }))
+        const handler = createChallengeHostBridgeHandler({ listIdeas, addIdea, getMemoryReadDiagnostics } as unknown as ChallengeManager)
 
         const listResult = await handler.handle(createContext({ action: "challenge_idea_list", params: {} }))
         const addResult = await handler.handle(
@@ -106,7 +107,8 @@ describe("challenge host bridge notifications", () => {
             }),
         )
 
-        expect(listResult).toMatchObject({ handled: true, data: { items: [{ id: "idea_global" }] } })
+        expect(listResult).toMatchObject({ handled: true, data: { items: [{ id: "idea_global" }], read_diagnostics: { status: "truncated" } } })
+        expect(getMemoryReadDiagnostics).toHaveBeenCalledWith("chal-1")
         expect(addResult).toMatchObject({ handled: true, data: { created: true, item: { id: "idea_added" } } })
         expect(listIdeas).toHaveBeenCalledWith("chal-1")
         expect(addIdea).toHaveBeenCalledWith("chal-1", {

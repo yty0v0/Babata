@@ -181,15 +181,19 @@ async function handleChallengeAction(
         }
         case "challenge_memory_list": {
             const challengeId = await getRequiredChallengeId(context)
-            const items = await challengeManager.isTaricAuthoritativeActive?.(challengeId)
-                ? await challengeManager.listTaricMemoryProjection(challengeId)
-                : await challengeManager.listMemory(challengeId)
-            return { handled: true, data: { challenge_id: challengeId, items } }
+            const legacyTaricProjection = await challengeManager.isTaricAuthoritativeActive?.(challengeId)
+                && !await challengeManager.isTaricProjectManaged?.(challengeId)
+            const board = legacyTaricProjection
+                ? { memory: await challengeManager.listTaricMemoryProjection(challengeId) }
+                : await challengeManager.readMemoryBoard?.(challengeId)
+            const items = board?.memory ?? await challengeManager.listMemory(challengeId)
+            const read_diagnostics = board && "diagnostics" in board ? board.diagnostics : await challengeManager.getMemoryReadDiagnostics?.(challengeId)
+            return { handled: true, data: { challenge_id: challengeId, items, ...(read_diagnostics ? { read_diagnostics } : {}) } }
         }
         case "challenge_memory_add": {
             const challengeId = await getRequiredChallengeId(context)
-            if (await challengeManager.isTaricAuthoritativeActive?.(challengeId)) {
-                throw new HostBridgeError("authorization_error", "Taric is the authoritative state blackboard; memory_add is read-only")
+            if (await challengeManager.isTaricAuthoritativeActive?.(challengeId) || await challengeManager.isTaricProjectManaged?.(challengeId)) {
+                throw new HostBridgeError("authorization_error", "Taric-managed memory is proposal-only; direct memory_add is unavailable")
             }
             const role = context.getSolver?.()?.role
             const source = `${role ?? "observer"}:${solverId}`
@@ -204,23 +208,30 @@ async function handleChallengeAction(
         }
         case "challenge_idea_list": {
             const challengeId = await getRequiredChallengeId(context)
-            const items = await challengeManager.isTaricAuthoritativeActive?.(challengeId)
-                ? await challengeManager.listTaricIdeasProjection(challengeId)
-                : await challengeManager.listIdeas(challengeId)
-            return { handled: true, data: { challenge_id: challengeId, items } }
+            const legacyTaricProjection = await challengeManager.isTaricAuthoritativeActive?.(challengeId)
+                && !await challengeManager.isTaricProjectManaged?.(challengeId)
+            const board = legacyTaricProjection
+                ? { ideas: await challengeManager.listTaricIdeasProjection(challengeId) }
+                : await challengeManager.readMemoryBoard?.(challengeId)
+            const items = board?.ideas ?? await challengeManager.listIdeas(challengeId)
+            const read_diagnostics = board && "diagnostics" in board ? board.diagnostics : await challengeManager.getMemoryReadDiagnostics?.(challengeId)
+            return { handled: true, data: { challenge_id: challengeId, items, ...(read_diagnostics ? { read_diagnostics } : {}) } }
         }
         case "challenge_idea_search": {
             const challengeId = await getRequiredChallengeId(context)
             const query = getRequiredString(data, "query")
-            const items = await challengeManager.isTaricAuthoritativeActive?.(challengeId)
+            const legacyTaricProjection = await challengeManager.isTaricAuthoritativeActive?.(challengeId)
+                && !await challengeManager.isTaricProjectManaged?.(challengeId)
+            const items = legacyTaricProjection
                 ? await challengeManager.searchTaricIdeasProjection(challengeId, query)
                 : await challengeManager.searchIdeas(challengeId, query)
-            return { handled: true, data: { challenge_id: challengeId, items } }
+            const read_diagnostics = await challengeManager.getMemoryReadDiagnostics?.(challengeId)
+            return { handled: true, data: { challenge_id: challengeId, items, ...(read_diagnostics ? { read_diagnostics } : {}) } }
         }
         case "challenge_idea_add": {
             const challengeId = await getRequiredChallengeId(context)
-            if (await challengeManager.isTaricAuthoritativeActive?.(challengeId)) {
-                throw new HostBridgeError("authorization_error", "Taric is the authoritative state blackboard; idea_add is read-only")
+            if (await challengeManager.isTaricAuthoritativeActive?.(challengeId) || await challengeManager.isTaricProjectManaged?.(challengeId)) {
+                throw new HostBridgeError("authorization_error", "Taric-managed ideas are proposal-only; direct idea_add is unavailable")
             }
             const status = getOptionalIdeaStatus(data)
             const result = await challengeManager.addIdea(challengeId, {

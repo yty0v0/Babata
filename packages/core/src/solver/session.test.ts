@@ -126,7 +126,7 @@ describe("challenge collaboration append prompt", () => {
 
         expect(text).toContain("challenge extension / host bridge")
         expect(text).toContain("`idea` 是待验证的攻击假设")
-        expect(text).toContain("observer sidecar 会维护")
+        expect(text).toContain("observer sidecar 根据实测提出看板整理候选")
         expect(text).toContain("系统同步或协作同步消息")
     })
 
@@ -134,8 +134,8 @@ describe("challenge collaboration append prompt", () => {
         const text = buildObserverExtensionAppendPrompt()
 
         expect(text).toContain("observer sidecar")
-        expect(text).toContain("不直接替你解题")
-        expect(text).toContain("只读策略板")
-        expect(text).toContain("不要把 idea 当结论")
+        expect(text).toContain("observer 不解题、不验证漏洞；只向 host 提交看板整理候选")
+        expect(text).toContain("Taric/host 管理权威状态")
+        expect(text).toContain("ideas 是待验证假设，不是结论")
     })
 })

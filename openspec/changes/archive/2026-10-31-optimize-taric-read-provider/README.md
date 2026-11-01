@@ -1,0 +1,3 @@
+# optimize-taric-read-provider
+
+Harden Taric read-board pagination and readiness, automatically initialize the Taric runtime at application startup, and keep Taric as the persistence authority for Taric-managed challenge memory/ideas. A typed read adapter is an integration boundary, not a backend-selection mechanism. Legacy-local compatibility is limited to explicitly legacy scopes and is never an outage fallback. Existing governance/write lifecycles remain unchanged; project-bound access is deferred pending verified identity mapping and credential isolation.

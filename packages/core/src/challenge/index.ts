@@ -7,3 +7,7 @@ export {
     CHALLENGE_ENV_API_BASE_URL,
     CHALLENGE_ENV_AGENT_TOKEN,
 } from "./env"
+
+export { FileChallengeMemoryProvider } from "./memory-provider"
+export type { ChallengeMemoryProvider, ChallengeMemoryReadDiagnostics, ChallengeMemoryReadResult, ChallengeMemoryScope } from "./memory-provider"
+export { TaricMemoryProvider } from "./taric-memory-provider"

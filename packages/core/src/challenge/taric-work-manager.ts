@@ -244,6 +244,24 @@ function sanitizeFileName(value: string): string {
     return text
 }
 
+function isTaricWorkRecord(value: unknown): value is TaricWorkRecord {
+    if (!value || typeof value !== "object") return false
+    const record = value as Partial<TaricWorkRecord>
+    return typeof record.work_run_id === "string"
+        && typeof record.attempt_id === "string"
+        && typeof record.agent_id === "string"
+        && typeof record.challenge_id === "string"
+        && typeof record.engagement_id === "string"
+        && typeof record.work_item_id === "string"
+        && typeof record.host_id === "string"
+        && typeof record.solver_id === "string"
+        && typeof record.status === "string"
+        && typeof record.generation === "number"
+        && typeof record.read_seq === "number"
+        && typeof record.created_at === "string"
+        && typeof record.updated_at === "string"
+}
+
 async function atomicWriteJson(path: string, value: unknown): Promise<void> {
     const tmpPath = `${path}.tmp-${process.pid}-${Date.now()}-${crypto.randomUUID().slice(0, 8)}`
     await mkdir(dirname(path), { recursive: true })
@@ -414,10 +432,10 @@ export class TaricWorkManager {
         const records: TaricWorkRecord[] = []
         for (const file of files.filter((item) => item.endsWith(".json"))) {
             try {
-                const record = await Bun.file(join(this.rootDir, file)).json() as TaricWorkRecord
-                records.push(record)
+                const value: unknown = await Bun.file(join(this.rootDir, file)).json()
+                if (isTaricWorkRecord(value)) records.push(value)
             } catch {
-                // Ignore malformed records until operator-driven repair.
+                // Ignore malformed or unrelated records until operator-driven repair.
             }
         }
         return records.sort((a, b) => a.created_at.localeCompare(b.created_at))

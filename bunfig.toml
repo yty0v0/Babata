@@ -2,12 +2,5 @@
 linker = "hoisted"
 peer = false
 
-[test]
-# packages/libs/pi-mcp-adapter is a vendored third-party package whose suites are
-# written for vitest (vi.hoisted is not implemented by Bun) and reference an
-# examples/ directory that is not vendored. Keep them out of the repo-wide run;
-# they are not part of this project's test gate.
-pathIgnorePatterns = ["**/node_modules/**", "**/dist/**", "packages/libs/pi-mcp-adapter/**"]
-
 [serve.static]
 plugins = ["bun-plugin-tailwind"]

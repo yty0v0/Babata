@@ -1,4 +1,4 @@
-﻿import { afterEach, describe, expect, mock, test } from "bun:test"
+import { afterEach, describe, expect, mock, test } from "bun:test"
 import { mkdtemp, rm } from "node:fs/promises"
 import { tmpdir } from "node:os"
 import { join } from "node:path"
@@ -50,6 +50,25 @@ describe("Taric read board", () => {
     test("defaults to admitted L1 recall but never asks for L0 candidates", () => {
         expect(normalizeTaricReadRequest({ operation: "context.query" })).toMatchObject({ include_candidates: true })
         expect(normalizeTaricReadRequest({ include_candidates: false })).toMatchObject({ include_candidates: false })
+    })
+    test("bounds model pagination inputs and strips trusted scope filters", () => {
+        expect(normalizeTaricReadRequest({
+            page_size: 50,
+            budget: 100,
+            cursor: "cursor-1",
+            read_seq: 3,
+            filters: { project_id: "attacker-project", engagement_id: "attacker-engagement", status: "open" },
+        })).toEqual({
+            page_size: 50,
+            budget: 100,
+            cursor: "cursor-1",
+            read_seq: 3,
+            filters: { status: "open" },
+            include_candidates: true,
+        })
+        expect(() => normalizeTaricReadRequest({ page_size: 51 })).toThrow(HostBridgeError)
+        expect(() => normalizeTaricReadRequest({ budget: 4001 })).toThrow(HostBridgeError)
+        expect(() => normalizeTaricReadRequest({ cursor: "x".repeat(513) })).toThrow(HostBridgeError)
     })
 
     test("requires both outer and inner success", () => {
@@ -121,6 +140,70 @@ describe("Taric read board", () => {
         expect(fetchImpl).toHaveBeenCalledTimes(1)
     })
 
+    test("fails closed on stale or unknown projection before issuing a board read", async () => {
+        const bindingRegistry = await createBindingRegistry()
+        const dispatch = mock(async () => ({ ok: true, data: { ok: true, items: [] } }))
+        const base = {
+            settings: { enabled: true, baseUrl: "http://127.0.0.1:3999", dispatcher: dispatch },
+            bindingRegistry,
+        }
+        const stale = createTaricReadBoardHandler({
+            ...base,
+            reconcileEngagement: async () => ({ applied: 0, committedSeq: 10, projectedSeq: 7, pendingOutbox: 3 }),
+        })
+        const staleResult = await stale.handle({ ...createContext("web-001"), params: { operation: "evidence.query" } })
+        expect(staleResult).toMatchObject({
+            handled: true,
+            data: { degraded: true, reason: "taric_projection_stale", read_diagnostics: { diagnostic_code: "projection_lag", committed_seq: 10, projected_seq: 7, pending_outbox: 3 } },
+        })
+        expect(dispatch).not.toHaveBeenCalled()
+
+        const unknown = createTaricReadBoardHandler({
+            ...base,
+            reconcileEngagement: async () => ({ applied: 0, pendingOutbox: 0 }),
+        })
+        const unknownResult = await unknown.handle({ ...createContext("web-001"), params: { operation: "evidence.query" } })
+        expect(unknownResult).toMatchObject({ handled: true, data: { degraded: true, reason: "taric_projection_freshness_unknown" } })
+        expect(dispatch).not.toHaveBeenCalled()
+    })
+
+    test("requires reconciliation when configured and fails closed if it is unavailable or fails", async () => {
+        const bindingRegistry = await createBindingRegistry()
+        const dispatch = mock(async () => ({ ok: true, data: { ok: true, items: [] } }))
+        const requiredSettings = { enabled: true, requireFreshProjection: true, baseUrl: "http://127.0.0.1:3999", dispatcher: dispatch }
+        const missing = createTaricReadBoardHandler({ settings: requiredSettings, bindingRegistry })
+        const missingResult = await missing.handle({ ...createContext("web-001"), params: { operation: "evidence.query" } })
+        expect(missingResult).toMatchObject({ handled: true, data: { degraded: true, reason: "taric_projection_freshness_unknown", read_diagnostics: { diagnostic_code: "reconciliation_unavailable" } } })
+
+        const failing = createTaricReadBoardHandler({
+            settings: requiredSettings,
+            bindingRegistry,
+            reconcileEngagement: async () => { throw new Error("private failure detail") },
+        })
+        const failedResult = await failing.handle({ ...createContext("web-001"), params: { operation: "evidence.query" } })
+        expect(failedResult).toMatchObject({ handled: true, data: { degraded: true, reason: "taric_projection_stale", read_diagnostics: { diagnostic_code: "reconciliation_failed" } } })
+        expect(JSON.stringify(failedResult)).not.toContain("private failure detail")
+        expect(dispatch).not.toHaveBeenCalled()
+    })
+
+    test("reconciles projection before returning a fresh board result", async () => {
+        const bindingRegistry = await createBindingRegistry()
+        const dispatch = mock(async () => ({ ok: true, data: { ok: true, read_seq: 10, items: [] } }))
+        const reconcileEngagement = mock(async (engagementId: string) => {
+            expect(engagementId).toBe("engagement-1")
+            return { applied: 3, committedSeq: 10, projectedSeq: 10, pendingOutbox: 0 }
+        })
+        const handler = createTaricReadBoardHandler({
+            settings: { enabled: true, baseUrl: "http://127.0.0.1:3999", dispatcher: dispatch },
+            bindingRegistry,
+            reconcileEngagement,
+        })
+        const result = await handler.handle({ ...createContext("web-001"), params: { operation: "evidence.query" } })
+        expect(result).toMatchObject({ handled: true, data: { read_seq: 10, items: [] } })
+        expect(reconcileEngagement).toHaveBeenCalledTimes(1)
+        expect(dispatch).toHaveBeenCalledTimes(1)
+    })
+
     test("opens the circuit breaker after repeated sidecar failures", async () => {
         const bindingRegistry = await createBindingRegistry()
         const fetchImpl = mock(async () => {
@@ -133,7 +216,8 @@ describe("Taric read board", () => {
         })
         for (let index = 0; index < 3; index += 1) {
             const result = await handler.handle({ ...createContext("web-001"), params: { operation: "context.query" } })
-            expect(result).toMatchObject({ handled: true, data: { degraded: true, reason: "taric_read_board_unavailable" } })
+            expect(result).toMatchObject({ handled: true, data: { degraded: true, reason: "taric_read_board_unavailable", diagnostic_code: "sidecar_request_failed" } })
+            expect(JSON.stringify(result)).not.toContain("connection refused")
         }
         const openResult = await handler.handle({ ...createContext("web-001"), params: { operation: "context.query" } })
         expect(openResult).toMatchObject({ handled: true, data: { degraded: true, reason: "taric_read_board_circuit_open" } })

@@ -1,4 +1,4 @@
-﻿export type TaricReadOperation = "context.query" | "resource.query" | "evidence.query"
+export type TaricReadOperation = "context.query" | "resource.query" | "evidence.query"
 
 export interface TaricReadResponse {
     ok: boolean
@@ -23,6 +23,26 @@ export interface TaricDockerDispatcherOptions {
 }
 
 const TARIC_READ_OPERATIONS = new Set<TaricReadOperation>(["context.query", "resource.query", "evidence.query"])
+
+/**
+ * Taric's Docker CLI exposes one records endpoint for resource/evidence reads.
+ * The dotted names are the host-side capability names and must not be passed
+ * through verbatim because the CLI treats unknown operations as query aliases.
+ */
+export function toTaricCliOperation(operation: TaricReadOperation): string {
+    return operation === "context.query" ? "context.query" : "query"
+}
+
+/**
+ * Model principals intentionally receive the restricted context projection.
+ * Evidence/resource reads are host-scoped metadata views: they need admitted
+ * L1 observations, which Taric hides from model-principal recordsPage calls.
+ * The caller still gets only the bounded read operation and the response is
+ * sanitized by taric-read-board before it reaches a solver.
+ */
+export function taricCliPrincipalRole(operation: TaricReadOperation): "model" | "operator" {
+    return operation === "context.query" ? "model" : "operator"
+}
 
 function getErrorMessage(error: unknown): string {
     return error instanceof Error ? error.message : String(error)
@@ -56,11 +76,11 @@ export function createDockerTaricReadDispatcher(options: TaricDockerDispatcherOp
             "-e", "TARIC_DB=/data/authority.sqlite",
             "-e", "TARIC_CONTENT_ROOT=/data/content",
             "-e", `TARIC_ENGAGEMENT_ID=${engagementId}`,
-            "-e", "TARIC_PRINCIPAL_ROLE=model",
+            "-e", `TARIC_PRINCIPAL_ROLE=${taricCliPrincipalRole(operation)}`,
             "-e", `TARIC_PRINCIPAL_ID=${role}-${solverId}`,
             "-v", `${options.volume}:/data`,
             options.image,
-            operation,
+            toTaricCliOperation(operation),
             JSON.stringify(request),
         ]
         const proc = Bun.spawn(args, {
@@ -99,14 +119,39 @@ export function createDockerTaricReadDispatcher(options: TaricDockerDispatcherOp
     }
 }
 
+export interface TaricReadinessSnapshot {
+    ready: boolean
+    failure?: { code: string; message: string }
+}
+
+export type TaricReadinessSource = TaricReadinessSnapshot | (() => TaricReadinessSnapshot | undefined)
+
 export interface TaricHttpSidecarOptions {
     port?: number
     token: string
     dispatcher: TaricReadDispatcher
+    /**
+     * A snapshot is convenient for tests; the function form lets the daemon
+     * publish recovery without replacing the loopback listener.
+     */
+    readiness?: TaricReadinessSource
 }
 
 export class TaricHttpSidecar {
     private server: ReturnType<typeof Bun.serve> | undefined
+    private readinessOverride: TaricReadinessSnapshot | undefined
+    private hasReadinessOverride = false
+
+    private getReadiness(): TaricReadinessSnapshot | undefined {
+        if (this.hasReadinessOverride) return this.readinessOverride
+        const source = this.options.readiness
+        return typeof source === "function" ? source() : source
+    }
+
+    setReadiness(readiness: TaricReadinessSnapshot): void {
+        this.readinessOverride = readiness
+        this.hasReadinessOverride = true
+    }
 
     get port(): number {
         const port = this.server?.port
@@ -126,7 +171,14 @@ export class TaricHttpSidecar {
             fetch: async (request) => {
                 const url = new URL(request.url)
                 if (request.method === "GET" && url.pathname === "/health") {
-                    return Response.json({ ok: true, data: { ok: true, service: "taric-read-sidecar" } })
+                    const readiness = this.getReadiness()
+                    if (readiness?.ready === false) {
+                        return Response.json(
+                            { ok: false, data: { ok: false, service: "taric-read-sidecar", ready: false }, error: readiness.failure },
+                            { status: 503 },
+                        )
+                    }
+                    return Response.json({ ok: true, data: { ok: true, ready: true, service: "taric-read-sidecar" } })
                 }
                 const operation = url.pathname.replace(/^\/+/, "")
                 if (request.method !== "POST" || !isTaricReadOperation(operation)) {
@@ -139,6 +191,13 @@ export class TaricHttpSidecar {
                     return Response.json(
                         { ok: false, error: { code: "authorization_error", message: "invalid sidecar token" } },
                         { status: 401 },
+                    )
+                }
+                const readiness = this.getReadiness()
+                if (readiness?.ready === false) {
+                    return Response.json(
+                        { ok: false, error: { code: "unavailable", message: readiness.failure?.message ?? "Taric authority is not ready" } },
+                        { status: 503 },
                     )
                 }
                 try {

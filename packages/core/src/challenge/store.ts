@@ -2,6 +2,8 @@ import { mkdir, readdir, rename, rm, stat } from "fs/promises"
 import { dirname, join, resolve, sep } from "path"
 import { TCH_AGENT_HOME_DIR } from "../config/index"
 import { CHALLENGE_ENV_DIR, CHALLENGE_ENV_ARCHIVE_DIR } from "./env"
+import { validateProject } from "../project/types"
+import type { Project } from "../project/types"
 
 export const DEFAULT_CHALLENGE_DIR = resolve(TCH_AGENT_HOME_DIR, "challenge")
 export const ARCHIVE_CHALLENGE_DIR = resolve(TCH_AGENT_HOME_DIR, "archive_challenge")
@@ -24,6 +26,7 @@ export interface ChallengeRecord {
     instance_status: string
     planner_status?: "starting" | "running" | "stop" | "disabled"
     entrypoint: string[] | null
+    project?: Project
 }
 
 export interface ChallengeAssetRecord {
@@ -45,6 +48,7 @@ export interface ChallengeAssetsRecord {
 
 export interface CreateChallengeInput {
     name: string
+    project?: Project
     description?: string
     assets_url?: string | string[] | null
     assets_ip?: string | string[] | null
@@ -364,9 +368,11 @@ export function normalizeChallengeRecord(record: ChallengeRecord): ChallengeReco
     }
     const entrypoint = record.entrypoint && record.entrypoint.length > 0 ? record.entrypoint : buildChallengeEntrypoints(assets_url, assets_ip)
     const planner_enabled = record.planner_enabled !== false
+    const project = record.project === undefined ? undefined : validateProject(record.project)
 
     return {
         ...record,
+        ...(project ? { project } : {}),
         name,
         title: optionalText(record.title) ?? name,
         description: record.description ?? "",
@@ -406,6 +412,7 @@ export function createChallengeRecord(input: CreateChallengeInput & { id: string
         instance_status: "stopped",
         planner_status: input.planner_enabled === false ? "disabled" : "stop",
         entrypoint: buildChallengeEntrypoints(assets_url, assets_ip),
+        ...(input.project ? { project: validateProject(input.project) } : {}),
     })
 }
 

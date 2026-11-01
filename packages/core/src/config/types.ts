@@ -31,7 +31,44 @@ export interface HostBridgeSecuritySettings {
 }
 
 export interface HostTaricSettings {
+    /** Project-scoped Taric integration settings; existing sidecar configuration remains supported. */
     enabled?: boolean
+    engagementBoundary?: "shared_development" | "project_bound"
+    authorityPath?: "host" | "model_proposal"
+    hostPrincipalId?: string
+    modelPrincipalId?: string
+    profile?: "embedded_bun" | "authenticated_proxy"
+    gatewayTransport?: "https" | "tls_tcp"
+    gatewayUrl?: string
+    gatewayHost?: string
+    gatewayPort?: number
+    gatewayPath?: string
+    gatewayCaFile?: string
+    gatewayTokenEnv?: string
+    gatewayHostTokenEnv?: string
+    gatewayModelTokenEnv?: string
+    gatewayOperatorTokenEnv?: string
+    gatewayOperatorPrincipalId?: string
+    gatewayTimeoutMs?: number
+    gatewayServerName?: string
+    hostTokenEnv?: string
+    modelTokenEnv?: string
+    operatorTokenEnv?: string
+    apiContractVersion?: string
+    schemaVersion?: string
+    coreVersion?: string
+    storageContract?: string
+    policyVersion?: string
+    policyDigest?: string
+    bunDriverPackage?: string
+    bunDriverVersion?: string
+    bunDriverIntegrity?: string
+    verificationRequired?: boolean
+    verificationReportPath?: string
+    outboxPath?: string
+    outboxMaxBytes?: number
+    outboxMaxEvents?: number
+    localCliPath?: string
     authoritativeLifecycle?: boolean
     image?: string
     imageDigest?: string
@@ -65,6 +102,8 @@ export interface HostTaricSettings {
         backupDir?: string
     }
 }
+
+export type TaricHostSettings = HostTaricSettings
 
 export interface HostGuardrailSettings {
     enabled?: boolean

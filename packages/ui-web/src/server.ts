@@ -1026,22 +1026,27 @@ export async function startWeb(options: WebServerOptions) {
                         return Response.json({ error: "challenge not found" }, { status: 404 })
                     }
                     const taricActive = Boolean(await daemon.challenge.isTaricAuthoritativeActive?.(challengeId))
-                    const [memory, ideas, attempts, submissions, solvers, statsResult] = await Promise.all([
-                        taricActive
-                            ? daemon.challenge.listTaricMemoryProjection(challengeId)
-                            : daemon.challenge.listMemory(challengeId),
-                        taricActive
-                            ? daemon.challenge.listTaricIdeasProjection(challengeId)
-                            : daemon.challenge.listIdeas(challengeId),
+                    const taricProjectManaged = Boolean(taricActive && await daemon.challenge.isTaricProjectManaged?.(challengeId))
+                    const useTaricProjection = taricActive && !taricProjectManaged
+                    const boardPromise = useTaricProjection
+                        ? Promise.all([
+                            daemon.challenge.listTaricMemoryProjection(challengeId),
+                            daemon.challenge.listTaricIdeasProjection(challengeId),
+                        ]).then(([memory, ideas]) => ({ memory, ideas }))
+                        : daemon.challenge.readMemoryBoard(challengeId)
+                    const [board, attempts, submissions, solvers, statsResult] = await Promise.all([
+                        boardPromise,
                         daemon.challenge.listAttemptLogs(challengeId),
                         daemon.challenge.listSubmissionLogs(challengeId),
                         containers.listAll(),
                         daemon.challenge.refreshStats(challengeId),
                     ])
+                    const { memory, ideas, diagnostics: readDiagnostics } = board
                     return Response.json({
                         challenge,
                         memory,
                         ideas,
+                        ...(readDiagnostics ? { read_diagnostics: readDiagnostics } : {}),
                         attempts,
                         submissions,
                         stats: statsResult.stats,

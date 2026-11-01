@@ -1,9 +1,14 @@
+export * from "./taric/index"
+export * from "./project/index"
+export { FileChallengeMemoryProvider, TaricMemoryProvider } from "./challenge/index"
+export type { ChallengeMemoryProvider, ChallengeMemoryScope } from "./challenge/index"
 export { ConfigManager } from "./config/index"
 export { RuntimeManager } from "./runtime/runtime"
 export { runSolverCli, runSubagentCli, runSolverRpc } from "./solver/cli"
 export type { SolverEventListener } from "./solver/cli"
 
 import { ConfigManager } from "./config/index"
+import { deriveCompositeProjectKey } from "./project/types"
 import { ChallengeManager } from "./challenge/manager"
 import { createChallengeHostBridgeHandler } from "./challenge/host-bridge-handler"
 import { createTaricReadBoardHandler } from "./challenge/taric-read-board"
@@ -23,12 +28,14 @@ import { TaricArtifactStore } from "./challenge/taric-artifact-store"
 import { buildTaricIntegrationStatus } from "./challenge/taric-observability"
 import { createDockerTaricEvidenceDispatcher } from "./challenge/taric-evidence-dispatcher"
 import { TaricEvidenceRecorder, type TaricEvidenceArtifact, type TaricEvidenceTarget } from "./challenge/taric-evidence-recorder"
-import { assertTaricImageDigest, TaricEngagementService } from "./challenge/taric-engagement-service"
+import { TaricEngagementService } from "./challenge/taric-engagement-service"
+import { checkTaricRuntimeReadiness, type TaricRuntimeReadiness } from "./challenge/taric-runtime-readiness"
 import { TaricBindingRegistry } from "./challenge/taric-binding-registry"
 import { TaricAuthoritativeState } from "./challenge/taric-authoritative-state"
 import { createTaricToolResultCaptureHandler } from "./challenge/taric-tool-result-capture"
 import type { ChallengeInfoRecord } from "./challenge/store"
 import { RuntimeManager } from "./runtime/runtime"
+import { createTaricMemoryProviderFactory } from "./taric/provider-factory"
 
 /**
  * Collect the committed Taric artifacts that belong to a solver's work run.
@@ -99,6 +106,11 @@ export class DaemonManager {
     readonly taricEngagement?: TaricEngagementService
     readonly taricArtifacts: TaricArtifactStore
     private readonly taricSidecar?: TaricHttpSidecar
+    private taricRuntimeReadiness?: TaricRuntimeReadiness
+    private readonly refreshTaricRuntimeReadiness?: () => Promise<TaricRuntimeReadiness>
+    private readonly ensureTaricSidecar?: () => Promise<void>
+    private taricReadinessRetryTimer: ReturnType<typeof setInterval> | undefined
+    private taricReadinessRefreshInFlight = false
     private artifactSweepTimer: ReturnType<typeof setInterval> | undefined
     private workHeartbeatTimer: ReturnType<typeof setInterval> | undefined
     private taricMaintenanceTimer: ReturnType<typeof setInterval> | undefined
@@ -113,11 +125,17 @@ export class DaemonManager {
         taricArtifacts?: TaricArtifactStore,
         taricEngagement?: TaricEngagementService,
         taricMaintenance?: TaricMaintenance,
+        taricRuntimeReadiness?: TaricRuntimeReadiness,
+        refreshTaricRuntimeReadiness?: () => Promise<TaricRuntimeReadiness>,
+        ensureTaricSidecar?: () => Promise<void>,
     ) {
         this.config = config
         this.challenge = challenge
         this.runtime = runtime
         this.taricSidecar = taricSidecar
+        this.taricRuntimeReadiness = taricRuntimeReadiness
+        this.refreshTaricRuntimeReadiness = refreshTaricRuntimeReadiness
+        this.ensureTaricSidecar = ensureTaricSidecar
         this.taricAdmission = taricAdmission
         this.taricWork = taricWork
         this.taricMaintenance = taricMaintenance
@@ -126,6 +144,7 @@ export class DaemonManager {
         this.scheduleArtifactSweep()
         this.scheduleWorkHeartbeat()
         this.scheduleTaricMaintenance()
+        this.scheduleTaricReadinessRetry()
     }
 
     async stop(): Promise<void> {
@@ -141,14 +160,63 @@ export class DaemonManager {
             clearInterval(this.taricMaintenanceTimer)
             this.taricMaintenanceTimer = undefined
         }
+        if (this.taricReadinessRetryTimer) {
+            clearInterval(this.taricReadinessRetryTimer)
+            this.taricReadinessRetryTimer = undefined
+        }
         this.taricSidecar?.stop()
     }
 
     /**
-     * Taric is run as one-shot containers, so its outbox has no resident
-     * consumer. Reconcile on startup and periodically to keep the derived
-     * projection caught up with committed authority writes.
+     * Keep failed runtime or sidecar initialization recoverable. Taric reads
+     * stay blocked until the authority is healthy and the loopback listener is
+     * available; no local persistence fallback is introduced.
      */
+    private scheduleTaricReadinessRetry(): void {
+        const refresh = this.refreshTaricRuntimeReadiness
+        if (!refresh || this.taricRuntimeReadiness?.ready) return
+        const retry = async () => {
+            if (this.taricReadinessRefreshInFlight) return
+            this.taricReadinessRefreshInFlight = true
+            try {
+                let readiness = await refresh()
+                if (readiness.ready && this.ensureTaricSidecar) {
+                    try {
+                        await this.ensureTaricSidecar()
+                    } catch (error) {
+                        readiness = {
+                            ...readiness,
+                            ready: false,
+                            failure: {
+                                code: "runtime_error",
+                                message: `Taric read sidecar failed to start: ${(error instanceof Error ? error.message : String(error)).slice(0, 180)}`,
+                            },
+                        }
+                    }
+                }
+                this.taricRuntimeReadiness = readiness
+                this.taricSidecar?.setReadiness(readiness)
+                if (readiness.ready && this.taricReadinessRetryTimer) {
+                    clearInterval(this.taricReadinessRetryTimer)
+                    this.taricReadinessRetryTimer = undefined
+                }
+            } catch (error) {
+                console.warn("taric runtime readiness retry failed", {
+                    error: error instanceof Error ? error.message.slice(0, 180) : String(error).slice(0, 180),
+                })
+            } finally {
+                this.taricReadinessRefreshInFlight = false
+            }
+        }
+        const timer = setInterval(() => {
+            void retry()
+        }, 30_000)
+        if (typeof timer === "object" && "unref" in timer) {
+            ;(timer as { unref: () => void }).unref()
+        }
+        this.taricReadinessRetryTimer = timer
+    }
+
     private scheduleTaricMaintenance(): void {
         if (!this.taricMaintenance) return
         const sweep = () => {
@@ -270,13 +338,30 @@ export class DaemonManager {
             const taric = hostSettings.taric
             const taricImage = taric?.image?.trim() || "taric-p0:local"
             const taricVolume = taric?.volume?.trim() || "breachweave-taric-p0"
-            if (taric?.enabled === true) {
-                const expectedDigest = taric.imageDigest?.trim()
-                if (expectedDigest) {
-                    await assertTaricImageDigest({ image: taricImage, expectedDigest })
-                } else if (taric.requireImageDigest === true) {
-                    throw new Error("taric.imageDigest is required when taric.requireImageDigest is enabled")
-                }
+            const refreshTaricRuntimeReadiness = taric?.enabled === true
+                ? async (): Promise<TaricRuntimeReadiness> => {
+                      if (taric.requireImageDigest === true && !taric.imageDigest?.trim()) {
+                          return {
+                              ready: false,
+                              checkedAt: new Date().toISOString(),
+                              image: taricImage,
+                              volume: taricVolume,
+                              failure: {
+                                  code: "runtime_error",
+                                  message: "taric.imageDigest is required when taric.requireImageDigest is enabled",
+                              },
+                          }
+                      }
+                      return checkTaricRuntimeReadiness({
+                          image: taricImage,
+                          volume: taricVolume,
+                          expectedDigest: taric.imageDigest?.trim(),
+                      })
+                  }
+                : undefined
+            let taricRuntimeReadiness: TaricRuntimeReadiness | undefined
+            if (refreshTaricRuntimeReadiness) {
+                taricRuntimeReadiness = await refreshTaricRuntimeReadiness()
             }
             const bindingRegistry = new TaricBindingRegistry()
             const engagementService = taric?.enabled === true
@@ -287,23 +372,42 @@ export class DaemonManager {
                   })
                 : undefined
             let taricSidecar: TaricHttpSidecar | undefined
-            if (taric?.enabled === true && taric.readBoard?.enabled === true) {
+            let ensureTaricSidecar: (() => Promise<void>) | undefined
+            const taricReadBoardSettings = {
+                ...(taric?.readBoard ?? {}),
+                enabled: taric?.enabled === true && taric.readBoard?.enabled !== false,
+            }
+            if (taric?.enabled === true && taric.readBoard?.enabled !== false) {
+                const readBoard = taric.readBoard ?? {}
                 const dispatcher = createDockerTaricReadDispatcher({
                     image: taricImage,
                     volume: taricVolume,
-                    timeoutMs: taric.readBoard.requestTimeoutMs,
+                    timeoutMs: readBoard.requestTimeoutMs,
                 })
-                const sidecarToken = taric.readBoard.token ?? crypto.randomUUID()
-                taricSidecar = new TaricHttpSidecar({
+                const sidecarToken = readBoard.token ?? crypto.randomUUID()
+                const sidecar = new TaricHttpSidecar({
                     port: taric.sidecarPort,
                     token: sidecarToken,
-                    dispatcher: taric.readBoard.dispatcher ?? dispatcher,
+                    dispatcher: readBoard.dispatcher ?? dispatcher,
+                    ...(taricRuntimeReadiness ? { readiness: () => taricRuntimeReadiness } : {}),
                 })
-                await taricSidecar.start()
-                taric.readBoard = {
-                    ...taric.readBoard,
-                    token: sidecarToken,
-                    baseUrl: taric.readBoard.baseUrl ?? `http://127.0.0.1:${taricSidecar.port}`,
+                taricSidecar = sidecar
+                ensureTaricSidecar = async () => {
+                    await sidecar.start()
+                    taricReadBoardSettings.token = sidecarToken
+                    taricReadBoardSettings.baseUrl = readBoard.baseUrl ?? `http://127.0.0.1:${sidecar.port}`
+                    taric.readBoard = { ...taricReadBoardSettings }
+                }
+                try {
+                    await ensureTaricSidecar()
+                } catch (error) {
+                    taricRuntimeReadiness = {
+                        ready: false,
+                        checkedAt: new Date().toISOString(),
+                        image: taricImage,
+                        volume: taricVolume,
+                        failure: { code: "runtime_error", message: `Taric read sidecar failed to start: ${(error instanceof Error ? error.message : String(error)).slice(0, 180)}` },
+                    }
                 }
             }
             const proposalOutbox = taric?.proposal?.outboxDir
@@ -475,15 +579,21 @@ export class DaemonManager {
                     }
                 },
             })
-            const challenge = new ChallengeManager(config, engagementService, workManager, taricState)
+            const challenge = new ChallengeManager(config, engagementService, workManager, taricState, createTaricMemoryProviderFactory(config))
             const runtime = new RuntimeManager(config, [
                 createChallengeHostBridgeHandler(challenge),
                 createTaricReadBoardHandler({
-                    settings: taric?.readBoard ?? {},
+                    settings: { ...taricReadBoardSettings, requireFreshProjection: taric?.enabled === true },
                     bindingRegistry,
+                    ...(taricMaintenance ? { reconcileEngagement: (engagementId: string) => taricMaintenance.reconcile(engagementId) } : {}),
                     ...(taricSidecar ? { fetchImpl: fetch } : {}),
                 }),
                 createTaricProposalHandler({
+                    getBoardProjectKey: async (challengeId) => {
+                        const record = await challenge.getChallenge(challengeId)
+                        if (!record) throw new Error("challenge is unavailable for observer curation")
+                        return record.project ? deriveCompositeProjectKey(record.project) : undefined
+                    },
                     settings: {
                         enabled: taric?.enabled === true && taric.proposal?.enabled === true,
                         autoAcknowledge: false,
@@ -506,6 +616,9 @@ export class DaemonManager {
                 artifactStore,
                 engagementService,
                 taricMaintenance,
+                taricRuntimeReadiness,
+                refreshTaricRuntimeReadiness,
+                ensureTaricSidecar,
             )
         })()
         this.instance = created.catch((error) => {
@@ -560,12 +673,15 @@ export class DaemonManager {
             enabled: Boolean(this.taricAdmission),
             sidecarRunning: this.taricSidecar?.running ?? false,
             sidecarPort: this.taricSidecar?.running ? this.taricSidecar.port : undefined,
-            authorityReachable: this.taricSidecar?.running ?? false,
+            authorityReachable: this.taricRuntimeReadiness?.ready ?? false,
+            doctorOk: this.taricRuntimeReadiness?.ready ?? false,
             activeBindings,
             outboxPending: outboxEntries.filter((entry) => entry.status === "pending" || entry.status === "inflight").length,
             outboxFailed: outboxEntries.filter((entry) => entry.status === "failed").length,
             recentErrors,
-            degradationReasons,
+            degradationReasons: this.taricRuntimeReadiness?.failure
+                ? [...degradationReasons, `${this.taricRuntimeReadiness.failure.code}: ${this.taricRuntimeReadiness.failure.message}`].slice(-10)
+                : degradationReasons,
             evidenceCoverage: {
                 recentCheckpoints: recentCheckpoints.length,
                 withEvidence: checkpointsWithEvidence,
@@ -586,6 +702,7 @@ export class DaemonManager {
         return {
             ...status,
             blackboard: await this.challenge.getTaricLifecycleStatus(),
+            runtime: this.taricRuntimeReadiness,
         }
     }
 }

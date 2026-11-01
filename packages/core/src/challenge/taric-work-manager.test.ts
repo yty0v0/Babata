@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, mock, test } from "bun:test"
-import { mkdtemp, rm } from "fs/promises"
+import { mkdtemp, rm, writeFile } from "fs/promises"
 import { tmpdir } from "os"
 import { join } from "path"
 import { HostBridgeError } from "./host-bridge-types"
@@ -46,6 +46,23 @@ const checkpoint: TaricCheckpointPayload = {
 }
 
 describe("Taric work manager", () => {
+    test("list ignores persisted work-item records that are not WorkRuns", async () => {
+        const { dir, manager } = await createManager()
+        const claimed = await claim(manager)
+        await writeFile(join(dir, "work-item-web-001-solver-a.json"), JSON.stringify({
+            work_item_id: WORK_ITEM_ID,
+            challenge_id: "web-001",
+            engagement_id: ENGAGEMENT_ID,
+            solver_id: "solver-a",
+            status: "closed",
+            created_at: new Date().toISOString(),
+        }))
+
+        const records = await manager.list()
+        expect(records).toHaveLength(1)
+        expect(records[0]?.work_run_id).toBe(claimed.work_run_id)
+    })
+
     test("claims a work run with the Taric work.claim contract", async () => {
         const { dispatcher, calls, manager } = await createManager()
         const record = await claim(manager)

@@ -36,11 +36,11 @@ interface SessionContextMessageLike {
 export function buildObserverExtensionAppendPrompt(): string {
     return [
         "## Observer Sidecar Contract",
-        "- 已启用 observer sidecar。observer 会定期审查你最近几轮行为，保守地维护 ideas 和 memory。",
-        "- observer 不直接替你解题，也不会替你验证漏洞；它负责整理策略看板和 durable memory，你负责实际验证与推进。",
-        "- ideas 看板由 observer 异步维护。你把它当成只读策略板，用来避免重复试错和判断下一步。",
-        "- observer 维护的 ideas 只是候选假设。不要把 idea 当结论，必须通过你的实测结果来确认、证伪或推进。",
-        "- 如果 observer 新增或更新了某条 idea / memory，先理解其含义，再决定是否立即验证；不要机械照抄，也不要无视。",
+        "- 已启用 observer sidecar。observer 整理 memory / ideas，优先闭环现有假设、保留实测证据与失败边界。",
+        "- observer 不解题、不验证漏洞；只向 host 提交看板整理候选，Taric/host 管理权威状态。",
+        "- solver 读取看板、执行验证；observer 根据实测提出整理候选，不能直接修改权威记录。",
+        "- ideas 是待验证假设，不是结论，必须通过实测结果来确认、证伪或推进。",
+        "- 候选不等于已验证或已发布；无新信息时 NO_CHANGE，纠偏提醒只在持续低效时作为最后手段。",
         "- observer 的判断也是建议，不是替你下结论；如果它和你当前实测冲突，优先重新验证关键分歧点。",
     ].join("\n")
 }
@@ -274,6 +274,14 @@ export function attachObserverLoop(pi: ExtensionAPI, options: ObserverLoopOption
             while (true) {
                 const next = await takeNextObserverReview()
                 if (!next) return
+                await updateObserverState((state) => ({
+                    nextState: {
+                        ...state,
+                        review_in_flight: true,
+                        last_review_started_at: new Date().toISOString(),
+                    },
+                    result: undefined,
+                }))
                 try {
                     await runReview(challengeIdText, next, {
                         observerModel: options.observerModel,
@@ -287,6 +295,15 @@ export function attachObserverLoop(pi: ExtensionAPI, options: ObserverLoopOption
                     })
                 } catch (error) {
                     console.error(`[observer] review failed: ${error instanceof Error ? error.message : String(error)}`)
+                } finally {
+                    await updateObserverState((state) => ({
+                        nextState: {
+                            ...state,
+                            review_in_flight: false,
+                            last_review_finished_at: new Date().toISOString(),
+                        },
+                        result: undefined,
+                    }))
                 }
             }
         } finally {
@@ -336,7 +353,7 @@ export function attachObserverLoop(pi: ExtensionAPI, options: ObserverLoopOption
                     ...state,
                     current_round_tool_logs: nextToolLogs,
                     tool_args_by_call_id: nextToolArgsByCallId,
-                    force_review_reason: !event.isError && event.toolName === "challenge_get_hint" ? "hint" : state.force_review_reason,
+                    force_review_reason: !event.isError && event.toolName === "challenge_submit_report" ? "report_submission" : !event.isError && event.toolName === "challenge_get_hint" ? "hint" : state.force_review_reason,
                 },
                 result: undefined,
             }

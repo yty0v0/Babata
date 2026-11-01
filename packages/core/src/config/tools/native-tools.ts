@@ -9,6 +9,7 @@ export { targetAllowsUrl } from "../guardrail-policy"
 
 const MAX_BODY_CHARS = 2_000
 const MAX_RAW_CHARS = 32_000
+const RAW_REQUEST_TIMEOUT_MS = 15_000
 
 type HttpMethod = "GET" | "POST" | "PUT" | "PATCH" | "DELETE" | "HEAD" | "OPTIONS"
 type MutationField = "path" | "query" | "header" | "cookie" | "body"
@@ -146,17 +147,29 @@ async function sendRequest(request: CapturedRequest, signal?: AbortSignal): Prom
 export function sendRawRequest(host: string, port: number, tls: boolean, raw: string): Promise<string> {
     return new Promise((resolve, reject) => {
         let settled = false
+        let timeout: ReturnType<typeof setTimeout> | undefined
         const decoder = new TextDecoder()
         let response = ""
         const finish = (text: string) => {
             if (settled) return
             settled = true
+            if (timeout) clearTimeout(timeout)
             resolve(text)
         }
         const fail = (error: unknown) => {
             if (settled) return
             settled = true
+            if (timeout) clearTimeout(timeout)
             reject(error)
+        }
+        const maybeFinishContentLengthResponse = () => {
+            const headerEnd = response.indexOf("\r\n\r\n")
+            if (headerEnd < 0) return
+            const headers = response.slice(0, headerEnd)
+            const match = headers.match(/(?:^|\r\n)content-length\s*:\s*(\d+)/i)
+            if (!match) return
+            const body = response.slice(headerEnd + 4)
+            if (new TextEncoder().encode(body).byteLength >= Number(match[1])) finish(response)
         }
 
         Bun.connect({
@@ -170,6 +183,7 @@ export function sendRawRequest(host: string, port: number, tls: boolean, raw: st
                 },
                 data(_socket, chunk) {
                     response += decoder.decode(chunk, { stream: true })
+                    maybeFinishContentLengthResponse()
                 },
                 end() {
                     response += decoder.decode()
@@ -186,6 +200,7 @@ export function sendRawRequest(host: string, port: number, tls: boolean, raw: st
                 },
             },
         }).catch(fail)
+        timeout = setTimeout(() => fail(new Error(`raw HTTP request timed out after ${RAW_REQUEST_TIMEOUT_MS}ms`)), RAW_REQUEST_TIMEOUT_MS)
     })
 }
 

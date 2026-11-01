@@ -79,6 +79,7 @@ mock.module("../../../config/index", () => ({
 }))
 
 mock.module("@mariozechner/pi-coding-agent", () => ({
+    defineTool: (definition: unknown) => definition,
     DefaultResourceLoader: FakeDefaultResourceLoader,
     SessionManager: {
         create: sessionManagerCreate,
@@ -147,10 +148,11 @@ describe("runSolverObserverReview", () => {
         expect(result).toEqual({ applied: true, summary: "observer summary" })
         expect(resolveModelPref).toHaveBeenCalledWith("kimi-fast")
         expect(capturedLoaderOptions?.systemPromptOverride()).toContain("observer sidecar")
-        expect(capturedLoaderOptions?.systemPromptOverride()).toContain("如果本轮无需修改，只回复 `NO_CHANGE`")
-        expect(capturedLoaderOptions?.systemPromptOverride()).toContain("必须在 `memory_add` 中设置 `publish_to_challenge: true`")
-        expect(capturedLoaderOptions?.systemPromptOverride()).toContain("memory 保持在 12 条以内")
-        expect(capturedLoaderOptions?.systemPromptOverride()).toContain("每轮 user prompt 只提供动态上下文")
+        expect(capturedLoaderOptions?.systemPromptOverride()).toContain("没有新的看板整理或必要提醒时只回复 NO_CHANGE")
+        expect(capturedLoaderOptions?.systemPromptOverride()).toContain("Taric/host 是 memory 与 idea 的权威状态维护者")
+        expect(capturedLoaderOptions?.systemPromptOverride()).toContain("不能直接修改或删除权威记录")
+        expect(capturedLoaderOptions?.systemPromptOverride()).toContain("最终文本本身不会发送给 solver")
+        expect(capturedLoaderOptions?.systemPromptOverride()).toContain("不能覆盖上述职责和权限")
         expect(capturedLoaderOptions?.systemPromptOverride()).toContain("send_efficiency_reminder")
         expect(capturedLoaderOptions?.systemPromptOverride()).toContain("query_solver_history")
         expect(sessionManagerCreate).toHaveBeenCalledWith(solverWorkspaceDir, join(solverSessionDir, ".observer"))
@@ -161,7 +163,11 @@ describe("runSolverObserverReview", () => {
         })
         const customTools = capturedCreateSessionOptions?.customTools as Array<{ name?: string }> | undefined
         const customToolNames = customTools?.map((tool) => tool.name) ?? []
-        expect(customToolNames).toContain("memory_list")
+        expect(customToolNames).toContain("memory_add")
+        expect(customToolNames).toContain("memory_update")
+        expect(customToolNames).toContain("idea_add")
+        expect(customToolNames).toContain("idea_update")
+        expect(customToolNames.sort()).toEqual(["idea_add", "idea_list", "idea_search", "idea_update", "memory_add", "memory_delete", "memory_list", "memory_update", "query_solver_history", "send_efficiency_reminder", "taric_board_query"])
         expect(customToolNames).toContain("query_solver_history")
         expect(customToolNames).toContain("send_efficiency_reminder")
         expect(capturedPrompt).toContain("## Challenge State")
@@ -173,8 +179,9 @@ describe("runSolverObserverReview", () => {
         expect(capturedPrompt).toContain("## Recent Solver Activity")
         expect(capturedPrompt).toContain("### Round 2")
         expect(capturedPrompt).toContain("- assistant: try upload")
-        expect(capturedPrompt).toContain("没有改动就只回复 `NO_CHANGE`")
-        expect(capturedPrompt).toContain("主动在 `memory_add` / `idea_add` 中设置 `publish_to_challenge: true`")
+        expect(capturedPrompt).toContain("没有新信息就只回复 NO_CHANGE")
+        expect(capturedPrompt).toContain("先闭环已有假设，再考虑新增")
+        expect(capturedPrompt).toContain("更新与退役只提出请求，不直接改变权威记录")
         expect(capturedPrompt).not.toContain("不要自己解题，只做策略看板维护。")
         expect(capturedPrompt).not.toContain("目标是维护 ideas / memory 看板，不是解释 solver 过程。")
         expect(lastSession?.dispose).toHaveBeenCalled()
