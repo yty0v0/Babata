@@ -1,4 +1,5 @@
 import { type MouseEvent, useEffect, useState } from "react"
+import { useTranslation } from "react-i18next"
 import { challenges, runtime } from "../../lib/api"
 import type { ChallengeAssetRecord, ChallengeDetails, ChallengeInfoRecord, ChallengeStatsOverview, ChallengeStatsOverviewBucket, IdeaRecord, MemoryEntry, SolverInstance } from "../../lib/api"
 import { useFetch } from "../../hooks/use-fetch"
@@ -637,6 +638,7 @@ function StatsOverviewDialog(props: {
 }
 
 export function ChallengePage({ challengeId }: { challengeId?: string }) {
+    const { t } = useTranslation()
     const { data: challengeList, loading, reload } = useFetch(challenges.list)
     const { data: statsOverview, loading: statsOverviewLoading } = useFetch(challenges.statsOverview)
     const [details, setDetails] = useState<ChallengeDetails | null>(null)
@@ -1300,7 +1302,7 @@ export function ChallengePage({ challengeId }: { challengeId?: string }) {
                                             location.hash = `#/challenge/${encodeURIComponent(details.challenge.id)}/attack-flow`
                                         }}
                                     >
-                                        Attack Flow
+                                        {t("flow.title")}
                                     </Button>
                                     <Button
                                         variant="outline"

@@ -25,6 +25,8 @@ import type { ExecutionOverviewData } from "../../data/executionOverview"
 import { ExecutionOverview } from "../ui/execution-overview"
 import { buildExecutionOverviewFromTimeline } from "../../lib/execution-overview-from-timeline"
 import { timelineEventTitle } from "../../lib/timeline-event-title"
+import { submittedCandidate } from "../../lib/timeline-event-details"
+import { replayStep } from "../../lib/attack-flow-replay"
 import { keyTimelineEvents, promptNameFromEvent, solverMetasFromEvents } from "../../lib/timeline-key-events"
 import { buildSolverCardData } from "../../lib/solver-event-card-data"
 import { COMMUNICATION_NODE_TYPES } from "./communication-flow-nodes"
@@ -2017,10 +2019,6 @@ function shortTime(value: number) {
     return new Date(value).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit", second: "2-digit" })
 }
 
-function isBoardUpdateEvent(event: AttackTimelineEvent) {
-    return event.kind === "memory_added" || event.kind === "memory_updated" || event.kind === "idea_added" || event.kind === "idea_updated"
-}
-
 function flowEventLabel(item: CommunicationFlowItem) {
     if (item.badge === "broadcast") return clip(item.summary, 46)
     if (item.badge === "observe") return clip(item.summary, 42)
@@ -2222,6 +2220,7 @@ function TimelinePanel(props: {
                         const laneIdx = lanes.findIndex((lane) => lane.id === timelineLaneId(event))
                         if (laneIdx < 0) return null
                         const summaryLimit = event.kind === "report_submitted" ? 96 : 36
+                        const candidate = submittedCandidate(event, events)
                         return (
                             <div
                                 key={event.id}
@@ -2231,7 +2230,7 @@ function TimelinePanel(props: {
                             >
                                 <button
                                     type="button"
-                                    onClick={() => (isBoardUpdateEvent(event) ? onSelectEvent(event) : event.solverId ? onSelectSolver(event.solverId) : onSelectEvent(event))}
+                                    onClick={() => onSelectEvent(event)}
                                     className={cn(
                                         "flex h-full w-full min-w-0 cursor-pointer flex-col gap-0.5 rounded-md border px-1.5 py-1 text-left text-[10px] shadow-sm transition hover:shadow-md",
                                         timelineAccent(event),
@@ -2239,8 +2238,9 @@ function TimelinePanel(props: {
                                 >
                                     <div className="flex min-w-0 items-center justify-between gap-1">
                                         <span className="min-w-0 flex-1 truncate font-semibold">{timelineEventTitle(event, t)}</span>
+                                        {candidate ? <Badge variant="outline" className="text-[9px]">{t("flow.detail.candidateLabel")}</Badge> : null}
                                     </div>
-                                    <div className="min-w-0 break-words opacity-75 line-clamp-2">{clip(event.summary, summaryLimit)}</div>
+                                    <div className="min-w-0 break-words opacity-75 line-clamp-2">{candidate ? clip(candidate.content, summaryLimit) || t("flow.detail.candidatePending") : clip(event.summary, summaryLimit)}</div>
                                 </button>
                             </div>
                         )
@@ -2409,12 +2409,14 @@ function CollaborationFlowPanel(props: {
     )
 }
 
-function TimelineEventDetailDialog(props: { event?: AttackTimelineEvent; onOpenChange: (open: boolean) => void }) {
-    const { event, onOpenChange } = props
+function TimelineEventDetailDialog(props: { event?: AttackTimelineEvent; events: AttackTimelineEvent[]; onSelectSolver: (solverId: string) => void; onOpenChange: (open: boolean) => void }) {
+    const { event, events, onSelectSolver, onOpenChange } = props
     const { t } = useTranslation()
     const memory = event ? memoryFromEvent(event) : undefined
     const idea = event ? ideaFromEvent(event) : undefined
-    const hasStructuredDetail = Boolean(memory || idea)
+    const candidate = event ? submittedCandidate(event, events) : undefined
+    const submission = event ? submissionFromEvent(event) : undefined
+    const eventData = event ? JSON.stringify(event.payload ?? {}, null, 2) : ""
 
     return (
         <Dialog open={Boolean(event)} onOpenChange={onOpenChange}>
@@ -2423,52 +2425,77 @@ function TimelineEventDetailDialog(props: { event?: AttackTimelineEvent; onOpenC
                     <>
                         <DialogHeader>
                             <DialogTitle>{timelineEventTitle(event, t)}</DialogTitle>
-                            <DialogDescription>
-                                {event.kind} · {shortTime(event.timestamp)}{event.solverId ? ` · ${event.solverId}` : ""}
+                            <DialogDescription className="flex flex-wrap gap-x-3 gap-y-1">
+                                <span>{t("flow.detail.time")}: {formatTimelineTime(event.timestamp)}</span>
+                                <span>{t("flow.detail.type")}: {timelineEventTitle(event, t)}</span>
+                                {event.solverId ? <span>{t("flow.detail.agent")}: {event.solverId}</span> : null}
+                                <span>{t("flow.detail.lane")}: {t(`flow.detail.lanes.${event.lane}`)}</span>
                             </DialogDescription>
                         </DialogHeader>
                         <div className="min-w-0 space-y-4 text-sm">
-                            {!hasStructuredDetail ? (
-                                <section className="space-y-1">
-                                    <div className="text-xs font-medium uppercase tracking-wide text-muted-foreground">Summary</div>
-                                    <div className="whitespace-pre-wrap break-words rounded-lg border bg-muted/30 p-3">{event.summary || "No summary."}</div>
+                            <section className="space-y-1">
+                                <div className="text-xs font-medium text-muted-foreground">{t("flow.detail.summary")}</div>
+                                <div className="whitespace-pre-wrap break-words rounded-md border bg-muted/30 p-3">{candidate ? t(candidate.status === "pending" ? "flow.detail.candidatePending" : "flow.detail.candidateSubmitted") : event.summary || t("flow.detail.noSummary")}</div>
+                            </section>
+                            {candidate ? (
+                                <section className="space-y-2">
+                                    <div className="text-xs font-medium text-muted-foreground">{t("flow.detail.submittedContent")}</div>
+                                    <div className="whitespace-pre-wrap break-words rounded-md border bg-flow-memory-bg/60 p-3">{candidate.content || t("flow.detail.noSubmittedContent")}</div>
+                                    {candidate.proposalId ? <div className="break-all text-xs text-muted-foreground">{t("flow.detail.proposalId")}: {candidate.proposalId}</div> : null}
+                                    {candidate.canonicalChanged !== undefined ? <Badge variant="outline">{t(candidate.canonicalChanged ? "flow.detail.canonicalUpdated" : "flow.detail.canonicalUnchanged")}</Badge> : null}
+                                    {candidate.status ? <div className="text-xs text-muted-foreground">{t("flow.detail.status")}: {["pending", "approved", "rejected"].includes(candidate.status) ? t(`flow.detail.candidateStatuses.${candidate.status}`) : candidate.status}</div> : null}
+                                    {candidate.refs.length ? <div className="break-words text-xs text-muted-foreground">{t("flow.detail.references")}: {candidate.refs.join(", ")}</div> : null}
                                 </section>
                             ) : null}
+                            {submission ? (
+                                <section className="space-y-2">
+                                    {submission.asset ? <div className="break-words text-xs text-muted-foreground">{t("flow.detail.asset")}: {submission.asset}</div> : null}
+                                    <div className="text-xs font-medium text-muted-foreground">{t("flow.detail.fullReport")}</div>
+                                    <div className="whitespace-pre-wrap break-words rounded-md border bg-muted/30 p-3 leading-relaxed">{submission.report || t("flow.detail.noReport")}</div>
+                                </section>
+                            ) : null}
+                            {event.solverId ? <Button variant="outline" size="sm" onClick={() => { if (event.solverId) { onOpenChange(false); onSelectSolver(event.solverId) } }}>{t("flow.detail.viewAgentLog")}</Button> : null}
                             {memory ? (
                                 <section className="space-y-1">
-                                    <div className="text-xs font-medium uppercase tracking-wide text-muted-foreground">情报</div>
+                                    <div className="text-xs font-medium text-muted-foreground">{t("flow.detail.memory")}</div>
                                     <div className="min-w-0 rounded-lg border bg-flow-memory-bg/60 p-3 text-flow-memory-fg">
                                         <div className="flex flex-wrap items-center gap-2">
                                             <Badge variant="outline">{memory.kind}</Badge>
                                             <span className="text-xs opacity-70">{memory.source}</span>
                                         </div>
                                         <div className="mt-3 whitespace-pre-wrap break-words text-base leading-relaxed">{memory.content}</div>
-                                        {memory.refs.length > 0 ? <div className="mt-3 break-words text-xs opacity-70">refs: {memory.refs.join(", ")}</div> : null}
+                                        {memory.refs.length > 0 ? <div className="mt-3 break-words text-xs opacity-70">{t("flow.detail.references")}: {memory.refs.join(", ")}</div> : null}
                                         <div className="mt-3 grid gap-1 text-xs opacity-70 sm:grid-cols-2">
-                                            <div>Created: {memory.created_at}</div>
-                                            <div>Updated: {memory.updated_at}</div>
+                                            <div>{t("flow.detail.created")}: {memory.created_at}</div>
+                                            <div>{t("flow.detail.updated")}: {memory.updated_at}</div>
                                         </div>
                                     </div>
                                 </section>
                             ) : null}
                             {idea ? (
                                 <section className="space-y-1">
-                                    <div className="text-xs font-medium uppercase tracking-wide text-muted-foreground">战术</div>
+                                    <div className="text-xs font-medium text-muted-foreground">{t("flow.detail.idea")}</div>
                                     <div className="min-w-0 rounded-lg border bg-flow-idea-bg/70 p-3 text-flow-idea-fg">
                                         <Badge variant="outline">{idea.status}</Badge>
                                         <div className="mt-3 whitespace-pre-wrap break-words text-base leading-relaxed">{idea.content}</div>
                                         {idea.result ? (
                                             <div className="mt-3 rounded-md border border-flow-idea/30 bg-flow-default-bg/60 p-3">
-                                                <div className="mb-1 text-xs font-medium uppercase tracking-wide opacity-70">Result</div>
+                                                <div className="mb-1 text-xs font-medium opacity-70">{t("flow.detail.result")}</div>
                                                 <div className="whitespace-pre-wrap break-words leading-relaxed">{idea.result}</div>
                                             </div>
                                         ) : null}
                                         <div className="mt-3 grid gap-1 text-xs opacity-70 sm:grid-cols-2">
-                                            <div>Created: {idea.created_at}</div>
-                                            <div>Updated: {idea.updated_at}</div>
+                                            <div>{t("flow.detail.created")}: {idea.created_at}</div>
+                                            <div>{t("flow.detail.updated")}: {idea.updated_at}</div>
                                         </div>
                                     </div>
                                 </section>
+                            ) : null}
+                            {eventData !== "{}" ? (
+                                <details className="rounded-md border">
+                                    <summary className="cursor-pointer px-3 py-2 text-xs font-medium text-muted-foreground">{t("flow.detail.rawData")}</summary>
+                                    <pre className="max-h-72 overflow-auto border-t bg-muted/30 p-3 text-xs leading-relaxed">{eventData}</pre>
+                                </details>
                             ) : null}
                         </div>
                     </>
@@ -2485,6 +2512,7 @@ type KnowledgeDetail =
 
 function KnowledgeDetailDialog(props: { detail?: KnowledgeDetail; onOpenChange: (open: boolean) => void }) {
     const { detail, onOpenChange } = props
+    const { t } = useTranslation()
     return (
         <Dialog open={Boolean(detail)} onOpenChange={onOpenChange}>
             <DialogContent className="max-h-[82vh] max-w-2xl overflow-y-auto overflow-x-hidden">
@@ -2504,7 +2532,7 @@ function KnowledgeDetailDialog(props: { detail?: KnowledgeDetail; onOpenChange: 
                         </DialogHeader>
                         {detail.kind === "task" ? (
                             <div className="whitespace-pre-wrap break-words rounded-lg border bg-muted/30 p-3 text-sm leading-relaxed">
-                                {detail.challenge?.description || "No task description."}
+                                {detail.challenge?.description || t("flow.detail.noDescription")}
                             </div>
                         ) : detail.kind === "memory" ? (
                             <div className="space-y-3 text-sm">
@@ -2513,10 +2541,10 @@ function KnowledgeDetailDialog(props: { detail?: KnowledgeDetail; onOpenChange: 
                                     <Badge variant="outline">{detail.item.source}</Badge>
                                 </div>
                                 <div className="whitespace-pre-wrap break-words rounded-lg border bg-muted/30 p-3 leading-relaxed">{detail.item.content}</div>
-                                {detail.item.refs.length > 0 ? <div className="break-words text-xs text-muted-foreground">refs: {detail.item.refs.join(", ")}</div> : null}
+                                {detail.item.refs.length > 0 ? <div className="break-words text-xs text-muted-foreground">{t("flow.detail.references")}: {detail.item.refs.join(", ")}</div> : null}
                                 <div className="grid gap-1 text-xs text-muted-foreground sm:grid-cols-2">
-                                    <div>Created: {detail.item.created_at}</div>
-                                    <div>Updated: {detail.item.updated_at}</div>
+                                    <div>{t("flow.detail.created")}: {detail.item.created_at}</div>
+                                    <div>{t("flow.detail.updated")}: {detail.item.updated_at}</div>
                                 </div>
                             </div>
                         ) : (
@@ -2525,13 +2553,13 @@ function KnowledgeDetailDialog(props: { detail?: KnowledgeDetail; onOpenChange: 
                                 <div className="whitespace-pre-wrap break-words rounded-lg border bg-muted/30 p-3 leading-relaxed">{detail.item.content}</div>
                                 {detail.item.result ? (
                                     <div className="rounded-lg border bg-flow-idea-bg/50 p-3">
-                                        <div className="mb-1 text-xs font-medium uppercase tracking-wide text-muted-foreground">Result</div>
+                                        <div className="mb-1 text-xs font-medium uppercase tracking-wide text-muted-foreground">{t("flow.detail.result")}</div>
                                         <div className="whitespace-pre-wrap break-words leading-relaxed">{detail.item.result}</div>
                                     </div>
                                 ) : null}
                                 <div className="grid gap-1 text-xs text-muted-foreground sm:grid-cols-2">
-                                    <div>Created: {detail.item.created_at}</div>
-                                    <div>Updated: {detail.item.updated_at}</div>
+                                    <div>{t("flow.detail.created")}: {detail.item.created_at}</div>
+                                    <div>{t("flow.detail.updated")}: {detail.item.updated_at}</div>
                                 </div>
                             </div>
                         )}
@@ -2575,8 +2603,7 @@ export function AttackFlow({ challengeId, initialTab, presentationFullscreen = f
     const { t } = useTranslation()
 
     const [ currentAttackFlowTab, setCurrentAttackFlowTab ] = useState<AttackFlowTab>(initialTab ?? "attack-path")
-    const [finished, setFinished] = useState(false)
-    const [ needLoop, setNeedLoop ] = useState<boolean>(true)
+    const [ needLoop, setNeedLoop ] = useState<boolean>(false)
     const { open, isMobile } = useSidebar()
     const tabIdRef = useRef("")
     const broadcastChannelRef = useRef<BroadcastChannel | null>(null)
@@ -2793,7 +2820,8 @@ export function AttackFlow({ challengeId, initialTab, presentationFullscreen = f
                 setChallengeInfo(details.challenge)
                 setBoardMemory(details.memory)
                 setBoardIdeas(details.ideas)
-                setCursorIndex(0)
+                setCursorIndex(next.events.length)
+                setIsPlaying(false)
             })
             .catch((nextError) => {
                 if (active) setError(nextError instanceof Error ? nextError.message : String(nextError))
@@ -2831,27 +2859,17 @@ export function AttackFlow({ challengeId, initialTab, presentationFullscreen = f
     }, [challengeId])
 
     useEffect(() => {
-        if (!finished || !needLoop) return
-        const timer = window.setTimeout(() => {
-            setCursorIndex(1)
-            setIsPlaying(true)
-        }, REPLAY_LOOP_PAUSE_MS)
-        return () => window.clearTimeout(timer)
-    }, [finished, needLoop])
-
-    useEffect(() => {
-        setFinished(cursorIndex >= events.length)
-
-        if (!isPlaying) return
-        if (cursorIndex >= events.length) {
+        const step = replayStep(cursorIndex, events.length, isPlaying, needLoop)
+        if (step === "idle") return
+        if (step === "stop") {
             setIsPlaying(false)
             return
         }
         const timer = window.setTimeout(() => {
-            setCursorIndex((current) => Math.min(current + 1, events.length))
-        }, Math.max(40, REPLAY_STEP_MS / Number(playbackSpeed)))
+            setCursorIndex((current) => step === "loop" ? 0 : Math.min(current + 1, events.length))
+        }, step === "loop" ? REPLAY_LOOP_PAUSE_MS : Math.max(40, REPLAY_STEP_MS / Number(playbackSpeed)))
         return () => window.clearTimeout(timer)
-    }, [cursorIndex, events.length, isPlaying, playbackSpeed])
+    }, [cursorIndex, events.length, isPlaying, needLoop, playbackSpeed])
 
     useEffect(() => {
         if (selectedSolverId && solverIds.includes(selectedSolverId)) return
@@ -3163,7 +3181,7 @@ export function AttackFlow({ challengeId, initialTab, presentationFullscreen = f
                     layoutKey={buildKnowledgeGraphLayoutKey(knowledgeGraph)}
                     contentKey={buildKnowledgeGraphContentKey(knowledgeGraph)}
                     layoutMode="elk"
-                    empty="No memory or ideas at this time."
+                    empty={t("flow.emptyKnowledge")}
                     suspended={isResizingLayout}
                     direction="DOWN"
                     nodeWidth={240}
@@ -3265,8 +3283,8 @@ export function AttackFlow({ challengeId, initialTab, presentationFullscreen = f
                     {selectedSolverId ? (
                         <div className="flex max-h-[82vh] min-h-0 flex-col">
                             <DialogHeader className="border-b p-4 pr-12">
-                                <DialogTitle>Solver Timeline</DialogTitle>
-                                <DialogDescription>Runtime message stream · {selectedSolverId}</DialogDescription>
+                                <DialogTitle>{t("flow.detail.agentLog")}</DialogTitle>
+                                <DialogDescription>{t("flow.detail.agentLogDescription")} · {selectedSolverId}</DialogDescription>
                             </DialogHeader>
                             <div className="h-[62vh] min-h-0 overflow-hidden">
                                 <SolverRuntimeTimeline solverId={selectedSolverId} timestamp={currentEvent?.timestamp} />
@@ -3276,7 +3294,7 @@ export function AttackFlow({ challengeId, initialTab, presentationFullscreen = f
                 </DialogContent>
             </Dialog>
 
-            <TimelineEventDetailDialog event={selectedEvent} onOpenChange={(open) => !open && setSelectedEvent(undefined)} />
+            <TimelineEventDetailDialog event={selectedEvent} events={events} onSelectSolver={handleSelectSolver} onOpenChange={(open) => !open && setSelectedEvent(undefined)} />
             <KnowledgeDetailDialog detail={selectedKnowledge} onOpenChange={(open) => !open && setSelectedKnowledge(undefined)} />
 
             {!presentationFullscreen ? <div className={
@@ -3286,6 +3304,9 @@ export function AttackFlow({ challengeId, initialTab, presentationFullscreen = f
                   )
             }>
                 <div className="flex flex-wrap items-center gap-3 px-4 py-2 md:px-6">
+                    <Button variant="ghost" size="sm" onClick={() => applyLocalSyncState({ isPlaying: false, cursorIndex: events.length })} disabled={events.length === 0}>
+                        {t("replay.latest")}
+                    </Button>
                     <Button
                         variant="outline"
                         size="sm"
@@ -3304,9 +3325,9 @@ export function AttackFlow({ challengeId, initialTab, presentationFullscreen = f
                         disabled={events.length === 0}
                     >
                         <RotateCcwIcon className="size-4" />
-                        重置
+                        {t("replay.reset")}
                     </Button>
-                    <Checkbox id="loop" checked={needLoop} onCheckedChange={(checked) => applyLocalSyncState({ needLoop: checked === "indeterminate" ? false : checked })} className="w-4 h-4" /> <span>循环播放</span>
+                    <Checkbox id="loop" checked={needLoop} onCheckedChange={(checked) => applyLocalSyncState({ needLoop: checked === "indeterminate" ? false : checked })} className="w-4 h-4" aria-label={t("replay.loop")} /> <label htmlFor="loop">{t("replay.loop")}</label>
                     <Select value={playbackSpeed} onValueChange={(value) => applyLocalSyncState({ playbackSpeed: isPlaybackSpeed(value) ? value : "1" })}>
                         <SelectTrigger size="sm" className="w-20">
                             <SelectValue>{playbackSpeed}x</SelectValue>
@@ -3320,6 +3341,7 @@ export function AttackFlow({ challengeId, initialTab, presentationFullscreen = f
                         </SelectContent>
                     </Select>
                     <Slider
+                        aria-label={t("replay.progress")}
                         className="min-w-0 flex-1 basis-64"
                         value={[Math.min(cursorIndex, events.length)]}
                         min={0}

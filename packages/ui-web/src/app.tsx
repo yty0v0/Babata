@@ -1,5 +1,6 @@
 import { Component, useEffect, useState } from "react"
 import type { ReactNode } from "react"
+import { useTranslation } from "react-i18next"
 import {
     ChevronRightIcon,
     LogOutIcon,
@@ -169,11 +170,11 @@ function Router() {
     return <ChallengePage />
 }
 
-function getPageTitle(hash: string): string {
+function getPageTitle(hash: string, flowTitle: string): string {
     if (hash === "#/login") return "Login"
     if (hash === "#/register") return "Register"
     if (hash === "#/" || hash === "#/challenge") return "项目"
-    if (hash.startsWith("#/challenge/") && hash.endsWith("/attack-flow")) return "项目 · Attack Flow"
+    if (hash.startsWith("#/challenge/") && hash.endsWith("/attack-flow")) return `项目 · ${flowTitle}`
     if (hash.startsWith("#/challenge/")) return "项目"
     if (hash === "#/runtime") return "Runtime"
     if (hash.startsWith("#/runtime/")) return "Runtime · Solver"
@@ -186,6 +187,7 @@ function getPageTitle(hash: string): string {
 }
 
 export function App() {
+    const { t } = useTranslation()
     const hash = useHash()
     const isConfigOpen = hash.startsWith("#/config")
     const isAttackFlowRoute = /^#\/challenge\/[^/]+\/attack-flow(?:\?.*)?$/.test(hash)
@@ -326,7 +328,7 @@ export function App() {
                     <header className="flex h-12 shrink-0 items-center gap-2 border-b px-4">
                         <SidebarTrigger />
                         <Separator orientation="vertical" className="h-4" />
-                        <span className="text-sm font-medium">{getPageTitle(hash)}</span>
+                        <span className="text-sm font-medium">{getPageTitle(hash, t("flow.title"))}</span>
                     </header>
                     <div data-app-content-fullscreen-root className={isAttackFlowRoute ? "min-h-0 min-w-0 flex-1 overflow-hidden" : "min-h-0 min-w-0 flex-1 overflow-auto"}>
                         <AppErrorBoundary>

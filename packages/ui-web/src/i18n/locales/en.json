@@ -11,9 +11,14 @@
         "start": "Start replay",
         "pause": "Pause replay",
         "reset": "Reset replay",
-        "waiting": "Waiting for replay..."
+        "waiting": "Waiting for replay...",
+        "loop": "Loop replay",
+        "latest": "Show full flow",
+        "progress": "Replay progress"
     },
     "flow": {
+        "title": "Attack Flow",
+        "emptyKnowledge": "No canonical memory or ideas yet. Pending candidates are available in the attack-path timeline.",
         "agents": "Agents",
         "time": "Time",
         "attack-path": "Attack path",
@@ -47,9 +52,19 @@
                 "finished": "{{tool}} finished",
                 "failed": "{{tool}} failed"
             },
+            "report": {
+                "submitted": "Test report submitted"
+            },
             "flag": {
                 "correct": "Correct flag",
                 "submitted": "Flag submitted"
+            },
+            "roles": {
+                "assistant": "Assistant",
+                "user": "User",
+                "system": "System",
+                "toolResult": "Tool result",
+                "message": "Message"
             }
         },
         "item": {
@@ -61,6 +76,62 @@
                 "updated": "Idea updated",
                 "added": "Idea added"
             }
+        },
+        "detail": {
+            "time": "Time",
+            "type": "Event type",
+            "agent": "Agent",
+            "lane": "Event lane",
+            "lanes": {
+                "challenge": "Project",
+                "solver": "Testing agent",
+                "observer": "Observer",
+                "board": "Intelligence and strategy",
+                "submission": "Report submission"
+            },
+            "summary": "Test activity and result",
+            "noSummary": "No summary was provided for this event.",
+            "memory": "Intelligence record",
+            "idea": "Test strategy",
+            "references": "Evidence references",
+            "created": "Created",
+            "updated": "Updated",
+            "result": "Execution result",
+            "rawData": "View full event data",
+            "candidatePending": "Candidate submitted; awaiting governance review.",
+            "submittedContent": "Submitted test content",
+            "noSubmittedContent": "The original tool call did not include readable content.",
+            "proposalId": "Proposal ID",
+            "canonicalUpdated": "Canonical record updated",
+            "canonicalUnchanged": "Canonical record unchanged",
+            "candidateLabel": "Candidate",
+            "candidateSubmitted": "Candidate submitted. Refer to its recorded review status.",
+            "status": "Review status",
+            "fullReport": "Full test report",
+            "asset": "Test asset",
+            "noReport": "No report content was attached to this event.",
+            "viewAgentLog": "View full agent log",
+            "agentLog": "Agent execution log",
+            "agentLogDescription": "Runtime message stream",
+            "noDescription": "No task description.",
+            "candidateStatuses": {
+                "pending": "Pending review",
+                "approved": "Approved",
+                "rejected": "Rejected"
+            }
+        },
+        "overview": {
+            "title": "Execution overview",
+            "expand": "Expand execution overview",
+            "collapse": "Collapse execution overview",
+            "normal": "Other events",
+            "spawn": "Agent lifecycle",
+            "memory": "Intelligence",
+            "idea": "Strategy",
+            "report": "Report submitted",
+            "memoryNodes": "Intelligence nodes",
+            "ideaNodes": "Strategy nodes",
+            "total": "Total nodes: "
         }
     },
     "challenge": {

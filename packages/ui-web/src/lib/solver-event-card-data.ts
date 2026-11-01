@@ -4,6 +4,7 @@ import type { AttackTimelineEvent, AttackTimelineEventKind } from "./api"
 import type { SolverMeta } from "./timeline-key-events"
 import { shortTimelineTime } from "./timeline-key-events"
 import { timelineEventTitle } from "./timeline-event-title"
+import { submittedCandidate } from "./timeline-event-details"
 
 export interface AgentEventCardEvent {
     time: string
@@ -61,16 +62,19 @@ function buildKindCounts(items: AttackTimelineEvent[]): Partial<Record<AttackTim
     return counts
 }
 
-function buildRecentEvents(items: AttackTimelineEvent[], t: TFunction): AgentEventCardEvent[] {
+function buildRecentEvents(items: AttackTimelineEvent[], events: AttackTimelineEvent[], t: TFunction): AgentEventCardEvent[] {
     return [...items]
         .sort((left, right) => right.timestamp - left.timestamp)
         .slice(0, SOLVER_AGENT_EVENT_LIMIT)
-        .map((event) => ({
-            time: shortTimelineTime(event.timestamp),
-            kind: event.kind,
-            title: timelineEventTitle(event, t),
-            desc: event.summary,
-        }))
+        .map((event) => {
+            const candidate = submittedCandidate(event, events)
+            return {
+                time: shortTimelineTime(event.timestamp),
+                kind: event.kind,
+                title: timelineEventTitle(event, t),
+                desc: candidate ? `${t("flow.detail.candidateLabel")} · ${candidate.content || t("flow.detail.candidatePending")}` : event.summary,
+            }
+        })
 }
 
 export function buildSolverCardData(meta: SolverMeta, events: AttackTimelineEvent[], t: TFunction): SolverCardData {
@@ -79,7 +83,7 @@ export function buildSolverCardData(meta: SolverMeta, events: AttackTimelineEven
     return {
         promptName,
         eventCount: items.length,
-        recentEvents: buildRecentEvents(items, t),
+        recentEvents: buildRecentEvents(items, events, t),
         kindCounts: buildKindCounts(items),
         activityBuckets: buildActivityBuckets(items),
     }

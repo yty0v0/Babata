@@ -17,6 +17,10 @@ function parseToolResult(title: string): { tool: string; status: "failed" | "fin
     return { tool: match[1], status: match[2] as "failed" | "finished" }
 }
 
+function messageRoleLabel(role: string, t: TFunction): string {
+    return ["assistant", "user", "system", "toolResult", "message"].includes(role) ? t(`flow.timeline.roles.${role}`) : role
+}
+
 export function timelineEventTitle(event: AttackTimelineEvent, t: TFunction): string {
     switch (event.kind) {
         case "memory_added":
@@ -30,18 +34,18 @@ export function timelineEventTitle(event: AttackTimelineEvent, t: TFunction): st
         case "solver_started":
             return t("flow.timeline.solver.started")
         case "solver_ended":
-            return "智能体结束"
+            return t("flow.timeline.solver.ended")
         case "observer_reminder":
             return t("flow.timeline.observer.reminder")
         case "report_submitted":
-            return "测试报告已提交"
+            return t("flow.timeline.report.submitted")
         case "message": {
             if (event.lane === "observer") {
                 const role = parseMessageRole(event.title, "Observer") ?? "message"
-                return t("flow.timeline.observer.message", { role })
+                return t("flow.timeline.observer.message", { role: messageRoleLabel(role, t) })
             }
             const role = parseMessageRole(event.title, "Solver") ?? "message"
-            return t("flow.timeline.solver.message", { role })
+            return t("flow.timeline.solver.message", { role: messageRoleLabel(role, t) })
         }
         case "tool_call": {
             const tool = parseToolCallName(event.title) ?? "tool"

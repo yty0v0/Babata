@@ -1,4 +1,5 @@
 import { useState } from "react"
+import { useTranslation } from "react-i18next"
 import type { ExecutionOverviewData, SegmentType } from "../../data/executionOverview"
 import { ChevronDownIcon, ChevronUpIcon } from "lucide-react"
 import { cn } from "../../lib/utils"
@@ -12,14 +13,6 @@ const typeStyle: Record<SegmentType, string> = {
     empty: "bg-muted shadow-none",
 }
 
-const legends = [
-    { label: "正常流程", type: "normal" as SegmentType },
-    { label: "智能体介入", type: "spawn" as SegmentType },
-    { label: "情报", type: "memory" as SegmentType },
-    { label: "战术", type: "idea" as SegmentType },
-    { label: "攻击成功", type: "flag" as SegmentType },
-]
-
 export function ExecutionOverview(props: {
     data: ExecutionOverviewData
     variant?: "default" | "overlay"
@@ -28,6 +21,8 @@ export function ExecutionOverview(props: {
     compact?: boolean
 }) {
     const { data, variant = "default", collapsible = false, defaultCollapsed = false, compact = false } = props
+    const { t } = useTranslation()
+    const legends = (["normal", "spawn", "memory", "idea", "flag"] as const).map((type) => ({ type, label: t(`flow.overview.${type === "flag" ? "report" : type}`) }))
     const [collapsed, setCollapsed] = useState(defaultCollapsed)
     const isOverlay = variant === "overlay"
     const isCompact = isOverlay && compact
@@ -51,7 +46,7 @@ export function ExecutionOverview(props: {
                 )}
             >
                 <div className="flex min-w-0 items-center gap-1.5">
-                    <h2 className={cn("font-semibold text-foreground", isCompact ? "text-xs" : isOverlay ? "text-base" : "text-xl")}>执行概览</h2>
+                    <h2 className={cn("font-semibold text-foreground", isCompact ? "text-xs" : isOverlay ? "text-base" : "text-xl")}>{t("flow.overview.title")}</h2>
                     {collapsible ? (
                         <button
                             type="button"
@@ -60,8 +55,8 @@ export function ExecutionOverview(props: {
                                 isCompact ? "size-5" : "size-7",
                             )}
                             aria-expanded={!collapsed}
-                            aria-label={collapsed ? "展开执行概览" : "收起执行概览"}
-                            title={collapsed ? "展开" : "收起"}
+                            aria-label={t(collapsed ? "flow.overview.expand" : "flow.overview.collapse")}
+                            title={t(collapsed ? "flow.overview.expand" : "flow.overview.collapse")}
                             onClick={() => setCollapsed((current) => !current)}
                         >
                             {collapsed ? <ChevronUpIcon className="size-4" /> : <ChevronDownIcon className="size-4" />}
@@ -152,15 +147,15 @@ export function ExecutionOverview(props: {
                 )}
             >
                 <div className={cn("flex items-center", isCompact ? "gap-3" : isOverlay ? "gap-6" : "gap-14")}>
-                    <Stat type="normal" label="正常流程" value={stats.normal} compact={isOverlay} dense={isCompact} />
-                    <Stat type="spawn" label="智能体介入" value={stats.spawn} compact={isOverlay} dense={isCompact} />
-                    <Stat type="memory" label="情报节点" value={stats.memory} compact={isOverlay} dense={isCompact} />
-                    <Stat type="idea" label="战术节点" value={stats.idea} compact={isOverlay} dense={isCompact} />
-                    <Stat type="flag" label="报告提交" value={stats.flag} compact={isOverlay} dense={isCompact} />
+                    <Stat type="normal" label={t("flow.overview.normal")} value={stats.normal} compact={isOverlay} dense={isCompact} />
+                    <Stat type="spawn" label={t("flow.overview.spawn")} value={stats.spawn} compact={isOverlay} dense={isCompact} />
+                    <Stat type="memory" label={t("flow.overview.memoryNodes")} value={stats.memory} compact={isOverlay} dense={isCompact} />
+                    <Stat type="idea" label={t("flow.overview.ideaNodes")} value={stats.idea} compact={isOverlay} dense={isCompact} />
+                    <Stat type="flag" label={t("flow.overview.report")} value={stats.flag} compact={isOverlay} dense={isCompact} />
                 </div>
 
                 <div className={cn("font-semibold text-muted-foreground", isCompact && "text-xs")}>
-                    总节点数：<span className="text-flow-chart-primary">{stats.total}</span>
+                    {t("flow.overview.total")}<span className="text-flow-chart-primary">{stats.total}</span>
                 </div>
             </div>
             ) : null}

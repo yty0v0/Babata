@@ -22,7 +22,8 @@
     "private": true,
     "scripts": {
         "build": "tsc",
-        "dev": "tsc --watch"
+        "dev": "tsc --watch",
+        "test:playwright": "node scripts/playwright-smoke.mjs"
     },
     "type": "module",
     "types": "src/index.ts",

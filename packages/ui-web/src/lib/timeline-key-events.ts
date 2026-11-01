@@ -1,4 +1,5 @@
 import type { AttackTimelineEvent } from "./api"
+import { isRepresentedReportResult } from "./timeline-event-details"
 import type { SegmentType } from "../data/executionOverview"
 
 function payloadObject(event: AttackTimelineEvent): Record<string, unknown> | undefined {
@@ -53,6 +54,7 @@ export function solverMetasFromEvents(events: AttackTimelineEvent[]): SolverMeta
 export function keyTimelineEvents(events: AttackTimelineEvent[]) {
     return events.filter((event) => {
         if (event.kind === "message" || event.kind === "tool_call") return false
+        if (isRepresentedReportResult(event, events)) return false
         if (event.kind === "tool_result" && !event.title.startsWith("challenge_submit_report")) return false
         if ((event.kind === "memory_updated" || event.kind === "idea_updated") && event.summary.trim().startsWith("|")) return false
         if ((event.kind === "memory_updated" || event.kind === "idea_updated") && event.summary.length < 24) return false

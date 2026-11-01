@@ -11,10 +11,15 @@
         "start": "开始回溯",
         "pause": "暂停回溯",
         "reset": "重置回溯",
-        "waiting": "等待回溯..."
+        "waiting": "等待回溯...",
+        "loop": "循环播放",
+        "latest": "查看完整流程",
+        "progress": "回放进度"
     },
     "flow": {
-        "agents": "Agents",
+        "title": "攻击流程",
+        "emptyKnowledge": "当前没有正式记忆或思路记录；待审核的候选内容可在攻击路径时间线中查看。",
+        "agents": "智能体",
         "time": "时间",
         "attack-path": "攻击活动",
         "memory-path": "情报图谱",
@@ -24,7 +29,7 @@
         "fullscreen": "全屏",
         "exitFullscreen": "退出全屏",
         "agentCard": {
-            "latestEvents": "最新 Events",
+            "latestEvents": "最新事件",
             "viewAll": "查看全部 ({{count}}) ›",
             "runtime": "",
             "updatedAgo": ""
@@ -36,10 +41,10 @@
             "solver": {
                 "started": "智能体介入",
                 "ended": "智能体结束",
-                "message": "Solver {{role}}"
+                "message": "测试智能体 · {{role}}"
             },
             "observer": {
-                "message": "Observer {{role}}",
+                "message": "观察员 · {{role}}",
                 "reminder": "效率提醒"
             },
             "tool": {
@@ -47,9 +52,19 @@
                 "finished": "{{tool}} 完成",
                 "failed": "{{tool}} 失败"
             },
+            "report": {
+                "submitted": "测试报告已提交"
+            },
             "flag": {
                 "correct": "攻击成功",
                 "submitted": "攻击成功"
+            },
+            "roles": {
+                "assistant": "助手",
+                "user": "用户",
+                "system": "系统",
+                "toolResult": "工具结果",
+                "message": "消息"
             }
         },
         "item": {
@@ -61,6 +76,62 @@
                 "updated": "战术更新",
                 "added": "战术"
             }
+        },
+        "detail": {
+            "time": "发生时间",
+            "type": "事件类型",
+            "agent": "执行智能体",
+            "lane": "事件通道",
+            "lanes": {
+                "challenge": "项目",
+                "solver": "测试智能体",
+                "observer": "观察员",
+                "board": "情报与策略",
+                "submission": "报告提交"
+            },
+            "summary": "测试过程与结果",
+            "noSummary": "此事件没有附带摘要。",
+            "memory": "情报记录",
+            "idea": "测试策略",
+            "references": "关联证据",
+            "created": "创建时间",
+            "updated": "更新时间",
+            "result": "执行结果",
+            "rawData": "查看完整事件数据",
+            "candidatePending": "候选已提交，等待治理审核。",
+            "submittedContent": "提交的测试内容",
+            "noSubmittedContent": "原工具调用没有包含可读取的内容。",
+            "proposalId": "提交编号",
+            "canonicalUpdated": "正式情报记录已更新",
+            "canonicalUnchanged": "正式情报记录未更改",
+            "candidateLabel": "候选记录",
+            "candidateSubmitted": "已提交候选记录，审核状态以记录为准。",
+            "status": "审核状态",
+            "fullReport": "完整测试报告",
+            "asset": "测试资产",
+            "noReport": "此事件没有附带报告正文。",
+            "viewAgentLog": "查看智能体完整日志",
+            "agentLog": "智能体执行日志",
+            "agentLogDescription": "运行时消息流",
+            "noDescription": "暂无任务描述。",
+            "candidateStatuses": {
+                "pending": "待治理审核",
+                "approved": "已批准",
+                "rejected": "已拒绝"
+            }
+        },
+        "overview": {
+            "title": "执行概览",
+            "expand": "展开执行概览",
+            "collapse": "收起执行概览",
+            "normal": "其他事件",
+            "spawn": "智能体生命周期",
+            "memory": "情报",
+            "idea": "战术",
+            "report": "报告提交",
+            "memoryNodes": "情报节点",
+            "ideaNodes": "战术节点",
+            "total": "总节点数："
         }
     },
     "challenge": {
